@@ -20,7 +20,7 @@
  * (0x0000, 0x0080, ... 0x7D80). The payload is 2..128 even bytes.
  * This ensures PCWORD=0 during page write; unusual nonaligned STK500v1
  * Flash writes deliberately trigger watchdog abort before any SPM.
- * Limitations: high length byte is ignored, EEPROM writes <=16 bytes,
+ * Validated page headers: complete lengths 1..256, memory type E/F only.
  * UNIVERSAL only reads fuse/lock, no true chip erase, not full AVR061.
 
  * Retained: MCU reset decision + WDT timeout, serial sync, GET_PARAMETER,
@@ -41,10 +41,11 @@ _start:
  * r17 = watchdog configuration value
  * r18 = USART status/temp
  * r19 = discard count / EEPROM receive count / SPMEN preload (1)
- * r20 = GET_PARAMETER selector, READ_PAGE memory type, ISP opcode1
+ * r20 = GET_PARAMETER selector or UNIVERSAL ISP opcode1
  * r21 = UNIVERSAL ISP opcode2 (bit 3 mapped into Z via T flag)
  * r22:r23 = current BYTE address (Flash or EEPROM)
  * r24 = zero-based final byte index; final word index after Flash LSR
+ * r25 = high length byte while validating the shared page header
  * X = EEPROM READ pointer; EEPROM WRITE payload is held on AVR stack
  * Z = flash address, page-fill address, or EEPROM last-byte address
  */
@@ -146,12 +147,9 @@ command_address:
     rjmp command_default
 
 command_read:
-    rcall read_length
-    rcall rx_char
-    mov  r20,r16           ; E=EEPROM, other types=FLASH
-    rcall verify_eop
-    cpi  r20, 0x45
-    breq eeprom_read
+    rcall read_header
+    rcall verify_eop       ; preserves the header's memory-type T flag
+    brts eeprom_read
     movw r30, r22
 read_loop:
     lpm  r16, Z+
@@ -227,10 +225,8 @@ universal_response:
 
 
 command_write:
-    rcall read_length
-    rcall rx_char          ; memory type, accept all except 'E'
-    cpi  r16, 0x45        ; EEPROM write: stage on stack, validate EOP
-    breq eeprom_write
+    rcall read_header
+    brts eeprom_write
 flash_write:
     lsr  r24               ; C=even length; count becomes final word index
     brcc protocol_error
@@ -322,11 +318,24 @@ error_loop:
     rjmp error_loop
 
 
-read_length:
-    rcall rx_char          ; high length byte discarded, as upstream HEX does
-    rcall rx_char          ; low length byte
-    mov  r24, r16
-    dec  r24               ; zero-based final byte index, including 256-byte reads
+/* Shared page header: accept length 1..256 and exactly E/F memory types.
+ * r25:r24 initially holds the complete unsigned length. Subtracting one
+ * makes valid lengths 0x0000..0x00FF; every other value has a nonzero high byte.
+ * Return r24=length-1 and T=1 for EEPROM, T=0 for Flash. RX/EOP preserve T.
+ */
+read_header:
+    rcall rx_char
+    mov  r25, r16          ; complete length, high byte
+    rcall rx_char
+    mov  r24, r16          ; complete length, low byte
+    sbiw r24, 1
+    tst  r25
+    brne protocol_error   ; reject zero and all lengths greater than 256
+    rcall rx_char
+    bst  r16, 0           ; E=0x45 has bit 0 set; F=0x46 has it clear
+    subi r16, 0x45
+    cpi  r16, 2
+    brsh protocol_error   ; only original byte 0x45 or 0x46 is accepted
     ret
 
 verify_eop:
@@ -370,7 +379,7 @@ wait_spm:
     ret
 
 /* EEPROM address is 0..1023.  r24=255 means 256 bytes for READ_PAGE,
- * just as in the historical Optiboot read loop.  Test the inclusive
+ * with validated complete length 0x0100 for a 256-byte read.  Test the inclusive
  * end address = start + (length - 1) to avoid wraparound/wrong writes.
  * Side effects: r16, r30:r31 and flags; r22:r23/r24 preserved.
  */

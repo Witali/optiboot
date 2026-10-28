@@ -5,6 +5,10 @@ implementation, with EEPROM read/write and read-only fuse/lock diagnostics.
 Target: ATmega328P, 16 MHz, UART0 115200 8N1, a 512-byte boot section at `0x7E00`.
 Tests use a limited software model; physical-hardware validation is pending.
 
+Page headers validate the complete length (1..256) and E/F memory types before
+memory operations. The strengthened checks retain the original 512-byte image
+size; see the [hardening record](../../../docs/atmega328p/HEADER_HARDENING_2026-10-28.md).
+
 See the [firmware documentation](../../../docs/atmega328p/README.md)
 for functions, limits and the
 research history. From the repository root:

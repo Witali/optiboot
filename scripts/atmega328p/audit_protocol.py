@@ -3,7 +3,8 @@
 
 Runs the assembled firmware in the existing limited AVR model. No serial port or
 physical device is accessed. Missing functions are observations, not failures
-of the supported profile. See docs/atmega328p/PROTOCOL_REVIEW_2026-10-28.md.
+of the supported profile. See the original protocol review and the subsequent
+HEADER_HARDENING_2026-10-28.md record under docs/atmega328p/.
 """
 import argparse
 from collections import Counter
@@ -52,7 +53,7 @@ def main():
         observations.append({"name": name, "category": "supported_profile", "passed": ok})
         assert ok, (name, reply.hex(), expected.hex(), state)
 
-    def observe(name, category, packet, note, setup=None):
+    def observe(name, category, packet, note, setup=None, require_rejection=False):
         sim = init()
         if setup:
             setup(sim)
@@ -69,6 +70,11 @@ def main():
             "eeprom_changed": bytes(sim.eeprom) != before_eeprom,
             "note": note,
         }
+        if require_rejection:
+            record["protected"] = (state == "watchdog_abort_pending" and reply == b""
+                                   and not record["application_flash_changed"]
+                                   and not record["eeprom_changed"])
+            assert record["protected"], (name, "malformed header was not rejected safely", record)
         observations.append(record)
         return record
 
@@ -137,12 +143,12 @@ def main():
             "Enters the short-WDT error loop instead of replying NOSYNC; model does not time the reset.")
     observe("set_device_ext_count_4", "compatibility_boundary", bytes.fromhex("45 04 10 d7 a0 20"),
             "Waits for more input. Fixed five-byte discard accepts the current host form, not this shorter form; AVR061 page 6 is internally inconsistent.")
-    observe("oversize_read_length_0102", "hardening_boundary", bytes.fromhex("74 01 02 45 20"),
-            "Declared 258-byte read is outside the <=256-byte protocol range, but is silently processed as two bytes.")
-    observe("oversize_write_commits_prefix", "hardening_boundary", bytes.fromhex("64 01 02 46 aa bb 20"),
-            "Incomplete/out-of-range 258-byte declaration is treated as a complete two-byte Flash write and changes memory.")
-    observe("invalid_memory_type_writes_flash", "hardening_boundary", bytes.fromhex("64 00 02 58 aa bb 20"),
-            "Undefined type X takes the Flash path and changes memory. Valid profile packets use only E/F.")
+    observe("oversize_read_length_0102", "protected_header_boundary", bytes.fromhex("74 01 02 45 20"),
+            "Out-of-range 258-byte declaration is rejected before a memory read.", require_rejection=True)
+    observe("oversize_write_commits_prefix", "protected_header_boundary", bytes.fromhex("64 01 02 46 aa bb 20"),
+            "Incomplete/out-of-range declaration is rejected without changing memory.", require_rejection=True)
+    observe("invalid_memory_type_writes_flash", "protected_header_boundary", bytes.fromhex("64 00 02 58 aa bb 20"),
+            "Undefined type X is rejected; it cannot fall back to a Flash write.", require_rejection=True)
 
     summary = {
         "firmware_sha256": hashlib.sha256(FW).hexdigest(),
@@ -150,6 +156,8 @@ def main():
         "avrdude_source_commit": "9aa44d08cb207a80a5d1005ead61142d21fb50de",
         "supported_profile_checks": sum(x["category"] == "supported_profile" for x in observations),
         "supported_profile_failures": sum(x.get("passed") is False for x in observations),
+        "header_protection_checks": sum("protected" in x for x in observations),
+        "header_protection_failures": sum(x.get("protected") is False for x in observations),
         "observation_counts": dict(Counter(x["category"] for x in observations if x["category"] != "supported_profile")),
         "physical_hardware_tested": False,
         "avrdude_executable_tested": False,

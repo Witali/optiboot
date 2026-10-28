@@ -170,8 +170,8 @@
       "repository_path": "docs/atmega328p/current/AUDIT.md",
       "original_bytes": 17375,
       "original_sha256": "a79f2263c36580fb9b3260a60026d96a257562f54aeb001e49be4293c6ee26cb",
-      "imported_bytes": 8822,
-      "imported_sha256": "6e30d36e3f8d9f8b012168a94b5f9b16d3427ae6c10d40bf6286c5c363aa89ab",
+      "imported_bytes": 9124,
+      "imported_sha256": "191c75a2fe2daef31dab345c1947c1d5e3149d418d4f2ca97971717642423d77",
       "adapted": true,
       "documentation_language": "en"
     },
@@ -234,8 +234,8 @@
       "repository_path": "optiboot/bootloaders/optiboot_328p/optiboot_328_verified.S",
       "original_bytes": 12739,
       "original_sha256": "b82b6b2a4c312e6765e869963ad6ba87b7f26b383e4823f6c3c8b7d1e1126b89",
-      "imported_bytes": 12769,
-      "imported_sha256": "4222afda58f98d93341dca6e4b489b705fc83ad02e315df8b81b8ac732fff796",
+      "imported_bytes": 13191,
+      "imported_sha256": "d2629cf559ded661e1b4f4d1d22a33a03d61357c940bea367088016c089239cf",
       "adapted": true
     },
     {
@@ -244,7 +244,7 @@
       "original_bytes": 512,
       "original_sha256": "29fe3aa03cc412568160d1990cefa12f7674f243f8c3d6336bdc09fbe79fd642",
       "imported_bytes": 512,
-      "imported_sha256": "37eeb2872e39f548f3e0139c589f769332fa612cb9a2a5d8629e7222e7a429b5",
+      "imported_sha256": "8248d39c5768dde48708c47de1f3d4872dfc1b9d519853641aa307ba92ae200e",
       "adapted": true
     },
     {
@@ -253,7 +253,7 @@
       "original_bytes": 1420,
       "original_sha256": "3918a262913d19514350c4bc3e41b8a91b7f95fd0fcb5a43a2abb01a65fa5a8b",
       "imported_bytes": 1420,
-      "imported_sha256": "cad10d3c5c52749ec42b661c2bc869900aa885b569dfb4a535d6b17e24e06141",
+      "imported_sha256": "5cf8d1053840d3c4613b66131a56f942649ecfe54699f7caf69925b6db8748db",
       "adapted": true
     },
     {
@@ -261,8 +261,8 @@
       "repository_path": "optiboot/bootloaders/optiboot_328p/optiboot_328_verified.o",
       "original_bytes": 1764,
       "original_sha256": "3fe991d3e350e3103ac3519bf064a9713b97362abac29afc60e64150c432f6f6",
-      "imported_bytes": 3024,
-      "imported_sha256": "63ad6f8d12479621fcfa4a5171d4cec22a6c1b888a25dddaec256ace980cd8b3",
+      "imported_bytes": 3036,
+      "imported_sha256": "27a6fd2867084466dc281062c9ffcee478e56ad966f6a198f4acee3d2e0195bf",
       "adapted": true
     },
     {
@@ -315,9 +315,9 @@
       "repository_path": "scripts/atmega328p/test_protocol_limits.py",
       "original_bytes": 1166,
       "original_sha256": "fd521c65f020a775bab8a4caef2505f52dc864adb42c04e1becaafe61a7043c8",
-      "imported_bytes": 1166,
-      "imported_sha256": "fd521c65f020a775bab8a4caef2505f52dc864adb42c04e1becaafe61a7043c8",
-      "adapted": false
+      "imported_bytes": 1141,
+      "imported_sha256": "7aeb3dd74597b8b39c9ee6a3568442debf4d24500be5b15510309cedbd573d92",
+      "adapted": true
     },
     {
       "archive_path": "CURRENT/test_strict_datasheet.py",

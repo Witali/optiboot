@@ -1,5 +1,10 @@
 # STK500v1 protocol review: declared Arduino bootloader subset
 
+This is the pre-hardening review and its original observations. The subsequent
+[header hardening](HEADER_HARDENING_2026-10-28.md) fixes the length/type issues
+reported below while keeping the same 512-byte image size. The original JSON
+remains before-change evidence; current results are linked from the follow-up.
+
 **Date:** October 28, 2026.
 **Firmware baseline:** `891169f84898b7a73bc55f21a5b17f5b1642fa33`.
 **Source:** `optiboot_328_verified.S`.

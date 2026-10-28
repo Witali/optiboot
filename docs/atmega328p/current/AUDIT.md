@@ -1,5 +1,10 @@
 # Optiboot Mini EEPROM + UNIVERSAL audit: ATmega328P
 
+This historical research audit describes the pre-header-hardening source/image.
+The subsequent [header validation](../HEADER_HARDENING_2026-10-28.md) adds complete
+length and E/F checks without increasing the 512-byte image. Its current results
+supersede the corresponding protocol limitations below.
+
 **Date:** October 28, 2026.  
 **Objects:** historical `optiboot_328_eeprom_universal.S` (506 instruction bytes
 plus two version bytes = 508), and corrected `optiboot_328_verified.S`

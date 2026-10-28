@@ -10,9 +10,9 @@ and diagnostic functions while retaining a 512-byte boot section.
 The current source is
 [`optiboot_328_verified.S`](../../optiboot/bootloaders/optiboot_328p/optiboot_328_verified.S).
 It targets ATmega328P, a 16 MHz clock, and UART0 at nominal 115200 baud, 8N1.
-The image spans `0x7E00..0x7FFF`. The preparatory counter refactor uses 504
-instruction bytes and two version bytes (`03 08`), leaving six FF-padding bytes
-inside the unchanged 512-byte section. See the
+The image spans `0x7E00..0x7FFF`: 510 instruction bytes and two version bytes
+(`03 08`). Complete page-length and E/F memory-type checks fit inside the
+unchanged 512-byte section. See the
 [size and hardening record](HEADER_HARDENING_2026-10-28.md).
 
 Compared with earlier size-focused prototypes in this research, the functional
@@ -23,9 +23,9 @@ and the Flash memory optimization are described below.
 |---|---|
 | Flash programming and reading | STK500v1 `PROG_PAGE`/`READ_PAGE`; programming fills the hardware SPM page buffer without a separate 128-byte SRAM array. Writes accept 2..128 bytes, an even length, and a 128-byte-aligned start address. |
 | EEPROM writing | `PROG_PAGE` with memory type `E`; 1..16 bytes per packet across the 1024-byte EEPROM. Data is staged on the AVR stack, the terminator and range are checked before writing, and completion waits for the EEPROM controller. |
-| EEPROM reading | `READ_PAGE` with memory type `E`; range-checked access to addresses 0..1023. Read length uses the low byte; zero represents 256 bytes. |
+| EEPROM reading | `READ_PAGE` with memory type `E`; range-checked access to addresses 0..1023, complete 16-bit lengths 1..256. Length `01 00` represents 256 bytes; zero is rejected. |
 | Fuse/lock diagnostics | Read-only `UNIVERSAL` requests return low, high and extended fuses and lock bits. Fuse/lock programming and arbitrary ISP commands are not implemented. |
-| Input and Flash write checks | Rejects unaligned Flash writes before SPM, rejects invalid EEPROM ranges and write lengths, and checks end-of-packet before modifying memory. Watchdog reset handles protocol aborts; UART framing-error handling is retained. |
+| Input and Flash write checks | Validates complete page lengths and exactly E/F types before memory operations; rejects unaligned Flash writes and invalid EEPROM ranges/write lengths. End-of-packet is checked before memory changes. Watchdog abort and UART framing-error handling are retained. |
 
 The assembly retains serial synchronization, parameter responses, device-setting
 packet consumption, address loading, the fixed ATmega328P signature, and
@@ -45,25 +45,27 @@ upstream reference, and instruction-adjacency/alignment checks. They do not
 provide cycle-accurate or physical-hardware validation. No test on a real
 ATmega328P or real USB/UART link was performed for the handoff or this import.
 The [import validation record](VALIDATION_2026-10-28.md) documents the successful
-rebuild, byte-for-byte BIN/HEX comparison, and rerun of all five current suites.
+rebuild, byte-for-byte BIN/HEX comparison, and rerun of the original five suites.
 
 The [protocol review](PROTOCOL_REVIEW_2026-10-28.md) compares official AVR061 and
 pinned AVRDUDE sources with the assembled firmware. All 44 additional checks of
 the declared Arduino profile pass; missing capabilities are assessed separately
-from malformed-packet handling. The review records length/type validation
-hardening issues and provides reproducible observations without changing firmware.
+from malformed-packet handling. Its pre-hardening observations are retained.
+The [completed hardening](HEADER_HARDENING_2026-10-28.md) fixes both length/type
+validation issues without increasing the image size and adds a sixth regression
+suite. Current results include 44 profile checks and three header-protection checks.
 
 This firmware implements a subset of STK500v1, not full AVR061. `GET_SIGN_ON`
-returns only an acknowledgement; chip erase is acknowledged without erasing;
-the high length byte is ignored; and an unknown memory type falls back to
-Flash. Do not use `avrdude -e` or attempt fuse/lock writes through this bootloader.
-See the [full translated audit](current/AUDIT.md),
+returns only an acknowledgement, chip erase is acknowledged without erasing,
+and arbitrary ISP commands are unsupported. Do not use `avrdude -e` or attempt
+fuse/lock writes through this bootloader.
+See the [original translated research audit](current/AUDIT.md),
 [protocol description](research/03_PROTOCOL_AND_HARDWARE.md), and
 [hardware test plan](research/06_HARDWARE_TEST_PLAN.md).
 
 ## Build and test
 
-From the repository root, Python 3.10 or newer can run all five current suites
+From the repository root, Python 3.10 or newer can run all six current suites
 against the supplied binary without downloading dependencies:
 
 ```sh

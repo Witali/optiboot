@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run the five imported AVR model suites against supplied or rebuilt firmware."""
+"""Run AVR model regressions against supplied or rebuilt firmware."""
 import argparse
 import hashlib
 import os
@@ -18,6 +18,7 @@ SUITES = (
     "test_differential_upstream.py",
     "test_strict_datasheet.py",
     "test_protocol_limits.py",
+    "test_header_validation.py",
 )
 
 
@@ -48,7 +49,7 @@ def main():
     for suite in SUITES:
         print(f"\nRunning {suite}", flush=True)
         subprocess.run([sys.executable, str(HERE / suite)], check=True, env=env)
-    print("\nAll five software-model suites passed. Physical-hardware testing is pending.")
+    print(f"\nAll {len(SUITES)} software-model suites passed. Physical-hardware testing is pending.")
 
 
 if __name__ == "__main__":
