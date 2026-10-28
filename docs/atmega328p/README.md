@@ -45,6 +45,12 @@ ATmega328P or real USB/UART link was performed for the handoff or this import.
 The [import validation record](VALIDATION_2026-10-28.md) documents the successful
 rebuild, byte-for-byte BIN/HEX comparison, and rerun of all five current suites.
 
+The [protocol review](PROTOCOL_REVIEW_2026-10-28.md) compares official AVR061 and
+pinned AVRDUDE sources with the assembled firmware. All 44 additional checks of
+the declared Arduino profile pass; missing capabilities are assessed separately
+from malformed-packet handling. The review records length/type validation
+hardening issues and provides reproducible observations without changing firmware.
+
 This firmware implements a subset of STK500v1, not full AVR061. `GET_SIGN_ON`
 returns only an acknowledgement; chip erase is acknowledged without erasing;
 the high length byte is ignored; and an unknown memory type falls back to

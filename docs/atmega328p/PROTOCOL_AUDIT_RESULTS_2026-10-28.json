@@ -1,0 +1,347 @@
+{
+  "firmware_sha256": "29fe3aa03cc412568160d1990cefa12f7674f243f8c3d6336bdc09fbe79fd642",
+  "model": "limited supplied AVR instruction/peripheral interpreter",
+  "avrdude_source_commit": "9aa44d08cb207a80a5d1005ead61142d21fb50de",
+  "supported_profile_checks": 44,
+  "supported_profile_failures": 0,
+  "observation_counts": {
+    "unsupported_capability": 5,
+    "error_policy_difference": 2,
+    "compatibility_boundary": 1,
+    "hardening_boundary": 3
+  },
+  "physical_hardware_tested": false,
+  "avrdude_executable_tested": false,
+  "observations": [
+    {
+      "name": "get_sync",
+      "category": "supported_profile",
+      "passed": true
+    },
+    {
+      "name": "software_major",
+      "category": "supported_profile",
+      "passed": true
+    },
+    {
+      "name": "software_minor",
+      "category": "supported_profile",
+      "passed": true
+    },
+    {
+      "name": "set_device_framing",
+      "category": "supported_profile",
+      "passed": true
+    },
+    {
+      "name": "set_device_ext_count_5",
+      "category": "supported_profile",
+      "passed": true
+    },
+    {
+      "name": "enter_programming",
+      "category": "supported_profile",
+      "passed": true
+    },
+    {
+      "name": "read_atmega328p_signature",
+      "category": "supported_profile",
+      "passed": true
+    },
+    {
+      "name": "set_parameter_noop_framing",
+      "category": "supported_profile",
+      "passed": true
+    },
+    {
+      "name": "flash_load_word_address",
+      "category": "supported_profile",
+      "passed": true
+    },
+    {
+      "name": "flash_write_full_last_application_page",
+      "category": "supported_profile",
+      "passed": true
+    },
+    {
+      "name": "flash_reload_before_read",
+      "category": "supported_profile",
+      "passed": true
+    },
+    {
+      "name": "flash_read_full_last_application_page",
+      "category": "supported_profile",
+      "passed": true
+    },
+    {
+      "name": "eeprom_load_word_address",
+      "category": "supported_profile",
+      "passed": true
+    },
+    {
+      "name": "eeprom_write_last_16_bytes",
+      "category": "supported_profile",
+      "passed": true
+    },
+    {
+      "name": "eeprom_reload_before_read",
+      "category": "supported_profile",
+      "passed": true
+    },
+    {
+      "name": "eeprom_read_last_16_bytes",
+      "category": "supported_profile",
+      "passed": true
+    },
+    {
+      "name": "eeprom_load_for_256_byte_read",
+      "category": "supported_profile",
+      "passed": true
+    },
+    {
+      "name": "eeprom_valid_0100_length",
+      "category": "supported_profile",
+      "passed": true
+    },
+    {
+      "name": "fuse_lock_query_50_00",
+      "category": "supported_profile",
+      "passed": true
+    },
+    {
+      "name": "fuse_lock_query_58_00",
+      "category": "supported_profile",
+      "passed": true
+    },
+    {
+      "name": "fuse_lock_query_50_08",
+      "category": "supported_profile",
+      "passed": true
+    },
+    {
+      "name": "fuse_lock_query_58_08",
+      "category": "supported_profile",
+      "passed": true
+    },
+    {
+      "name": "concatenated_sync_and_signature",
+      "category": "supported_profile",
+      "passed": true
+    },
+    {
+      "name": "fragmented_eeprom_packet_split_1",
+      "category": "supported_profile",
+      "passed": true
+    },
+    {
+      "name": "fragmented_eeprom_packet_split_2",
+      "category": "supported_profile",
+      "passed": true
+    },
+    {
+      "name": "fragmented_eeprom_packet_split_3",
+      "category": "supported_profile",
+      "passed": true
+    },
+    {
+      "name": "fragmented_eeprom_packet_split_4",
+      "category": "supported_profile",
+      "passed": true
+    },
+    {
+      "name": "fragmented_eeprom_packet_split_5",
+      "category": "supported_profile",
+      "passed": true
+    },
+    {
+      "name": "fragmented_eeprom_packet_split_6",
+      "category": "supported_profile",
+      "passed": true
+    },
+    {
+      "name": "fragmented_eeprom_packet_split_7",
+      "category": "supported_profile",
+      "passed": true
+    },
+    {
+      "name": "fragmented_eeprom_packet_split_8",
+      "category": "supported_profile",
+      "passed": true
+    },
+    {
+      "name": "fragmented_eeprom_packet_split_9",
+      "category": "supported_profile",
+      "passed": true
+    },
+    {
+      "name": "fragmented_eeprom_packet_split_10",
+      "category": "supported_profile",
+      "passed": true
+    },
+    {
+      "name": "fragmented_eeprom_packet_split_11",
+      "category": "supported_profile",
+      "passed": true
+    },
+    {
+      "name": "fragmented_eeprom_packet_split_12",
+      "category": "supported_profile",
+      "passed": true
+    },
+    {
+      "name": "fragmented_eeprom_packet_split_13",
+      "category": "supported_profile",
+      "passed": true
+    },
+    {
+      "name": "fragmented_eeprom_packet_split_14",
+      "category": "supported_profile",
+      "passed": true
+    },
+    {
+      "name": "fragmented_eeprom_packet_split_15",
+      "category": "supported_profile",
+      "passed": true
+    },
+    {
+      "name": "fragmented_eeprom_packet_split_16",
+      "category": "supported_profile",
+      "passed": true
+    },
+    {
+      "name": "fragmented_eeprom_packet_split_17",
+      "category": "supported_profile",
+      "passed": true
+    },
+    {
+      "name": "fragmented_eeprom_packet_split_18",
+      "category": "supported_profile",
+      "passed": true
+    },
+    {
+      "name": "fragmented_eeprom_packet_split_19",
+      "category": "supported_profile",
+      "passed": true
+    },
+    {
+      "name": "fragmented_eeprom_packet_split_20",
+      "category": "supported_profile",
+      "passed": true
+    },
+    {
+      "name": "leave_programming_reply",
+      "category": "supported_profile",
+      "passed": true
+    },
+    {
+      "name": "get_sign_on",
+      "category": "unsupported_capability",
+      "request_hex": "31 20",
+      "response_hex": "14 10",
+      "state": "uart_wait",
+      "application_flash_changed": false,
+      "eeprom_changed": false,
+      "note": "No sign-on string; not needed by the reviewed Arduino upload sequence."
+    },
+    {
+      "name": "read_data_single_byte",
+      "category": "unsupported_capability",
+      "request_hex": "71 20",
+      "response_hex": "14 10",
+      "state": "uart_wait",
+      "application_flash_changed": false,
+      "eeprom_changed": false,
+      "note": "Single-byte EEPROM opcode is absent; use the supported page commands."
+    },
+    {
+      "name": "universal_signature",
+      "category": "unsupported_capability",
+      "request_hex": "56 30 00 00 00 20",
+      "response_hex": "14 00 10",
+      "state": "uart_wait",
+      "application_flash_changed": false,
+      "eeprom_changed": false,
+      "note": "UNIVERSAL signature request returns zero; READ_SIGN supplies the signature."
+    },
+    {
+      "name": "chip_erase",
+      "category": "unsupported_capability",
+      "request_hex": "52 20",
+      "response_hex": "14 10",
+      "state": "uart_wait",
+      "application_flash_changed": false,
+      "eeprom_changed": false,
+      "note": "ACK without erasing; normal Flash programming erases each written page."
+    },
+    {
+      "name": "unknown_parameter",
+      "category": "unsupported_capability",
+      "request_hex": "41 7f 20",
+      "response_hex": "14 03 10",
+      "state": "uart_wait",
+      "application_flash_changed": false,
+      "eeprom_changed": false,
+      "note": "Returns 03/OK rather than reporting an unsupported selector."
+    },
+    {
+      "name": "unknown_command",
+      "category": "error_policy_difference",
+      "request_hex": "7f 20",
+      "response_hex": "14 10",
+      "state": "uart_wait",
+      "application_flash_changed": false,
+      "eeprom_changed": false,
+      "note": "Returns ACK instead of the AVR061 UNKNOWN response."
+    },
+    {
+      "name": "bad_eop",
+      "category": "error_policy_difference",
+      "request_hex": "30 00",
+      "response_hex": "",
+      "state": "watchdog_abort_pending",
+      "application_flash_changed": false,
+      "eeprom_changed": false,
+      "note": "Enters the short-WDT error loop instead of replying NOSYNC; model does not time the reset."
+    },
+    {
+      "name": "set_device_ext_count_4",
+      "category": "compatibility_boundary",
+      "request_hex": "45 04 10 d7 a0 20",
+      "response_hex": "",
+      "state": "uart_wait",
+      "application_flash_changed": false,
+      "eeprom_changed": false,
+      "note": "Waits for more input. Fixed five-byte discard accepts the current host form, not this shorter form; AVR061 page 6 is internally inconsistent."
+    },
+    {
+      "name": "oversize_read_length_0102",
+      "category": "hardening_boundary",
+      "request_hex": "74 01 02 45 20",
+      "response_hex": "14 ff ff 10",
+      "state": "uart_wait",
+      "application_flash_changed": false,
+      "eeprom_changed": false,
+      "note": "Declared 258-byte read is outside the <=256-byte protocol range, but is silently processed as two bytes."
+    },
+    {
+      "name": "oversize_write_commits_prefix",
+      "category": "hardening_boundary",
+      "request_hex": "64 01 02 46 aa bb 20",
+      "response_hex": "14 10",
+      "state": "uart_wait",
+      "application_flash_changed": true,
+      "eeprom_changed": false,
+      "note": "Incomplete/out-of-range 258-byte declaration is treated as a complete two-byte Flash write and changes memory."
+    },
+    {
+      "name": "invalid_memory_type_writes_flash",
+      "category": "hardening_boundary",
+      "request_hex": "64 00 02 58 aa bb 20",
+      "response_hex": "14 10",
+      "state": "uart_wait",
+      "application_flash_changed": true,
+      "eeprom_changed": false,
+      "note": "Undefined type X takes the Flash path and changes memory. Valid profile packets use only E/F."
+    }
+  ]
+}
