@@ -1,0 +1,92 @@
+--- 02_368B/optiboot_mini328_final.S
++++ 03_358B/optiboot_mini328_final.S
+@@ -9,6 +9,7 @@
+  * Main size is measured excluding fill and version.
+  *
+  * Deliberately dropped: LED flashes, EEPROM read/write, app-callable SPM service.
++ * Version 358B: 356B instructions plus 2 version bytes, 512B boot section.
+  * Retained: MCU reset decision + WDT timeout, serial sync, GET_PARAMETER,
+  * SET_DEVICE, SET_DEVICE_EXT, LOAD_ADDRESS, UNIVERSAL, PROG_PAGE, READ_PAGE,
+  * READ_SIGN, LEAVE_PROGMODE; STK500v1 INSYNC/OK framing.
+@@ -26,10 +27,10 @@
+  * r16 = UART byte/input/output value
+  * r17 = watchdog configuration value
+  * r18 = USART status/temp
+- * r19 = loop count
+- * r20 = parameter selector, memory type, or discarded command kind
++ * r19 = discard loop count / SPMEN preload (1)
++ * r20 = parameter selector or memory type for PROG_PAGE
+  * r22:r23 = current flash BYTE address
+- * r25 = page byte length
++ * r25 = page byte length for READ_PAGE, word count for PROG_PAGE
+  * X = unused; the ATmega328P hardware SPM buffer stores the page
+  * Z = flash address or page-fill address
+  */
+@@ -86,15 +87,11 @@
+ 1:  cpi  r16, 0x75         ; READ_SIGN
+     breq command_signature
+ 1:  cpi  r16, 0x51         ; LEAVE_PROGMODE
+-    breq command_leave
+-1:  rcall verify_eop       ; SYNC, ENTER_PROGMODE, other no-payload cmds
+-    rjmp command_ok
+-
+-command_leave:
++    brne command_default
+     ldi  r17, 0x08        ; 16ms WDT with WDE
+     rcall wdt_config
+-    rcall verify_eop
+-
++command_default:
++    rcall verify_eop       ; SYNC, ENTER, LEAVE and other no-payload cmds
+ command_ok:
+     ldi  r16, 0x10         ; STK_OK
+     rcall tx_char
+@@ -117,13 +114,12 @@
+  */
+ command_discard:
+ command_universal:
+-    mov  r20, r19
++    bst  r16, 4           ; T=1 only for UNIVERSAL (0x56), not 0x42/0x45
+ 1:  rcall rx_char
+     dec  r19
+     brne 1b
+     rcall verify_eop
+-    cpi  r20, 4
+-    brne command_ok
++    brtc command_ok       ; T is preserved across getch/EOP/tx
+     clr  r16
+     rcall tx_char
+     rjmp command_ok
+@@ -164,14 +160,13 @@
+     rcall read_length
+     rcall rx_char          ; memory type, accept all except 'E'
+     mov  r20, r16
+-    tst  r25               ; reject zero and invalid lengths
++    lsr  r25               ; C=odd length; Z=zero; count now in words
++    brcs protocol_error
+     breq protocol_error
+-    cpi  r25, 129
++    cpi  r25, 65           ; ATmega328P hardware page holds 64 words
+     brsh protocol_error
+-    sbrc r25, 0            ; hardware SPM buffer filled in 16-bit words
+-    rjmp protocol_error
+     movw r30, r22
+-    mov  r19, r25
++    ldi  r19, 0x01         ; preloaded SPMEN across whole page (saves cycles)
+ 
+ /* Fill the ATmega328P's hardware temporary page buffer BEFORE flash erase.
+  * Atmel datasheet 30.8 explicitly allows SPM fill -> page erase -> write.
+@@ -183,11 +178,10 @@
+     mov  r0, r16
+     rcall rx_char
+     mov  r1, r16
+-    ldi  r16, 0x01         ; SPMEN page buffer fill
+-    out  0x37, r16
++    out  0x37, r19         ; SPMEN page buffer fill
+     spm
+     adiw r30, 2
+-    subi r19, 2
++    dec  r25
+     brne hardware_fill_loop
+     clr  r1
+     rcall verify_eop      ; STK_INSYNC must precede actual erase

@@ -21,6 +21,19 @@ As of 2019, Atmel was acquired by Microchip Inc, and released several "new" arch
 ## Additional Documentation
 More detailed documentation is being added (slowly) to the [repository wiki](https://github.com/Optiboot/optiboot/wiki).
 
+## Experimental ATmega328P firmware
+
+The `experimental` branch includes an assembly implementation optimized with the
+assistance of artificial intelligence. The research adds EEPROM read/write and
+read-only fuse/lock diagnostics to earlier size-focused prototypes, and uses the
+hardware Flash page buffer to avoid a separate 128-byte SRAM buffer. The current
+image fits in a 512-byte boot section on ATmega328P at 16 MHz with UART0 at 115200.
+
+See the [experimental firmware documentation](docs/atmega328p/README.md)
+([Russian](docs/atmega328p/README_RU.md)) for features, protocol limits, build/test
+commands, and the complete research history. Validation uses a limited software
+AVR model; testing on a physical ATmega328P has not yet been performed.
+
 ## Notes on IDE Version compatibility
 Optiboot is "compatible", in a loose sense, with all versions of the Arduino IDE.  It was originally written at about the same time as v1.0, and has some "quirks" that date back to that timeframe.  Most significantly, the directory structure of the git repository is "weird."
 

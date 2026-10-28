@@ -1,0 +1,1334 @@
+{
+  "project": "Optiboot Mini ATmega328P",
+  "generated": "2026-10-28",
+  "current": "CURRENT/optiboot_328_verified.S",
+  "stages": [
+    "01_initial_size_lab",
+    "02_368_protocol_audit",
+    "02b_all_machine_code_prototypes",
+    "03_358_350_size_optimization",
+    "04_480_511_diagnostic_variants",
+    "04b_command_selection_prototypes",
+    "05_498_eeprom_read_write",
+    "06_508_eeprom_universal",
+    "07_512_datasheet_audit"
+  ],
+  "source_stage_archives": 7,
+  "entries": [
+    {
+      "path": "00_START_HERE_RU.md",
+      "bytes": 5056,
+      "sha256": "7d65e06679affbb65c09be9b66a7a34132ed3eff7bf05a8d5280b53d93cfeecf"
+    },
+    {
+      "path": "01_REPRODUCE_RU.md",
+      "bytes": 2766,
+      "sha256": "0438adcc3d35c06b3e24fc83381cb26b76540394359c7ef75b18b6503685508d"
+    },
+    {
+      "path": "02_CHANGELOG_HISTORY_RU.md",
+      "bytes": 7659,
+      "sha256": "110be6ef258a8e168aaa148f9ae9f7dd53f6991916f386573b9ab34d102e365c"
+    },
+    {
+      "path": "03_PROTOCOL_AND_HARDWARE_RU.md",
+      "bytes": 6866,
+      "sha256": "1b8fe3077e0f430773b4bf57b8ba3bf7ed4fe0c27703db761a41d5b2306d928c"
+    },
+    {
+      "path": "04_TASKS_FOR_NEXT_AGENT_RU.md",
+      "bytes": 6094,
+      "sha256": "0a97e7d2e0b237dcb3a5d5f7d8853dfd9931a2abd3e9a2a7bf6f30165b176deb"
+    },
+    {
+      "path": "05_USER_REQUEST_HISTORY_RU.md",
+      "bytes": 4079,
+      "sha256": "1d73baf573b2b49073406a661b8f5083e9b43a2c525cea5c3e3908d3826e9b7d"
+    },
+    {
+      "path": "06_HARDWARE_TEST_PLAN_RU.md",
+      "bytes": 3865,
+      "sha256": "1870cf0304c38f27f8a644d5615c97fb2831580842ee28795cebb30f9e230a3c"
+    },
+    {
+      "path": "07_SOURCES_LICENSE_RU.md",
+      "bytes": 3529,
+      "sha256": "c55748ecea92e0f776ce0d824269e53a3e6ba36750281a5a8f75a3b6a10a8758"
+    },
+    {
+      "path": "08_COPYABLE_PROMPT_FOR_NEXT_AGENT_RU.md",
+      "bytes": 3049,
+      "sha256": "fece1ede1bd5539f04c70df52f64ee36f579f176a9495b0e4ba28ec0f27545de"
+    },
+    {
+      "path": "COPYING",
+      "bytes": 17984,
+      "sha256": "edaef632cbb643e4e7a221717a6c441a4c1a7c918e6e4d56debc3d8739b233f6"
+    },
+    {
+      "path": "CROSS_STAGE_DIFFS/01_410B_to_02_368B.diff",
+      "bytes": 8929,
+      "sha256": "70aed8c16f835e015800a481ce36f24df4da874e4c214bfcdf3eb4d9360e2370"
+    },
+    {
+      "path": "CROSS_STAGE_DIFFS/02_368B_to_03_358B.diff",
+      "bytes": 3193,
+      "sha256": "16220176b56d2f134185979398158576f5c2805b608a34d78c6d48b89b625dfc"
+    },
+    {
+      "path": "CROSS_STAGE_DIFFS/03_358B_to_04_480B.diff",
+      "bytes": 5632,
+      "sha256": "8ffd623c4c2cca894f7fa3a62e2bdc41c83c064531cf67ad0ecadda0c0db1dec"
+    },
+    {
+      "path": "CROSS_STAGE_DIFFS/04_480B_to_05_498B.diff",
+      "bytes": 10187,
+      "sha256": "9be5214083bcdd6a8ec7f2bb7816db51143e2536b7c99072b791a1e467f96684"
+    },
+    {
+      "path": "CROSS_STAGE_DIFFS/05_498B_to_06_508B.diff",
+      "bytes": 9386,
+      "sha256": "08cb6b7ee8e0eb92c240f4f5e373775246362c314c0e5c1fa159b8263f19297d"
+    },
+    {
+      "path": "CROSS_STAGE_DIFFS/06_508B_to_07_512B.diff",
+      "bytes": 1813,
+      "sha256": "1f05ab801f43720c0b8bb260be51e38d768dbdaad0708cd7d69d44b790abe4c4"
+    },
+    {
+      "path": "CURRENT/AUDIT_RU.md",
+      "bytes": 17375,
+      "sha256": "a79f2263c36580fb9b3260a60026d96a257562f54aeb001e49be4293c6ee26cb"
+    },
+    {
+      "path": "CURRENT/CHANGELOG_508_TO_512.diff",
+      "bytes": 1802,
+      "sha256": "f986af632855806125f7496b639f65065094750dbb5f0d47f2cff84c0daef2a5"
+    },
+    {
+      "path": "CURRENT/COPYING",
+      "bytes": 17984,
+      "sha256": "edaef632cbb643e4e7a221717a6c441a4c1a7c918e6e4d56debc3d8739b233f6"
+    },
+    {
+      "path": "CURRENT/SHA256SUMS",
+      "bytes": 274,
+      "sha256": "96e766fe0532b0e24cfbbddf9b8ba09c1f01b696c3ed3625c6af45f7df21c395"
+    },
+    {
+      "path": "CURRENT/avr_base_sim.py",
+      "bytes": 14491,
+      "sha256": "f5048f76da5c942599b2534c42418f55bc3b59e81b6a731c65aab92fe108ae0b"
+    },
+    {
+      "path": "CURRENT/build.log",
+      "bytes": 92,
+      "sha256": "ea01bcccfb868c8c5888112a3716db175bc0b5531525651b471ecf6a7f38b5e1"
+    },
+    {
+      "path": "CURRENT/build.py",
+      "bytes": 2573,
+      "sha256": "537c0b15c273b4e87d2cfafe5e9071b965f5ba9d9540d783a22dfcaf8529ef84"
+    },
+    {
+      "path": "CURRENT/optiboot_328_verified.S",
+      "bytes": 12739,
+      "sha256": "b82b6b2a4c312e6765e869963ad6ba87b7f26b383e4823f6c3c8b7d1e1126b89"
+    },
+    {
+      "path": "CURRENT/optiboot_328_verified.bin",
+      "bytes": 512,
+      "sha256": "29fe3aa03cc412568160d1990cefa12f7674f243f8c3d6336bdc09fbe79fd642"
+    },
+    {
+      "path": "CURRENT/optiboot_328_verified.hex",
+      "bytes": 1420,
+      "sha256": "3918a262913d19514350c4bc3e41b8a91b7f95fd0fcb5a43a2abb01a65fa5a8b"
+    },
+    {
+      "path": "CURRENT/optiboot_328_verified.o",
+      "bytes": 1764,
+      "sha256": "3fe991d3e350e3103ac3519bf064a9713b97362abac29afc60e64150c432f6f6"
+    },
+    {
+      "path": "CURRENT/optiboot_mini328_358.bin",
+      "bytes": 512,
+      "sha256": "f4237f7f4527d8c5a6a641055e134ba22cd4a4fbcbcc79dd3724a5dd751ca806"
+    },
+    {
+      "path": "CURRENT/original_508.bin",
+      "bytes": 512,
+      "sha256": "bcf7ea4f08c3fa1374f7a0309a1bb8c3b0973fa0d60920ee15b3474ce30144f3"
+    },
+    {
+      "path": "CURRENT/test_all.log",
+      "bytes": 1973,
+      "sha256": "8758f0d2c646dadf5ebb0ff68e9d63dcbca5aa0dde16bd4c9e0ef3cd66e71a34"
+    },
+    {
+      "path": "CURRENT/test_differential_upstream.py",
+      "bytes": 1963,
+      "sha256": "feaceabf0b3086371394fb91a66d61b6f09eced248f33ae1484a4af1ecc62932"
+    },
+    {
+      "path": "CURRENT/test_eeprom.py",
+      "bytes": 10545,
+      "sha256": "73caa17a4c57af24179cd05d6df0d31fd6e8d843e2fd60d9d56a0ae04c3b3df1"
+    },
+    {
+      "path": "CURRENT/test_protocol_limits.py",
+      "bytes": 1166,
+      "sha256": "fd521c65f020a775bab8a4caef2505f52dc864adb42c04e1becaafe61a7043c8"
+    },
+    {
+      "path": "CURRENT/test_strict_datasheet.py",
+      "bytes": 4296,
+      "sha256": "30ed3cfbdabd8f8401b2039c60782f5fbc959efdbb71bf1177b303761ad6b1d0"
+    },
+    {
+      "path": "CURRENT/test_universal.py",
+      "bytes": 4699,
+      "sha256": "9977cae3fdcc4684c3d7e5b084ac5fdc828b07315fdc05e688802e967d0a0ae7"
+    },
+    {
+      "path": "CURRENT/upstream_reference.bin",
+      "bytes": 512,
+      "sha256": "6d0dfd5601a39900a3abfffce82e30c5c3f5169099c00acb3f3d92ba38528e30"
+    },
+    {
+      "path": "HISTORY_SOURCES/01_initial_size_lab/COPYING",
+      "bytes": 17984,
+      "sha256": "edaef632cbb643e4e7a221717a6c441a4c1a7c918e6e4d56debc3d8739b233f6"
+    },
+    {
+      "path": "HISTORY_SOURCES/01_initial_size_lab/MANIFEST_SHA256.json",
+      "bytes": 1553,
+      "sha256": "f353284e3f15fc5a6b4de7b7c4be74fdb850b68dcfc885a03e142992ff3bb99f"
+    },
+    {
+      "path": "HISTORY_SOURCES/01_initial_size_lab/README_RU.md",
+      "bytes": 10168,
+      "sha256": "d6568e7cf42fa780817e56755fa6027b4d8308d8f8637f68a6dec88492e20888"
+    },
+    {
+      "path": "HISTORY_SOURCES/01_initial_size_lab/TEST_RESULTS.txt",
+      "bytes": 483,
+      "sha256": "41e647ed096aa65ef94887ee2592a52ad212477d3ee0698e441b89dbb29184d3"
+    },
+    {
+      "path": "HISTORY_SOURCES/01_initial_size_lab/build.py",
+      "bytes": 2133,
+      "sha256": "3052faa269c55371c69f367c0a882883510f5128a8a92a515d8f0c9ff790e1ea"
+    },
+    {
+      "path": "HISTORY_SOURCES/01_initial_size_lab/download_upstream.sh",
+      "bytes": 653,
+      "sha256": "d121bcb08dd628ca4501b881819fbf972ee7e0a1080ebb31a48774c8dcfc5eed"
+    },
+    {
+      "path": "HISTORY_SOURCES/01_initial_size_lab/optiboot_mini328.S",
+      "bytes": 7366,
+      "sha256": "33ac77a0035bd45a5053c83e8bcb636c78a03df8ebefdf80968c4e7e155c80e8"
+    },
+    {
+      "path": "HISTORY_SOURCES/01_initial_size_lab/optiboot_mini328.bin",
+      "bytes": 512,
+      "sha256": "dfd964d5bd3806a01af506e9c6efd6cbdf6d53870aa9bf34a62dd3079c278d1c"
+    },
+    {
+      "path": "HISTORY_SOURCES/01_initial_size_lab/optiboot_mini328.hex",
+      "bytes": 1420,
+      "sha256": "82beeb2fdab380c130e2c03f70ac3b37245f93bbd0e32b18a29e9f5cbcab6cdb"
+    },
+    {
+      "path": "HISTORY_SOURCES/01_initial_size_lab/optiboot_mini328.o",
+      "bytes": 1588,
+      "sha256": "a2a24054a92463b1743e65f77a2cd788dcd0b5b01c6d3cceb5d97362c7ddda5e"
+    },
+    {
+      "path": "HISTORY_SOURCES/01_initial_size_lab/optiboot_mini328_stream.S",
+      "bytes": 7204,
+      "sha256": "82621300ff65e86b43f387c37a79bcaf7b02f7d81ccba2a52dde192f463118e7"
+    },
+    {
+      "path": "HISTORY_SOURCES/01_initial_size_lab/optiboot_mini328_stream.bin",
+      "bytes": 512,
+      "sha256": "22505e38a94634cbc194d3ef40c73ba51875aa48931fe306ac12afff2ca9e5e4"
+    },
+    {
+      "path": "HISTORY_SOURCES/01_initial_size_lab/optiboot_mini328_stream.hex",
+      "bytes": 1420,
+      "sha256": "1612afdcf0055ed1f5c981773d5225a5ee65583288337fea65784b99c6f20444"
+    },
+    {
+      "path": "HISTORY_SOURCES/01_initial_size_lab/optiboot_mini328_stream.o",
+      "bytes": 1560,
+      "sha256": "c5651b1e022416d948d585de6751502a5b4e7042b57a6f7e89e3f79e39425095"
+    },
+    {
+      "path": "HISTORY_SOURCES/01_initial_size_lab/test_emulator.py",
+      "bytes": 11944,
+      "sha256": "e1f25fb88fd5c03f1e22fe83bfc60ed00a95160500319592aba20b815c84ab91"
+    },
+    {
+      "path": "HISTORY_SOURCES/01_initial_size_lab/upstream/optiboot_atmega328.hex",
+      "bytes": 1352,
+      "sha256": "7530696c3a53019fcaa96bc320b41995601b1ef40967a8c6d69ca0b7eb89866e"
+    },
+    {
+      "path": "HISTORY_SOURCES/02_368_protocol_audit/CHANGES_vs_410B.patch",
+      "bytes": 8926,
+      "sha256": "09328fd7be529db0a6e273387c9c54dce18bcedce1cddd0c9885b9a7bb7bf2c3"
+    },
+    {
+      "path": "HISTORY_SOURCES/02_368_protocol_audit/COPYING",
+      "bytes": 17984,
+      "sha256": "edaef632cbb643e4e7a221717a6c441a4c1a7c918e6e4d56debc3d8739b233f6"
+    },
+    {
+      "path": "HISTORY_SOURCES/02_368_protocol_audit/MANIFEST_SHA256.json",
+      "bytes": 3193,
+      "sha256": "f7007b89f6242c4e0f7f1eb1a51883ae4033b86e57b6f7fccd7043716cc13b53"
+    },
+    {
+      "path": "HISTORY_SOURCES/02_368_protocol_audit/PROTOCOL_AUDIT_RU.md",
+      "bytes": 9049,
+      "sha256": "420c5ea1b3b6a0bd9ff2ec7a61f7106ff2202bc7a2101234cab700bfd5cc147a"
+    },
+    {
+      "path": "HISTORY_SOURCES/02_368_protocol_audit/README_RU.md",
+      "bytes": 11324,
+      "sha256": "c894bef5fba9a94d135101ea9cc9a4a2394d989f18b7465674c8a80ce0007915"
+    },
+    {
+      "path": "HISTORY_SOURCES/02_368_protocol_audit/TEST_RESULTS.txt",
+      "bytes": 1602,
+      "sha256": "33a84a31103c0525e41e6b0b78309339425624f096641a90e41148ea58783adf"
+    },
+    {
+      "path": "HISTORY_SOURCES/02_368_protocol_audit/build.py",
+      "bytes": 2133,
+      "sha256": "3052faa269c55371c69f367c0a882883510f5128a8a92a515d8f0c9ff790e1ea"
+    },
+    {
+      "path": "HISTORY_SOURCES/02_368_protocol_audit/differential_test.py",
+      "bytes": 7128,
+      "sha256": "f89125ef79a44512aa0672982a5d055035d4730d4671e1891d360eb2da47abd4"
+    },
+    {
+      "path": "HISTORY_SOURCES/02_368_protocol_audit/download_upstream.sh",
+      "bytes": 653,
+      "sha256": "d121bcb08dd628ca4501b881819fbf972ee7e0a1080ebb31a48774c8dcfc5eed"
+    },
+    {
+      "path": "HISTORY_SOURCES/02_368_protocol_audit/optiboot_mini328_final.S",
+      "bytes": 7595,
+      "sha256": "5f4b25fbecb9bf28c59a0bbf6433f55b4520a8cea625d09869a8a70c5d40711e"
+    },
+    {
+      "path": "HISTORY_SOURCES/02_368_protocol_audit/optiboot_mini328_final.bin",
+      "bytes": 512,
+      "sha256": "5b18de3e5a794d0832847f495e1997211ee3509130e5c8075dc0d2c7ae52f2bb"
+    },
+    {
+      "path": "HISTORY_SOURCES/02_368_protocol_audit/optiboot_mini328_final.hex",
+      "bytes": 1420,
+      "sha256": "c1162ae46f7f6fb25d4d151286db48e674d3ac840ae59af4096921d916568635"
+    },
+    {
+      "path": "HISTORY_SOURCES/02_368_protocol_audit/optiboot_mini328_final.o",
+      "bytes": 1552,
+      "sha256": "bd91c58127e5826705ca592b7f4023988a093720bd80a8fab581c1d9782b971a"
+    },
+    {
+      "path": "HISTORY_SOURCES/02_368_protocol_audit/optiboot_mini328_final_tiny.S",
+      "bytes": 7530,
+      "sha256": "e233a818d571230e961aff42fe7ee35ce7666668d4aa7e287d4f98ef9002dda1"
+    },
+    {
+      "path": "HISTORY_SOURCES/02_368_protocol_audit/optiboot_mini328_final_tiny.bin",
+      "bytes": 512,
+      "sha256": "935955684e7316a6f1789345dc9711cd349e86aaa95452d6e2387bea7f738378"
+    },
+    {
+      "path": "HISTORY_SOURCES/02_368_protocol_audit/optiboot_mini328_final_tiny.hex",
+      "bytes": 1420,
+      "sha256": "9236e7a807dfc762ef8863761219a8e7648f09fe3d3eb4752f8e153aaaecaa38"
+    },
+    {
+      "path": "HISTORY_SOURCES/02_368_protocol_audit/optiboot_mini328_final_tiny.o",
+      "bytes": 1552,
+      "sha256": "cdbde5cf822822d48651084ab8c850c0bd2be603121299846c8a8caf032a561f"
+    },
+    {
+      "path": "HISTORY_SOURCES/02_368_protocol_audit/original_mini_410B_broken_WDT.S",
+      "bytes": 7366,
+      "sha256": "33ac77a0035bd45a5053c83e8bcb636c78a03df8ebefdf80968c4e7e155c80e8"
+    },
+    {
+      "path": "HISTORY_SOURCES/02_368_protocol_audit/run_all_tests.sh",
+      "bytes": 188,
+      "sha256": "ba5c5abb628e38186ebfb2200d09d95265b986104719fcdb7f77b2299ef3c7a7"
+    },
+    {
+      "path": "HISTORY_SOURCES/02_368_protocol_audit/test_emulator.py",
+      "bytes": 13691,
+      "sha256": "27798af1c9be88fdb943cc59668cfbf96b7ede9cec73f4bd5c3f41cca785e349"
+    },
+    {
+      "path": "HISTORY_SOURCES/02_368_protocol_audit/test_invariants.py",
+      "bytes": 1683,
+      "sha256": "cf17a3cd03bbbe40f24a4dbe535cdd16167f035702332e00d17efbc807ca1680"
+    },
+    {
+      "path": "HISTORY_SOURCES/02_368_protocol_audit/upstream_reference.bin",
+      "bytes": 512,
+      "sha256": "6d0dfd5601a39900a3abfffce82e30c5c3f5169099c00acb3f3d92ba38528e30"
+    },
+    {
+      "path": "HISTORY_SOURCES/02_368_protocol_audit/upstream_reference.hex",
+      "bytes": 1352,
+      "sha256": "7530696c3a53019fcaa96bc320b41995601b1ef40967a8c6d69ca0b7eb89866e"
+    },
+    {
+      "path": "HISTORY_SOURCES/02b_all_machine_code_prototypes/COPYING",
+      "bytes": 17984,
+      "sha256": "edaef632cbb643e4e7a221717a6c441a4c1a7c918e6e4d56debc3d8739b233f6"
+    },
+    {
+      "path": "HISTORY_SOURCES/02b_all_machine_code_prototypes/build.py",
+      "bytes": 2133,
+      "sha256": "3052faa269c55371c69f367c0a882883510f5128a8a92a515d8f0c9ff790e1ea"
+    },
+    {
+      "path": "HISTORY_SOURCES/02b_all_machine_code_prototypes/differential_test.py",
+      "bytes": 7128,
+      "sha256": "f89125ef79a44512aa0672982a5d055035d4730d4671e1891d360eb2da47abd4"
+    },
+    {
+      "path": "HISTORY_SOURCES/02b_all_machine_code_prototypes/download_upstream.sh",
+      "bytes": 653,
+      "sha256": "d121bcb08dd628ca4501b881819fbf972ee7e0a1080ebb31a48774c8dcfc5eed"
+    },
+    {
+      "path": "HISTORY_SOURCES/02b_all_machine_code_prototypes/optiboot_mini328_final.S",
+      "bytes": 7595,
+      "sha256": "5f4b25fbecb9bf28c59a0bbf6433f55b4520a8cea625d09869a8a70c5d40711e"
+    },
+    {
+      "path": "HISTORY_SOURCES/02b_all_machine_code_prototypes/optiboot_mini328_final.bin",
+      "bytes": 512,
+      "sha256": "5b18de3e5a794d0832847f495e1997211ee3509130e5c8075dc0d2c7ae52f2bb"
+    },
+    {
+      "path": "HISTORY_SOURCES/02b_all_machine_code_prototypes/optiboot_mini328_final.hex",
+      "bytes": 1420,
+      "sha256": "c1162ae46f7f6fb25d4d151286db48e674d3ac840ae59af4096921d916568635"
+    },
+    {
+      "path": "HISTORY_SOURCES/02b_all_machine_code_prototypes/optiboot_mini328_final.o",
+      "bytes": 1552,
+      "sha256": "bd91c58127e5826705ca592b7f4023988a093720bd80a8fab581c1d9782b971a"
+    },
+    {
+      "path": "HISTORY_SOURCES/02b_all_machine_code_prototypes/optiboot_mini328_final_tiny.S",
+      "bytes": 7530,
+      "sha256": "e233a818d571230e961aff42fe7ee35ce7666668d4aa7e287d4f98ef9002dda1"
+    },
+    {
+      "path": "HISTORY_SOURCES/02b_all_machine_code_prototypes/optiboot_mini328_final_tiny.bin",
+      "bytes": 512,
+      "sha256": "935955684e7316a6f1789345dc9711cd349e86aaa95452d6e2387bea7f738378"
+    },
+    {
+      "path": "HISTORY_SOURCES/02b_all_machine_code_prototypes/optiboot_mini328_final_tiny.hex",
+      "bytes": 1420,
+      "sha256": "9236e7a807dfc762ef8863761219a8e7648f09fe3d3eb4752f8e153aaaecaa38"
+    },
+    {
+      "path": "HISTORY_SOURCES/02b_all_machine_code_prototypes/optiboot_mini328_final_tiny.o",
+      "bytes": 1552,
+      "sha256": "cdbde5cf822822d48651084ab8c850c0bd2be603121299846c8a8caf032a561f"
+    },
+    {
+      "path": "HISTORY_SOURCES/02b_all_machine_code_prototypes/optiboot_mini328_hwbuf.S",
+      "bytes": 7665,
+      "sha256": "a255ddda33d71722b95bc744734d2d8a3c18d3b4190b9ce9f5b8548364d55768"
+    },
+    {
+      "path": "HISTORY_SOURCES/02b_all_machine_code_prototypes/optiboot_mini328_hwbuf.bin",
+      "bytes": 512,
+      "sha256": "209a61c583f25ff6b82a6cc9e88937e0f2ec7b219f0d7a8b4e4efefc9186b804"
+    },
+    {
+      "path": "HISTORY_SOURCES/02b_all_machine_code_prototypes/optiboot_mini328_hwbuf.hex",
+      "bytes": 1420,
+      "sha256": "01f45e502a2ccc2dd33505784c9497b57d0bb1fdbbb0e0b5ece27a82811ad101"
+    },
+    {
+      "path": "HISTORY_SOURCES/02b_all_machine_code_prototypes/optiboot_mini328_hwbuf.o",
+      "bytes": 1552,
+      "sha256": "79c1555c7367109eecd9ec732b04df015612a60dfdf6562037fa8a63b756e862"
+    },
+    {
+      "path": "HISTORY_SOURCES/02b_all_machine_code_prototypes/optiboot_mini328_hwbuf_tiny.S",
+      "bytes": 7600,
+      "sha256": "2d5f573b7019b32cb67b3c6cb8322b605a513d2dfa082cbebb4e3dbbabaa2594"
+    },
+    {
+      "path": "HISTORY_SOURCES/02b_all_machine_code_prototypes/optiboot_mini328_hwbuf_tiny.bin",
+      "bytes": 512,
+      "sha256": "c44d790c1c48f3f193c223f5a1965b392e9a8b31ffaa61b87c446cd6e1554677"
+    },
+    {
+      "path": "HISTORY_SOURCES/02b_all_machine_code_prototypes/optiboot_mini328_hwbuf_tiny.hex",
+      "bytes": 1420,
+      "sha256": "ca8c0fe64498200e42df419c973d6da467f509ba2bd8b07ee29c94c6932a63f0"
+    },
+    {
+      "path": "HISTORY_SOURCES/02b_all_machine_code_prototypes/optiboot_mini328_hwbuf_tiny.o",
+      "bytes": 1552,
+      "sha256": "3115256a1d350532af086fdb110820ad63bb542fb793db49d7797404e8276262"
+    },
+    {
+      "path": "HISTORY_SOURCES/02b_all_machine_code_prototypes/optiboot_mini328_v2.S",
+      "bytes": 7413,
+      "sha256": "dab511d7903631b2a164fa8143855a692e010eb2e3fb96bd0ff31fd038859b04"
+    },
+    {
+      "path": "HISTORY_SOURCES/02b_all_machine_code_prototypes/optiboot_mini328_v2.bin",
+      "bytes": 512,
+      "sha256": "76aeb605ec6e3d5c62016b1d4bd0fed6a876b0ea8699f8d8de18e1faef77e462"
+    },
+    {
+      "path": "HISTORY_SOURCES/02b_all_machine_code_prototypes/optiboot_mini328_v2.hex",
+      "bytes": 1420,
+      "sha256": "81c3888934049abad29dccd1814248c7d51e99b05067d411e43658a4be983714"
+    },
+    {
+      "path": "HISTORY_SOURCES/02b_all_machine_code_prototypes/optiboot_mini328_v2.o",
+      "bytes": 1576,
+      "sha256": "54b423f4d35a5b8ef06ebd596786447c874d5e306ef624295c422f4be30e227a"
+    },
+    {
+      "path": "HISTORY_SOURCES/02b_all_machine_code_prototypes/optiboot_mini328_v3.S",
+      "bytes": 7518,
+      "sha256": "890d490d3a696adf72cb4ec58f4612df8e359694e45e619aea8d8415e3d6b922"
+    },
+    {
+      "path": "HISTORY_SOURCES/02b_all_machine_code_prototypes/optiboot_mini328_v3.bin",
+      "bytes": 512,
+      "sha256": "02e4771e66c432ca185339c554d6b3fade4f020db15637e3b1f71c83372a69a3"
+    },
+    {
+      "path": "HISTORY_SOURCES/02b_all_machine_code_prototypes/optiboot_mini328_v3.hex",
+      "bytes": 1420,
+      "sha256": "ed02cbcb9ecfd62e66ce360cbe6a0169ce9d5d906a0ffe8a1c769dc90b805485"
+    },
+    {
+      "path": "HISTORY_SOURCES/02b_all_machine_code_prototypes/optiboot_mini328_v3.o",
+      "bytes": 1576,
+      "sha256": "85efa35b48174e06a7ce974ee007ff9a9d832df243cb93e3239e7a34c5a7f861"
+    },
+    {
+      "path": "HISTORY_SOURCES/02b_all_machine_code_prototypes/optiboot_mini328_v3_tiny.S",
+      "bytes": 7453,
+      "sha256": "3b8ce15f4280dccb3fed5ea9e58867fce8c35d3615d29571a8def60224e18fa9"
+    },
+    {
+      "path": "HISTORY_SOURCES/02b_all_machine_code_prototypes/optiboot_mini328_v3_tiny.bin",
+      "bytes": 512,
+      "sha256": "9246168beab15b96f97c3d0efde0728d01e7f91822fa710966afbb562dcd66ad"
+    },
+    {
+      "path": "HISTORY_SOURCES/02b_all_machine_code_prototypes/optiboot_mini328_v3_tiny.hex",
+      "bytes": 1420,
+      "sha256": "3bc21c573848f0fd52dd0ffe8c6e4255eed5cfa70f0427be4976a2096962d814"
+    },
+    {
+      "path": "HISTORY_SOURCES/02b_all_machine_code_prototypes/optiboot_mini328_v3_tiny.o",
+      "bytes": 1576,
+      "sha256": "9e26fd432cfab392376a9f2b2807cd94fa7ad58c5f15874058585656d074f878"
+    },
+    {
+      "path": "HISTORY_SOURCES/02b_all_machine_code_prototypes/optiboot_mini328_v4.S",
+      "bytes": 7611,
+      "sha256": "03a7919f5d2fa916b4a9a97a63d5e96bdd7ea1c891f7553b59f755689287212b"
+    },
+    {
+      "path": "HISTORY_SOURCES/02b_all_machine_code_prototypes/optiboot_mini328_v4.bin",
+      "bytes": 512,
+      "sha256": "e4229738524ef274417408a7b1102926843211b09776c2a9fdbfd2bd63ae6f76"
+    },
+    {
+      "path": "HISTORY_SOURCES/02b_all_machine_code_prototypes/optiboot_mini328_v4.hex",
+      "bytes": 1420,
+      "sha256": "ac9b79f5193d5322ae7cca615a37b94d66db0057ed1f77afa51675daab67b7bf"
+    },
+    {
+      "path": "HISTORY_SOURCES/02b_all_machine_code_prototypes/optiboot_mini328_v4.o",
+      "bytes": 1552,
+      "sha256": "9d67816a44d03fdf082de4f434e7c48f0fd4e871cf4a3affe9c540dff4f9a9ae"
+    },
+    {
+      "path": "HISTORY_SOURCES/02b_all_machine_code_prototypes/optiboot_mini328_v4_tiny.S",
+      "bytes": 7546,
+      "sha256": "fb99d143e915c0cd045acea1b7ee218b85a19b157363e02609b5edc4fed47e71"
+    },
+    {
+      "path": "HISTORY_SOURCES/02b_all_machine_code_prototypes/optiboot_mini328_v4_tiny.bin",
+      "bytes": 512,
+      "sha256": "dc240a7f52eb283442d37c53e1529fbfe1e9c3d23a52a3965ea35d62c6a1c4de"
+    },
+    {
+      "path": "HISTORY_SOURCES/02b_all_machine_code_prototypes/optiboot_mini328_v4_tiny.hex",
+      "bytes": 1420,
+      "sha256": "040e0a780e6ecbb9d075479a5f756016959c2315411f759efdde80b41e8b2dba"
+    },
+    {
+      "path": "HISTORY_SOURCES/02b_all_machine_code_prototypes/optiboot_mini328_v4_tiny.o",
+      "bytes": 1552,
+      "sha256": "a3d61fd411ed87137038b3845123bc2c5a8d27c1b91f4fac0c63556d392fd23b"
+    },
+    {
+      "path": "HISTORY_SOURCES/02b_all_machine_code_prototypes/optiboot_mini328_v5.S",
+      "bytes": 7575,
+      "sha256": "b871b7ce1e41c142c961d29536970ad3e7442bcc0d039e26c18588fa3a2fc1ca"
+    },
+    {
+      "path": "HISTORY_SOURCES/02b_all_machine_code_prototypes/optiboot_mini328_v5.bin",
+      "bytes": 512,
+      "sha256": "d56d9c58857ead3da6a67626cc1893f1fd709ee30ec1d438865923170c1e022f"
+    },
+    {
+      "path": "HISTORY_SOURCES/02b_all_machine_code_prototypes/optiboot_mini328_v5.hex",
+      "bytes": 1420,
+      "sha256": "8831e51827742acb37642ec314b8045f67120e15b1465e5763a8f9c97b5c0e73"
+    },
+    {
+      "path": "HISTORY_SOURCES/02b_all_machine_code_prototypes/optiboot_mini328_v5.o",
+      "bytes": 1552,
+      "sha256": "0d6acfdeb1702b0e566bd8182420d6d430bedb9ab8114fb9424fa373401e63c1"
+    },
+    {
+      "path": "HISTORY_SOURCES/02b_all_machine_code_prototypes/optiboot_mini328_v6.S",
+      "bytes": 7551,
+      "sha256": "6618191ab6ae01c25284a76237a2d2a35e366bfcff86c6ab933ce46b145571a5"
+    },
+    {
+      "path": "HISTORY_SOURCES/02b_all_machine_code_prototypes/optiboot_mini328_v6.bin",
+      "bytes": 512,
+      "sha256": "3fdd496a2a7268cc10013e70538669a80df58d3555c74695794b9b73c5907e07"
+    },
+    {
+      "path": "HISTORY_SOURCES/02b_all_machine_code_prototypes/optiboot_mini328_v6.hex",
+      "bytes": 1420,
+      "sha256": "38c8b052c0a45d2ba709d25498906b8eee387bad74d92d1dcf359703e4e7497a"
+    },
+    {
+      "path": "HISTORY_SOURCES/02b_all_machine_code_prototypes/optiboot_mini328_v6.o",
+      "bytes": 1552,
+      "sha256": "8ad611faa0ad9a0b7c7b5503c7360a24a9d86d523df11b2e6320d744b453adfe"
+    },
+    {
+      "path": "HISTORY_SOURCES/02b_all_machine_code_prototypes/optiboot_mini328_v7.S",
+      "bytes": 7528,
+      "sha256": "6506554ccf5a7b516c0f42a316875835c84549fe786a998b76204ac47bd0a8cf"
+    },
+    {
+      "path": "HISTORY_SOURCES/02b_all_machine_code_prototypes/optiboot_mini328_v7.bin",
+      "bytes": 512,
+      "sha256": "ec77791deae0a275a5f778adb042f32a1c1686cb35fc82f0922fdc2b1d47b057"
+    },
+    {
+      "path": "HISTORY_SOURCES/02b_all_machine_code_prototypes/optiboot_mini328_v7.hex",
+      "bytes": 1420,
+      "sha256": "35e2ebd3d44e135a0cc607f1b99f232a83f126cef0634b5af6962c416e01a28f"
+    },
+    {
+      "path": "HISTORY_SOURCES/02b_all_machine_code_prototypes/optiboot_mini328_v7.o",
+      "bytes": 1552,
+      "sha256": "5fca177795b25f3fbfb698dd6744f8703ea27cd7a3824e238458fb6097458fb8"
+    },
+    {
+      "path": "HISTORY_SOURCES/02b_all_machine_code_prototypes/optiboot_mini328_v8.S",
+      "bytes": 7510,
+      "sha256": "3e9f277d6569d2a66c5aaa02679011d1a40618c434adfc0adbd5d24277a41718"
+    },
+    {
+      "path": "HISTORY_SOURCES/02b_all_machine_code_prototypes/optiboot_mini328_v8.bin",
+      "bytes": 512,
+      "sha256": "5b18de3e5a794d0832847f495e1997211ee3509130e5c8075dc0d2c7ae52f2bb"
+    },
+    {
+      "path": "HISTORY_SOURCES/02b_all_machine_code_prototypes/optiboot_mini328_v8.hex",
+      "bytes": 1420,
+      "sha256": "c1162ae46f7f6fb25d4d151286db48e674d3ac840ae59af4096921d916568635"
+    },
+    {
+      "path": "HISTORY_SOURCES/02b_all_machine_code_prototypes/optiboot_mini328_v8.o",
+      "bytes": 1552,
+      "sha256": "bd91c58127e5826705ca592b7f4023988a093720bd80a8fab581c1d9782b971a"
+    },
+    {
+      "path": "HISTORY_SOURCES/02b_all_machine_code_prototypes/test_emulator.py",
+      "bytes": 13691,
+      "sha256": "27798af1c9be88fdb943cc59668cfbf96b7ede9cec73f4bd5c3f41cca785e349"
+    },
+    {
+      "path": "HISTORY_SOURCES/02b_all_machine_code_prototypes/test_invariants.py",
+      "bytes": 1683,
+      "sha256": "cf17a3cd03bbbe40f24a4dbe535cdd16167f035702332e00d17efbc807ca1680"
+    },
+    {
+      "path": "HISTORY_SOURCES/02b_all_machine_code_prototypes/upstream_reference.S",
+      "bytes": 116,
+      "sha256": "777be199252af034811ff9878335a64b9b9c553560069432f232351c80e90ae2"
+    },
+    {
+      "path": "HISTORY_SOURCES/02b_all_machine_code_prototypes/upstream_reference.bin",
+      "bytes": 512,
+      "sha256": "6d0dfd5601a39900a3abfffce82e30c5c3f5169099c00acb3f3d92ba38528e30"
+    },
+    {
+      "path": "HISTORY_SOURCES/02b_all_machine_code_prototypes/upstream_reference.o",
+      "bytes": 788,
+      "sha256": "09664605638de19bf7c06a06e9727bf0bacbe3255b35c105d9305b72675584bd"
+    },
+    {
+      "path": "HISTORY_SOURCES/03_358_350_size_optimization/BUILD_RESULTS.txt",
+      "bytes": 293,
+      "sha256": "a3f676479cb2c8f380561cbcd451da2f2c9b5690e9a32267f230d2508b842937"
+    },
+    {
+      "path": "HISTORY_SOURCES/03_358_350_size_optimization/COPYING",
+      "bytes": 17984,
+      "sha256": "edaef632cbb643e4e7a221717a6c441a4c1a7c918e6e4d56debc3d8739b233f6"
+    },
+    {
+      "path": "HISTORY_SOURCES/03_358_350_size_optimization/OPTIMIZATION_DIFF.patch",
+      "bytes": 3256,
+      "sha256": "5707dc5996543e61e3baa4871f91a25f15b6617c85087ff2846d8efab130d83f"
+    },
+    {
+      "path": "HISTORY_SOURCES/03_358_350_size_optimization/README_RU.md",
+      "bytes": 10344,
+      "sha256": "0c01a254c7bddfb1d13d39ac0cf40902a610b757109153453e31a208638f409a"
+    },
+    {
+      "path": "HISTORY_SOURCES/03_358_350_size_optimization/RESET_ONLY_DIFF.patch",
+      "bytes": 1868,
+      "sha256": "717d7e3f53c5a10da2484c5cdb0093bf05d78c7e0e576a13fb5a2d6dafea798c"
+    },
+    {
+      "path": "HISTORY_SOURCES/03_358_350_size_optimization/SHA256SUMS",
+      "bytes": 2073,
+      "sha256": "680b80491198e94927295a2a7ceee010b3d48e9cabae8716da94dd4e733dfcdc"
+    },
+    {
+      "path": "HISTORY_SOURCES/03_358_350_size_optimization/TEST_RESULTS.txt",
+      "bytes": 2003,
+      "sha256": "366c64ca11668ed331a0340f2645777a4426981c6b0c4403509a9209887bd753"
+    },
+    {
+      "path": "HISTORY_SOURCES/03_358_350_size_optimization/build.py",
+      "bytes": 2133,
+      "sha256": "3052faa269c55371c69f367c0a882883510f5128a8a92a515d8f0c9ff790e1ea"
+    },
+    {
+      "path": "HISTORY_SOURCES/03_358_350_size_optimization/differential_test.py",
+      "bytes": 7128,
+      "sha256": "f89125ef79a44512aa0672982a5d055035d4730d4671e1891d360eb2da47abd4"
+    },
+    {
+      "path": "HISTORY_SOURCES/03_358_350_size_optimization/optiboot_mini328_358.S",
+      "bytes": 7606,
+      "sha256": "20fd7ef1d0ef8f6b32fcb441b8611636f7a4e1d02eb6014393c29911a0288e93"
+    },
+    {
+      "path": "HISTORY_SOURCES/03_358_350_size_optimization/optiboot_mini328_362.S",
+      "bytes": 7644,
+      "sha256": "5837b440f02aefdc1134ccd4cb2788cc35e6ef4438df71d008a271ff903400c9"
+    },
+    {
+      "path": "HISTORY_SOURCES/03_358_350_size_optimization/optiboot_mini328_364.S",
+      "bytes": 7659,
+      "sha256": "50b0fd39db8bc7426a8060f92ec5d0de3075fb452a95ba02264dda8d45741fb2"
+    },
+    {
+      "path": "HISTORY_SOURCES/03_358_350_size_optimization/optiboot_mini328_366.S",
+      "bytes": 7595,
+      "sha256": "5f4b25fbecb9bf28c59a0bbf6433f55b4520a8cea625d09869a8a70c5d40711e"
+    },
+    {
+      "path": "HISTORY_SOURCES/03_358_350_size_optimization/optiboot_mini328_final.S",
+      "bytes": 7798,
+      "sha256": "114d1acc79c45a5b616560144753959b9b1d8afbf1014d5b63ffa559545509fb"
+    },
+    {
+      "path": "HISTORY_SOURCES/03_358_350_size_optimization/optiboot_mini328_final.bin",
+      "bytes": 512,
+      "sha256": "f4237f7f4527d8c5a6a641055e134ba22cd4a4fbcbcc79dd3724a5dd751ca806"
+    },
+    {
+      "path": "HISTORY_SOURCES/03_358_350_size_optimization/optiboot_mini328_final.hex",
+      "bytes": 1420,
+      "sha256": "f529b21a64653127c5d5e749abb15f686858193933450cbe5560d9add922b0e1"
+    },
+    {
+      "path": "HISTORY_SOURCES/03_358_350_size_optimization/optiboot_mini328_final.o",
+      "bytes": 1552,
+      "sha256": "19d8dc4ec1800b972c66833b530fdbef8603ffa403986e3e6d05966654fded33"
+    },
+    {
+      "path": "HISTORY_SOURCES/03_358_350_size_optimization/optiboot_mini328_final_tiny.S",
+      "bytes": 7728,
+      "sha256": "b69c0b6db67694ed63fc89063bac938882eec4e111da232a7b611fcab7a97463"
+    },
+    {
+      "path": "HISTORY_SOURCES/03_358_350_size_optimization/optiboot_mini328_final_tiny.bin",
+      "bytes": 512,
+      "sha256": "649e369c331216644db0ecf7ca6034b15a6d4aececb3f622009f2414fd3e3da6"
+    },
+    {
+      "path": "HISTORY_SOURCES/03_358_350_size_optimization/optiboot_mini328_final_tiny.hex",
+      "bytes": 1420,
+      "sha256": "c25649950a40216d697d24774b87c6b26f4380cdbf7ee468e9657721b65de3b6"
+    },
+    {
+      "path": "HISTORY_SOURCES/03_358_350_size_optimization/optiboot_mini328_final_tiny.o",
+      "bytes": 1552,
+      "sha256": "b244b84fce3637d5a48469f6903bddd9352221e16c7498ff913215ccb3f7fee0"
+    },
+    {
+      "path": "HISTORY_SOURCES/03_358_350_size_optimization/optiboot_mini328_previous_368.S",
+      "bytes": 7595,
+      "sha256": "5f4b25fbecb9bf28c59a0bbf6433f55b4520a8cea625d09869a8a70c5d40711e"
+    },
+    {
+      "path": "HISTORY_SOURCES/03_358_350_size_optimization/optiboot_mini328_previous_368.hex",
+      "bytes": 1420,
+      "sha256": "c1162ae46f7f6fb25d4d151286db48e674d3ac840ae59af4096921d916568635"
+    },
+    {
+      "path": "HISTORY_SOURCES/03_358_350_size_optimization/optiboot_mini328_reset_only_350.S",
+      "bytes": 7829,
+      "sha256": "b8d1f0f2800aa93669df263c975025e7fbc718ed8b8751c2620ca8662ead9ace"
+    },
+    {
+      "path": "HISTORY_SOURCES/03_358_350_size_optimization/optiboot_mini328_reset_only_350.bin",
+      "bytes": 512,
+      "sha256": "b2d5bef2f922036cfbaada30562d777d95ea3b2e0198c8aa4bc8eef2a69a6395"
+    },
+    {
+      "path": "HISTORY_SOURCES/03_358_350_size_optimization/optiboot_mini328_reset_only_350.hex",
+      "bytes": 1420,
+      "sha256": "88f315c7be24c53cbe1b776661e8c8b81e1a559809c3f64b3d8f0c50270cbdf3"
+    },
+    {
+      "path": "HISTORY_SOURCES/03_358_350_size_optimization/optiboot_mini328_reset_only_350.o",
+      "bytes": 1552,
+      "sha256": "f8c95f72a5fbd8348c5fecffb25ee6d439e53de5f517dbf22d704ab16c1fdfbc"
+    },
+    {
+      "path": "HISTORY_SOURCES/03_358_350_size_optimization/test_additional.py",
+      "bytes": 2749,
+      "sha256": "00a743077c74a67cca98a6b4395959af7ccb18e7919d757cbbadfd783b4136cc"
+    },
+    {
+      "path": "HISTORY_SOURCES/03_358_350_size_optimization/test_emulator.py",
+      "bytes": 14055,
+      "sha256": "09dcdcf83420a9c9a53ace5d3dbb199eb0b3d57240aed7d56d5075c91d6b3a88"
+    },
+    {
+      "path": "HISTORY_SOURCES/03_358_350_size_optimization/test_invariants.py",
+      "bytes": 1717,
+      "sha256": "728165e60e98c7752e7421dc3d417286307fc4273e75bf21649b4cc0e72df632"
+    },
+    {
+      "path": "HISTORY_SOURCES/03_358_350_size_optimization/upstream_reference.bin",
+      "bytes": 512,
+      "sha256": "6d0dfd5601a39900a3abfffce82e30c5c3f5169099c00acb3f3d92ba38528e30"
+    },
+    {
+      "path": "HISTORY_SOURCES/04_480_511_diagnostic_variants/COPYING",
+      "bytes": 17984,
+      "sha256": "edaef632cbb643e4e7a221717a6c441a4c1a7c918e6e4d56debc3d8739b233f6"
+    },
+    {
+      "path": "HISTORY_SOURCES/04_480_511_diagnostic_variants/README_RU.md",
+      "bytes": 9799,
+      "sha256": "bb19f26c68b0778f7a197a58ecb53f9c74083b4bd5f86f545ed52376d9958aed"
+    },
+    {
+      "path": "HISTORY_SOURCES/04_480_511_diagnostic_variants/SHA256SUMS",
+      "bytes": 1199,
+      "sha256": "2bb107c4a89776fb75db777e52157c064f59d0ef742a9a66c18693c2507a20f3"
+    },
+    {
+      "path": "HISTORY_SOURCES/04_480_511_diagnostic_variants/avr_base_sim.py",
+      "bytes": 14055,
+      "sha256": "09dcdcf83420a9c9a53ace5d3dbb199eb0b3d57240aed7d56d5075c91d6b3a88"
+    },
+    {
+      "path": "HISTORY_SOURCES/04_480_511_diagnostic_variants/build.py",
+      "bytes": 2568,
+      "sha256": "ab5ccc504a84f0d12853c6a2045d220a1248d03c68bd4a0c32d303e12c7e7443"
+    },
+    {
+      "path": "HISTORY_SOURCES/04_480_511_diagnostic_variants/differential_diag.py",
+      "bytes": 2301,
+      "sha256": "ac3b93d215291435f60ca8ffe4eb1564a82904dd75854ce7b19b9f30427735e0"
+    },
+    {
+      "path": "HISTORY_SOURCES/04_480_511_diagnostic_variants/optiboot_328_diag.S",
+      "bytes": 10357,
+      "sha256": "645ed53437b954c06fa370bf6eec1fa042fe0f36ee2345faf7d27cb3d5938a4f"
+    },
+    {
+      "path": "HISTORY_SOURCES/04_480_511_diagnostic_variants/optiboot_328_diag.bin",
+      "bytes": 512,
+      "sha256": "756fe84a7da7efbaf31de3a40d24ded0c86a5d8919f08a946497eb74e8a7b802"
+    },
+    {
+      "path": "HISTORY_SOURCES/04_480_511_diagnostic_variants/optiboot_328_diag.hex",
+      "bytes": 1420,
+      "sha256": "eab903589429fbb00a02bd0577706e9f603b8943c69cb6a0b360c906aeb814e7"
+    },
+    {
+      "path": "HISTORY_SOURCES/04_480_511_diagnostic_variants/optiboot_328_diag.o",
+      "bytes": 1856,
+      "sha256": "898a84131fc8ee76978e75ec1dd97bbb42d47c116d66b5f17ce34583d9fc960f"
+    },
+    {
+      "path": "HISTORY_SOURCES/04_480_511_diagnostic_variants/optiboot_328_diag_signon.S",
+      "bytes": 10701,
+      "sha256": "38f5ab93faa3cddad93f0d22dc2ebdea19f98ba05059e05cd06bafb830bf7cd3"
+    },
+    {
+      "path": "HISTORY_SOURCES/04_480_511_diagnostic_variants/optiboot_328_diag_signon.bin",
+      "bytes": 512,
+      "sha256": "ac6c6b65a554399cb07cdc36b692996414504d8d22f28705868d4726900a9c33"
+    },
+    {
+      "path": "HISTORY_SOURCES/04_480_511_diagnostic_variants/optiboot_328_diag_signon.hex",
+      "bytes": 1420,
+      "sha256": "1d77e68453a8106888be6c4f4b505e99c1e904181846d8f0ef5d7d9227aa15c6"
+    },
+    {
+      "path": "HISTORY_SOURCES/04_480_511_diagnostic_variants/optiboot_328_diag_signon.o",
+      "bytes": 1916,
+      "sha256": "8d344120d87bfab4a9d4703f05d8cc5222ec1533bc4b312a761fc2c6eca56ba0"
+    },
+    {
+      "path": "HISTORY_SOURCES/04_480_511_diagnostic_variants/optiboot_mini328_358.S",
+      "bytes": 7798,
+      "sha256": "114d1acc79c45a5b616560144753959b9b1d8afbf1014d5b63ffa559545509fb"
+    },
+    {
+      "path": "HISTORY_SOURCES/04_480_511_diagnostic_variants/test_diag.py",
+      "bytes": 4359,
+      "sha256": "e7dcf0d68abc1aff5426d1f25bcc252fab97b367b8d4c6be2067b4e00fdedd9e"
+    },
+    {
+      "path": "HISTORY_SOURCES/04_480_511_diagnostic_variants/upstream_reference.bin",
+      "bytes": 512,
+      "sha256": "6d0dfd5601a39900a3abfffce82e30c5c3f5169099c00acb3f3d92ba38528e30"
+    },
+    {
+      "path": "HISTORY_SOURCES/04b_command_selection_prototypes/COPYING",
+      "bytes": 17984,
+      "sha256": "edaef632cbb643e4e7a221717a6c441a4c1a7c918e6e4d56debc3d8739b233f6"
+    },
+    {
+      "path": "HISTORY_SOURCES/04b_command_selection_prototypes/avr_base_sim.py",
+      "bytes": 14055,
+      "sha256": "09dcdcf83420a9c9a53ace5d3dbb199eb0b3d57240aed7d56d5075c91d6b3a88"
+    },
+    {
+      "path": "HISTORY_SOURCES/04b_command_selection_prototypes/build.py",
+      "bytes": 2568,
+      "sha256": "ab5ccc504a84f0d12853c6a2045d220a1248d03c68bd4a0c32d303e12c7e7443"
+    },
+    {
+      "path": "HISTORY_SOURCES/04b_command_selection_prototypes/differential_diag.py",
+      "bytes": 2301,
+      "sha256": "ac3b93d215291435f60ca8ffe4eb1564a82904dd75854ce7b19b9f30427735e0"
+    },
+    {
+      "path": "HISTORY_SOURCES/04b_command_selection_prototypes/optiboot_328_eeprom_rw.S",
+      "bytes": 9799,
+      "sha256": "69d4becaf97c987bccfa8d96ff3a6def19ec4b1632d6ed9d00ee17702543f5fa"
+    },
+    {
+      "path": "HISTORY_SOURCES/04b_command_selection_prototypes/optiboot_328_eeprom_rw.bin",
+      "bytes": 512,
+      "sha256": "3bff4b6cff5278404a416ac8929c706a6d3efad5dca5424cb21ce14139b3e9a3"
+    },
+    {
+      "path": "HISTORY_SOURCES/04b_command_selection_prototypes/optiboot_328_eeprom_rw.hex",
+      "bytes": 1420,
+      "sha256": "b3456359917b72f1d23b6e7297b3d64ddf5ba46f389fd6e94e479f3a357ef22d"
+    },
+    {
+      "path": "HISTORY_SOURCES/04b_command_selection_prototypes/optiboot_328_eeprom_rw.o",
+      "bytes": 1660,
+      "sha256": "e350257822ebf1adc5f711e327e4e4a5e4256aad44cb6211dab7abafa23fa814"
+    },
+    {
+      "path": "HISTORY_SOURCES/04b_command_selection_prototypes/optiboot_328_eeprom_rw_fuses.S",
+      "bytes": 10652,
+      "sha256": "57a23c012a688a13faa07a0bf78b615032cdd5202c13635025716e911046f7b2"
+    },
+    {
+      "path": "HISTORY_SOURCES/04b_command_selection_prototypes/upstream_reference.bin",
+      "bytes": 512,
+      "sha256": "6d0dfd5601a39900a3abfffce82e30c5c3f5169099c00acb3f3d92ba38528e30"
+    },
+    {
+      "path": "HISTORY_SOURCES/05_498_eeprom_read_write/COPYING",
+      "bytes": 17984,
+      "sha256": "edaef632cbb643e4e7a221717a6c441a4c1a7c918e6e4d56debc3d8739b233f6"
+    },
+    {
+      "path": "HISTORY_SOURCES/05_498_eeprom_read_write/README_RU.md",
+      "bytes": 10186,
+      "sha256": "accd2903b965a1f3f5ef6a123ae76851f02f08dc2ac3205b071fd772fa1dfdfa"
+    },
+    {
+      "path": "HISTORY_SOURCES/05_498_eeprom_read_write/SHA256SUMS",
+      "bytes": 277,
+      "sha256": "5aef583be947a8ef3d904c42ac385dc09a5c6b0d57a38e8e8a99ada8eb89a18c"
+    },
+    {
+      "path": "HISTORY_SOURCES/05_498_eeprom_read_write/avr_base_sim.py",
+      "bytes": 14055,
+      "sha256": "09dcdcf83420a9c9a53ace5d3dbb199eb0b3d57240aed7d56d5075c91d6b3a88"
+    },
+    {
+      "path": "HISTORY_SOURCES/05_498_eeprom_read_write/build.py",
+      "bytes": 2574,
+      "sha256": "3c209faf9f999047c201f93dd480ce496584fb59236d861478d258d5d65c0117"
+    },
+    {
+      "path": "HISTORY_SOURCES/05_498_eeprom_read_write/eeprom_test16.bin",
+      "bytes": 16,
+      "sha256": "ba539cab80e540ace43ff2496405b163ff54e08f7707fa1393dccf2cf7ef84ca"
+    },
+    {
+      "path": "HISTORY_SOURCES/05_498_eeprom_read_write/optiboot_328_eeprom_rw.S",
+      "bytes": 10843,
+      "sha256": "5488aa8f1fa9d1d95ff6f781ae3e8d2e8346dfa42ae1a5d3b3bf0fe1388c3a42"
+    },
+    {
+      "path": "HISTORY_SOURCES/05_498_eeprom_read_write/optiboot_328_eeprom_rw.bin",
+      "bytes": 512,
+      "sha256": "79d7d2043425fb1631c6b82fcff74c3a46b8b10d8ec006fd0cee0f1dfd08d66f"
+    },
+    {
+      "path": "HISTORY_SOURCES/05_498_eeprom_read_write/optiboot_328_eeprom_rw.hex",
+      "bytes": 1420,
+      "sha256": "dd19a338aa9e254fc5847cb6ba351916acc062a9f13bf1c1e1cf7f39dc988306"
+    },
+    {
+      "path": "HISTORY_SOURCES/05_498_eeprom_read_write/optiboot_328_eeprom_rw.o",
+      "bytes": 1696,
+      "sha256": "69d0681eb9569148c7d9b2b2563755385ad441dd5885fd2f6b19f4adb3b5d4ac"
+    },
+    {
+      "path": "HISTORY_SOURCES/05_498_eeprom_read_write/optiboot_mini328_358.bin",
+      "bytes": 512,
+      "sha256": "f4237f7f4527d8c5a6a641055e134ba22cd4a4fbcbcc79dd3724a5dd751ca806"
+    },
+    {
+      "path": "HISTORY_SOURCES/05_498_eeprom_read_write/test_eeprom.py",
+      "bytes": 10546,
+      "sha256": "a5134dd260c43eba6cf2ecda5f2aa5a2ebf4dca46c25e56478ff9962d5135aab"
+    },
+    {
+      "path": "HISTORY_SOURCES/05_498_eeprom_read_write/test_output.txt",
+      "bytes": 772,
+      "sha256": "a5a470b1ccaec6421d8ce10fc3f9b7a2d0931cc6a398a3ded1e471b9a9f8ec36"
+    },
+    {
+      "path": "HISTORY_SOURCES/05_498_eeprom_read_write/upstream_reference.bin",
+      "bytes": 512,
+      "sha256": "6d0dfd5601a39900a3abfffce82e30c5c3f5169099c00acb3f3d92ba38528e30"
+    },
+    {
+      "path": "HISTORY_SOURCES/06_508_eeprom_universal/COPYING",
+      "bytes": 17984,
+      "sha256": "edaef632cbb643e4e7a221717a6c441a4c1a7c918e6e4d56debc3d8739b233f6"
+    },
+    {
+      "path": "HISTORY_SOURCES/06_508_eeprom_universal/README_RU.md",
+      "bytes": 12253,
+      "sha256": "545b2fbaf3e0a7a05005599ebecf0a02f938cfcd774eafa530e168bfbfe5cdea"
+    },
+    {
+      "path": "HISTORY_SOURCES/06_508_eeprom_universal/SHA256SUMS",
+      "bytes": 1524,
+      "sha256": "281cebc830d3203d702f346ccd2fb67b0971021f227f06ee127554368a026077"
+    },
+    {
+      "path": "HISTORY_SOURCES/06_508_eeprom_universal/avr_base_sim.py",
+      "bytes": 14491,
+      "sha256": "f5048f76da5c942599b2534c42418f55bc3b59e81b6a731c65aab92fe108ae0b"
+    },
+    {
+      "path": "HISTORY_SOURCES/06_508_eeprom_universal/build.py",
+      "bytes": 2581,
+      "sha256": "d843dd03f7d36b60f4ad845989cd8982daf757af51d56b27e214cc042d5aa274"
+    },
+    {
+      "path": "HISTORY_SOURCES/06_508_eeprom_universal/changes_from_498B.diff",
+      "bytes": 9460,
+      "sha256": "a3af7fc2736dbc169aa7f6f0b736e34c8f487a4822b859d0611d59a1ee4e1d7a"
+    },
+    {
+      "path": "HISTORY_SOURCES/06_508_eeprom_universal/optiboot_328_eeprom_rw.bin",
+      "bytes": 512,
+      "sha256": "215b81196d0bb719fe21d5c9b5fbdea1bee9fb4eeca409fc233bbda460a6160c"
+    },
+    {
+      "path": "HISTORY_SOURCES/06_508_eeprom_universal/optiboot_328_eeprom_rw.hex",
+      "bytes": 1420,
+      "sha256": "6fdcdf446c66f07e8b4a99bc850cafee5c688fd56fb9d4357d0a2e591989ef16"
+    },
+    {
+      "path": "HISTORY_SOURCES/06_508_eeprom_universal/optiboot_328_eeprom_rw.o",
+      "bytes": 1764,
+      "sha256": "8d326ff4807224ea3e193ddfe85d14a71195ef130a1ac9eb29e7d3d0846e564e"
+    },
+    {
+      "path": "HISTORY_SOURCES/06_508_eeprom_universal/optiboot_328_eeprom_rw_before_498B.S",
+      "bytes": 10843,
+      "sha256": "5488aa8f1fa9d1d95ff6f781ae3e8d2e8346dfa42ae1a5d3b3bf0fe1388c3a42"
+    },
+    {
+      "path": "HISTORY_SOURCES/06_508_eeprom_universal/optiboot_328_eeprom_rw_before_498B.hex",
+      "bytes": 1420,
+      "sha256": "dd19a338aa9e254fc5847cb6ba351916acc062a9f13bf1c1e1cf7f39dc988306"
+    },
+    {
+      "path": "HISTORY_SOURCES/06_508_eeprom_universal/optiboot_328_eeprom_universal.S",
+      "bytes": 11988,
+      "sha256": "e41a8cf798935a055c1fe65d109e47fb1875acb2700283410e15476f9b914b8b"
+    },
+    {
+      "path": "HISTORY_SOURCES/06_508_eeprom_universal/optiboot_328_eeprom_universal.bin",
+      "bytes": 512,
+      "sha256": "bcf7ea4f08c3fa1374f7a0309a1bb8c3b0973fa0d60920ee15b3474ce30144f3"
+    },
+    {
+      "path": "HISTORY_SOURCES/06_508_eeprom_universal/optiboot_328_eeprom_universal.hex",
+      "bytes": 1420,
+      "sha256": "27c1c6924d13f8657dc40f494d0b53ff9d02a291ea269a9fc68d5372ba694cd7"
+    },
+    {
+      "path": "HISTORY_SOURCES/06_508_eeprom_universal/optiboot_328_eeprom_universal.o",
+      "bytes": 1764,
+      "sha256": "7db080133a346a3c925c9759c0125b1a44e475a6e4ad116dc07e4ee5bfa5754c"
+    },
+    {
+      "path": "HISTORY_SOURCES/06_508_eeprom_universal/optiboot_mini328_358.bin",
+      "bytes": 512,
+      "sha256": "f4237f7f4527d8c5a6a641055e134ba22cd4a4fbcbcc79dd3724a5dd751ca806"
+    },
+    {
+      "path": "HISTORY_SOURCES/06_508_eeprom_universal/out.o",
+      "bytes": 1768,
+      "sha256": "49e2ffa429a74e408769f0656231701b17232fa2c28c259fd40b48dfa94dcc75"
+    },
+    {
+      "path": "HISTORY_SOURCES/06_508_eeprom_universal/test_differential_upstream.py",
+      "bytes": 1963,
+      "sha256": "feaceabf0b3086371394fb91a66d61b6f09eced248f33ae1484a4af1ecc62932"
+    },
+    {
+      "path": "HISTORY_SOURCES/06_508_eeprom_universal/test_eeprom.py",
+      "bytes": 10553,
+      "sha256": "97ba9f3effbaa37ba1bcf0ed6c17de5bed1db1695862f7792db49a6f54d92c62"
+    },
+    {
+      "path": "HISTORY_SOURCES/06_508_eeprom_universal/test_full.log",
+      "bytes": 1473,
+      "sha256": "534ea5bfa6431ec94f82b7d8323e08e909ac88d08438447435806c055ddae248"
+    },
+    {
+      "path": "HISTORY_SOURCES/06_508_eeprom_universal/test_universal.py",
+      "bytes": 4707,
+      "sha256": "1d22b6b6c2d85126d36e8ab48dd742323fbc8d2823bdc5749d25fcd216fc5607"
+    },
+    {
+      "path": "HISTORY_SOURCES/06_508_eeprom_universal/upstream_reference.bin",
+      "bytes": 512,
+      "sha256": "6d0dfd5601a39900a3abfffce82e30c5c3f5169099c00acb3f3d92ba38528e30"
+    },
+    {
+      "path": "HISTORY_SOURCES/06_508_eeprom_universal/variant_before_bitfield.S",
+      "bytes": 11339,
+      "sha256": "1e71d3fe85f71e67a69848bd6ba1099c7bdf1eee55427805559c435727fae88c"
+    },
+    {
+      "path": "HISTORY_SOURCES/07_512_datasheet_audit/AUDIT_RU.md",
+      "bytes": 17375,
+      "sha256": "a79f2263c36580fb9b3260a60026d96a257562f54aeb001e49be4293c6ee26cb"
+    },
+    {
+      "path": "HISTORY_SOURCES/07_512_datasheet_audit/CHANGELOG_508_TO_512.diff",
+      "bytes": 1802,
+      "sha256": "f986af632855806125f7496b639f65065094750dbb5f0d47f2cff84c0daef2a5"
+    },
+    {
+      "path": "HISTORY_SOURCES/07_512_datasheet_audit/COPYING",
+      "bytes": 17984,
+      "sha256": "edaef632cbb643e4e7a221717a6c441a4c1a7c918e6e4d56debc3d8739b233f6"
+    },
+    {
+      "path": "HISTORY_SOURCES/07_512_datasheet_audit/SHA256SUMS",
+      "bytes": 274,
+      "sha256": "96e766fe0532b0e24cfbbddf9b8ba09c1f01b696c3ed3625c6af45f7df21c395"
+    },
+    {
+      "path": "HISTORY_SOURCES/07_512_datasheet_audit/avr_base_sim.py",
+      "bytes": 14491,
+      "sha256": "f5048f76da5c942599b2534c42418f55bc3b59e81b6a731c65aab92fe108ae0b"
+    },
+    {
+      "path": "HISTORY_SOURCES/07_512_datasheet_audit/build.log",
+      "bytes": 92,
+      "sha256": "ea01bcccfb868c8c5888112a3716db175bc0b5531525651b471ecf6a7f38b5e1"
+    },
+    {
+      "path": "HISTORY_SOURCES/07_512_datasheet_audit/build.py",
+      "bytes": 2573,
+      "sha256": "537c0b15c273b4e87d2cfafe5e9071b965f5ba9d9540d783a22dfcaf8529ef84"
+    },
+    {
+      "path": "HISTORY_SOURCES/07_512_datasheet_audit/optiboot_328_verified.S",
+      "bytes": 12739,
+      "sha256": "b82b6b2a4c312e6765e869963ad6ba87b7f26b383e4823f6c3c8b7d1e1126b89"
+    },
+    {
+      "path": "HISTORY_SOURCES/07_512_datasheet_audit/optiboot_328_verified.bin",
+      "bytes": 512,
+      "sha256": "29fe3aa03cc412568160d1990cefa12f7674f243f8c3d6336bdc09fbe79fd642"
+    },
+    {
+      "path": "HISTORY_SOURCES/07_512_datasheet_audit/optiboot_328_verified.hex",
+      "bytes": 1420,
+      "sha256": "3918a262913d19514350c4bc3e41b8a91b7f95fd0fcb5a43a2abb01a65fa5a8b"
+    },
+    {
+      "path": "HISTORY_SOURCES/07_512_datasheet_audit/optiboot_328_verified.o",
+      "bytes": 1764,
+      "sha256": "3fe991d3e350e3103ac3519bf064a9713b97362abac29afc60e64150c432f6f6"
+    },
+    {
+      "path": "HISTORY_SOURCES/07_512_datasheet_audit/optiboot_mini328_358.bin",
+      "bytes": 512,
+      "sha256": "f4237f7f4527d8c5a6a641055e134ba22cd4a4fbcbcc79dd3724a5dd751ca806"
+    },
+    {
+      "path": "HISTORY_SOURCES/07_512_datasheet_audit/original_508.bin",
+      "bytes": 512,
+      "sha256": "bcf7ea4f08c3fa1374f7a0309a1bb8c3b0973fa0d60920ee15b3474ce30144f3"
+    },
+    {
+      "path": "HISTORY_SOURCES/07_512_datasheet_audit/test_all.log",
+      "bytes": 1973,
+      "sha256": "8758f0d2c646dadf5ebb0ff68e9d63dcbca5aa0dde16bd4c9e0ef3cd66e71a34"
+    },
+    {
+      "path": "HISTORY_SOURCES/07_512_datasheet_audit/test_differential_upstream.py",
+      "bytes": 1963,
+      "sha256": "feaceabf0b3086371394fb91a66d61b6f09eced248f33ae1484a4af1ecc62932"
+    },
+    {
+      "path": "HISTORY_SOURCES/07_512_datasheet_audit/test_eeprom.py",
+      "bytes": 10545,
+      "sha256": "73caa17a4c57af24179cd05d6df0d31fd6e8d843e2fd60d9d56a0ae04c3b3df1"
+    },
+    {
+      "path": "HISTORY_SOURCES/07_512_datasheet_audit/test_protocol_limits.py",
+      "bytes": 1166,
+      "sha256": "fd521c65f020a775bab8a4caef2505f52dc864adb42c04e1becaafe61a7043c8"
+    },
+    {
+      "path": "HISTORY_SOURCES/07_512_datasheet_audit/test_strict_datasheet.py",
+      "bytes": 4296,
+      "sha256": "30ed3cfbdabd8f8401b2039c60782f5fbc959efdbb71bf1177b303761ad6b1d0"
+    },
+    {
+      "path": "HISTORY_SOURCES/07_512_datasheet_audit/test_universal.py",
+      "bytes": 4699,
+      "sha256": "9977cae3fdcc4684c3d7e5b084ac5fdc828b07315fdc05e688802e967d0a0ae7"
+    },
+    {
+      "path": "HISTORY_SOURCES/07_512_datasheet_audit/upstream_reference.bin",
+      "bytes": 512,
+      "sha256": "6d0dfd5601a39900a3abfffce82e30c5c3f5169099c00acb3f3d92ba38528e30"
+    },
+    {
+      "path": "OFFICIAL_REFERENCE/optiboot_atmega328_upstream.hex",
+      "bytes": 1352,
+      "sha256": "7530696c3a53019fcaa96bc320b41995601b1ef40967a8c6d69ca0b7eb89866e"
+    },
+    {
+      "path": "OFFICIAL_REFERENCE/optiboot_atmega328_upstream_padded_512.bin",
+      "bytes": 512,
+      "sha256": "6d0dfd5601a39900a3abfffce82e30c5c3f5169099c00acb3f3d92ba38528e30"
+    },
+    {
+      "path": "ORIGINAL_STAGE_ARCHIVES/ARCHIVE_MANIFEST.json",
+      "bytes": 1330,
+      "sha256": "093e1919e01021cc70df28bf88fe60a4d67e3bcc65866dba7b8806ead4845fc6"
+    },
+    {
+      "path": "ORIGINAL_STAGE_ARCHIVES/Optiboot_ATmega328P_358B_350B_Further_Optimization_2026-10-28.zip",
+      "bytes": 43233,
+      "sha256": "7485192b6f0f51927389ecd45610e0ebbeb452a924ae3bbab92d822f0c846e55"
+    },
+    {
+      "path": "ORIGINAL_STAGE_ARCHIVES/Optiboot_ATmega328P_368B_Protocol_Verification_2026-10-28.zip",
+      "bytes": 44968,
+      "sha256": "79b531ed9ea9d800e02925b36045f647d078eadba27e625d913ee58cb0692614"
+    },
+    {
+      "path": "ORIGINAL_STAGE_ARCHIVES/Optiboot_ATmega328P_Datasheet_Audit_Verified_512B_2026-10-28.zip",
+      "bytes": 40377,
+      "sha256": "ba0e1ec9dc079f88b63887a5a6ced1a42d8ff81748e6cbad9f6e36d04c6d9963"
+    },
+    {
+      "path": "ORIGINAL_STAGE_ARCHIVES/Optiboot_ATmega328P_EEPROM_Read_Write_498B_2026-10-28.zip",
+      "bytes": 28813,
+      "sha256": "e8ba8da3a370913acb60d227f2bdc731a1ae58ec7e738f4df6370992d9c726e8"
+    },
+    {
+      "path": "ORIGINAL_STAGE_ARCHIVES/Optiboot_ATmega328P_EEPROM_UNIVERSAL_508B_2026-10-28.zip",
+      "bytes": 44224,
+      "sha256": "a7420de3b58a5210a048ed29fc4c574a00c78b37fe744e11cee109057a14dfb1"
+    },
+    {
+      "path": "ORIGINAL_STAGE_ARCHIVES/Optiboot_ATmega328P_Protocol_Features_480B_511B_2026-10-28.zip",
+      "bytes": 35045,
+      "sha256": "99971ee9166ce6903b3f310465254b07774bb0b92956294fa387b66a54b23bc1"
+    },
+    {
+      "path": "ORIGINAL_STAGE_ARCHIVES/Optiboot_ATmega328P_Size_Optimization_2026-10-28.zip",
+      "bytes": 28724,
+      "sha256": "494011753932d85dc40f95effa15d31b8ada7cbbb54e737a7e99169e554d5a50"
+    },
+    {
+      "path": "RUN_CURRENT_TESTS.sh",
+      "bytes": 389,
+      "sha256": "00a816ed35f926ef0e0cfbae8c6a04346113542adba3c31394e1baa4090f29b8"
+    },
+    {
+      "path": "TEST_RECHECK_2026-10-28.txt",
+      "bytes": 2672,
+      "sha256": "698c8e059cf5f2d4b9e5ad2e1ec975801cdf2bd690e1e269914289253ed4d285"
+    }
+  ]
+}

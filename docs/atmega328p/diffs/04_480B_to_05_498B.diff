@@ -1,0 +1,304 @@
+--- 04_480B/optiboot_328_diag.S
++++ 05_498B/optiboot_328_eeprom_rw.S
+@@ -1,5 +1,5 @@
+ /*
+- * optiboot_mini328_final.S: experimental size-optimized STK500v1/Optiboot derivative.
++ * Optiboot Mini EEPROM R/W: size-optimized STK500v1/Optiboot derivative.
+  * Target: ATmega328P, 16 MHz external crystal, UART0 115200 8N1, BOOTSZ=256 words.
+  * Boot address: 0x7E00. GPL-2.0-or-later (derived from Optiboot by Peter Knight,
+  * Bill Westfield and contributors). No physical-hardware test; experimental.
+@@ -8,12 +8,14 @@
+  * The assembler emits 512 bytes (0xFF gap, version at the end).
+  * Main size is measured excluding fill and version.
+  *
+- * Deliberately dropped: LED flashes, EEPROM write, app-callable SPM service.
+- * Experimental feature-extension variant based on 358B baseline.
++ * Deliberately dropped: LED flashes, app-callable SPM service.
++ * Adds EEPROM read/write via STK_READ_PAGE/STK_PROG_PAGE; EEPROM writes
++ * buffer at most 16 bytes in SRAM, validate EOP, then commit.
++ * EEPROM access restricted to valid 0..1023 range (ATmega328P).
++ * Version EEPROM RW: 512B boot section; count from build.py.
+  * Retained: MCU reset decision + WDT timeout, serial sync, GET_PARAMETER,
+- * SET_DEVICE, SET_DEVICE_EXT, SET_PARAMETER, LOAD_ADDRESS, UNIVERSAL, PROG_PAGE, READ_PAGE,
++ * SET_DEVICE, SET_DEVICE_EXT, LOAD_ADDRESS, UNIVERSAL, PROG_PAGE, READ_PAGE,
+  * READ_SIGN, LEAVE_PROGMODE; STK500v1 INSYNC/OK framing.
+- * Adds EEPROM READ_PAGE and read-only ISP emulation for fuse/lock/signature.
+  */
+ 
+ .section .text
+@@ -30,9 +32,9 @@
+  * r18 = USART status/temp
+  * r19 = discard loop count / SPMEN preload (1)
+  * r20 = parameter selector or memory type for PROG_PAGE
+- * r22:r23 = current flash BYTE address
++ * r22:r23 = current BYTE address (Flash or EEPROM)
+  * r25 = page byte length for READ_PAGE, word count for PROG_PAGE
+- * X = unused; the ATmega328P hardware SPM buffer stores the page
++ * X = EEPROM buffer pointer (SRAM 0x0100) or EEPROM READ pointer
+  * Z = flash address or page-fill address
+  */
+ boot_start:
+@@ -67,10 +69,12 @@
+     rcall rx_char
+     cpi  r16, 0x41         ; GET_PARAMETER
+     breq command_parameter
+-1:  cpi  r16, 0x40         ; SET_PARAMETER, two args, ignored
+-    brne 1f
+-    ldi  r19, 2
+-    rjmp command_discard
++    cpi  r16, 0x40         ; SET_PARAMETER has two data bytes
++    brne 1f
++    rcall rx_char
++    rcall rx_char
++    rjmp command_default
++1:
+ 1:  cpi  r16, 0x42         ; SET_DEVICE
+     brne 1f
+     ldi  r19, 20
+@@ -80,23 +84,19 @@
+     ldi  r19, 5
+     rjmp command_discard
+ 1:  cpi  r16, 0x55         ; LOAD_ADDRESS
+-    brne 1f
+-    rjmp command_address
+-1:
++    breq command_address
+ 1:  cpi  r16, 0x56         ; UNIVERSAL
+-    breq command_universal
++    brne 1f
++    ldi  r19, 4
++    rjmp command_universal
+ 1:  cpi  r16, 0x64         ; PROG_PAGE
+     brne 1f
+     rjmp command_write
+-1:
+ 1:  cpi  r16, 0x74         ; READ_PAGE
+     brne 1f
+     rjmp command_read
+-1:
+ 1:  cpi  r16, 0x75         ; READ_SIGN
+-    brne 1f
+-    rjmp command_signature
+-1:
++    breq command_signature
+ 1:  cpi  r16, 0x51         ; LEAVE_PROGMODE
+     brne command_default
+     ldi  r17, 0x08        ; 16ms WDT with WDE
+@@ -120,75 +120,18 @@
+ 1:  rcall tx_char          ; minor and other params are both 3
+     rjmp command_ok
+ 
+-/* Discard payload for SET_PARAMETER (2), SET_DEVICE (20),
+- * SET_DEVICE_EXT (5). The two-byte SET_PARAMETER reply is INSYNC/OK.
++/* Shared discard for SET_DEVICE (20), SET_DEVICE_EXT (5), UNIVERSAL (4).
++ * 4-byte discard also returns an extra zero response byte.
+  */
+ command_discard:
++command_universal:
++    bst  r16, 4           ; T=1 only for UNIVERSAL (0x56), not 0x42/0x45
+ 1:  rcall rx_char
+     dec  r19
+     brne 1b
+     rcall verify_eop
+-    rjmp command_ok
+-
+-/* STK_UNIVERSAL: four ISP command bytes, read-only emulation.
+- * SPI-programming read commands supported on the chip via SPMCSR and LPM:
+- *   50 00 00 00 -> low fuse,   50 08 00 00 -> extended fuse
+- *   58 00 00 00 -> lock bits,  58 08 00 00 -> high fuse
+- *   30 00 n  00 -> signature byte n (n=0,1,2)
+- * Otherwise the original Optiboot-compatible reply of 0x00 is returned.
+- * Crucial: do not treat ISP write commands as real programming requests.
+- */
+-command_universal:
+-    rcall rx_char
+-    mov  r20, r16          ; ISP opcode
+-    rcall rx_char
+-    mov  r21, r16          ; ISP opcode second byte
+-    rcall rx_char
+-    mov  r24, r16          ; ISP opcode third byte
+-    rcall rx_char          ; fourth byte is dummy for read ops
+-    rcall verify_eop
+-
+-    cpi  r20, 0x50
+-    breq universal_fuse_lo
+-    cpi  r20, 0x58
+-    breq universal_fuse_hi
+-    cpi  r20, 0x30
+-    breq universal_signature
+-    rjmp universal_zero
+-universal_fuse_lo:
+-    clr  r30
+-    rjmp universal_fuse_common
+-universal_fuse_hi:
+-    ldi  r30, 1
+-universal_fuse_common:
+-    tst  r24              ; only the read command form with byte 3==0
+-    brne universal_zero
+-    tst  r21
+-    breq universal_fuse_read
+-    cpi  r21, 8
+-    brne universal_zero
+-    subi r30, 0xFE        ; Z += 2 (extended/high fuse selectors)
+-universal_fuse_read:
+-    clr  r31
+-    ldi  r16, 0x09        ; BLBSET|SPMEN; LPM must follow OUT <=3 cycles
+-    out  0x37, r16
+-    lpm  r16, Z
+-    rjmp universal_result
+-universal_signature:
+-    tst  r21
+-    brne universal_zero
+-    cpi  r24, 3
+-    brsh universal_zero
+-    mov  r30, r24
+-    lsl  r30              ; signature index 0/1/2 => Z=0/2/4
+-    clr  r31
+-    ldi  r16, 0x21        ; SIGRD|SPMEN
+-    out  0x37, r16
+-    lpm  r16, Z
+-    rjmp universal_result
+-universal_zero:
++    brtc command_ok       ; T is preserved across getch/EOP/tx
+     clr  r16
+-universal_result:
+     rcall tx_char
+     rjmp command_ok
+ 
+@@ -205,7 +148,7 @@
+ command_read:
+     rcall read_length
+     rcall rx_char
+-    mov  r20, r16          ; 'E'=EEPROM, everything else=Flash
++    mov  r20,r16           ; E=EEPROM, other types=FLASH
+     rcall verify_eop
+     cpi  r20, 0x45
+     breq eeprom_read
+@@ -217,15 +160,12 @@
+     brne read_loop
+     rjmp command_ok
+ 
+-/* ATmega328P EEAR IO: low=0x21 high=0x22; EECR=0x1F EEDR=0x20
+- * avrdude sends the LOAD_ADDRESS value as word-address on ATmega328P,
+- * which our LOAD_ADDRESS handler already multiplied by 2.
+- * No SRAM page buffer required; read 1..256 bytes into UART.
+- */
++/* EEPROM no SRAM buffer for reading; EEPROM is 1024B on ATmega328P. */
+ eeprom_read:
+-    movw r26, r22          ; X is the EEPROM byte-address
+-read_eeprom_loop:
+-1:  sbic 0x1F, 1           ; EEPE busy from any preceding write?
++    rcall eeprom_range_check
++    movw r26, r22         ; EEPROM byte address (avrdude used word LOAD_ADDRESS)
++eeprom_read_loop:
++1:  sbic 0x1F, 1           ; wait while EEPE busy
+     rjmp 1b
+     out  0x21, r26        ; EEARL
+     out  0x22, r27        ; EEARH
+@@ -234,7 +174,7 @@
+     rcall tx_char
+     adiw r26, 1
+     dec  r25
+-    brne read_eeprom_loop
++    brne eeprom_read_loop
+     rjmp command_ok
+ 
+ command_signature:
+@@ -251,6 +191,10 @@
+     rcall read_length
+     rcall rx_char          ; memory type, accept all except 'E'
+     mov  r20, r16
++    cpi  r20, 0x45        ; EEPROM write must be buffered/validated
++    brne flash_write
++    rjmp eeprom_write
++flash_write:
+     lsr  r25               ; C=odd length; Z=zero; count now in words
+     brcs protocol_error
+     breq protocol_error
+@@ -276,8 +220,6 @@
+     brne hardware_fill_loop
+     clr  r1
+     rcall verify_eop      ; STK_INSYNC must precede actual erase
+-    cpi  r20, 0x45        ; EEPROM unsupported: send INSYNC then timeout
+-    breq error_loop
+     cpi  r23, 0x7E        ; refuse modifying the boot partition
+     brsh protocol_error
+ 
+@@ -291,6 +233,52 @@
+     spm
+     rjmp command_ok
+ 
++/* EEPROM writes are received into a 16B SRAM scratch buffer at 0x0100.
++ * avrdude -c arduino sends EEPROM data in 16B pages for classic ATmega328P.
++ * A bad EOP causes reset before *any* EEPROM writes.
++ * Longer packets are rejected before accepting a payload; this is not a
++ * generic unrestricted STK500 EEPROM writer.  Valid write address range
++ * 0x000..0x3FF is enforced, including the last byte of the block.
++ */
++eeprom_write:
++    tst  r25
++    breq protocol_error
++    cpi  r25, 17
++    brsh protocol_error
++    rcall eeprom_range_check
++    mov  r24, r25         ; payload length
++    ldi  r26, 0x00
++    ldi  r27, 0x01        ; X = SRAM 0x100 scratch
++1:  rcall rx_char
++    st   X+,r16
++    dec  r25
++    brne 1b
++    rcall verify_eop     ; safety: check before writing first byte
++/* Datasheet requires SELFPRGEN/SPMEN=0 before starting EEPROM write. */
++1:  in   r18,0x37         ; SPMCSR
++    sbrc r18,0
++    rjmp 1b
++    mov  r25,r24
++    ldi  r26,0x00
++    ldi  r27,0x01
++    movw r30,r22         ; Z = EEPROM byte address
++2:  sbic 0x1F,1          ; EEPROM wait (EEPE)
++    rjmp 2b
++    cbi  0x1F,4          ; EEPM0=0: atomic erase+write (after EEPE clears)
++    cbi  0x1F,5          ; EEPM1=0
++    out  0x21,r30        ; EEARL
++    out  0x22,r31        ; EEARH
++    ld   r16,X+
++    out  0x20,r16        ; EEDR
++    sbi  0x1F,2          ; EEMPE, 4 CPU cycles to trigger EEPE
++    sbi  0x1F,1          ; EEPE, start 3.4ms atomic erase/write
++    adiw r30,1
++    dec  r25
++    brne 2b
++3:  sbic 0x1F,1          ; final write complete before ACK
++    rjmp 3b
++    rjmp command_ok
++
+ protocol_error:
+     ldi  r17, 0x08
+     rcall wdt_config       ; 16ms watchdog
+@@ -344,6 +332,24 @@
+     rjmp wait_spm
+     ret
+ 
++/* EEPROM address is 0..1023.  r25=0 means 256 bytes for READ_PAGE,
++ * just as in the historical Optiboot read loop.  Test the inclusive
++ * end address = start + (length - 1) to avoid wraparound/wrong writes.
++ * Side effects: r16, r30:r31 and flags; r22:r23/r25 preserved.
++ */
++eeprom_range_check:
++    cpi  r23, 4           ; also prevents 16-bit wrap in the end calculation
++    brsh protocol_error
++    movw r30, r22
++    mov  r16, r25
++    dec  r16
++    add  r30, r16
++    adc  r31, r1          ; zero register kept clear on these paths
++    cpi  r31, 4
++    brsh protocol_error
++    ret
++
++
+ /* For AVR fuses 0xDE (512B boot section), ensure version at 0x7FFE.
+  * Fail assembly if instructions use more than 510 bytes.
+  */

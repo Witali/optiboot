@@ -1,0 +1,6 @@
+Testing optiboot_mini328...
+  malformed PROG_PAGE: rejected; old Flash page PRESERVED
+  PASS sync+version+device+universal+signature+program+read+leave+power-on; flash_erases=2, flash_writes=2, AVR instructions=4052, stack_depth=2
+Testing optiboot_mini328_stream...
+  malformed PROG_PAGE: rejected; old Flash page ERASED (streaming risk)
+  PASS sync+version+device+universal+signature+program+read+leave+power-on; flash_erases=2, flash_writes=2, AVR instructions=3634, stack_depth=2

@@ -1,0 +1,37 @@
+--- optiboot_mini328_final.S	2026-10-28 10:04:41.967867078 +0000
++++ optiboot_mini328_reset_only_350.S	2026-10-28 10:04:41.968259562 +0000
+@@ -1,5 +1,5 @@
+ /*
+- * optiboot_mini328_final.S: experimental size-optimized STK500v1/Optiboot derivative.
++ * optiboot_mini328_reset_only_350.S: experimental size-optimized STK500v1/Optiboot derivative.
+  * Target: ATmega328P, 16 MHz external crystal, UART0 115200 8N1, BOOTSZ=256 words.
+  * Boot address: 0x7E00. GPL-2.0-or-later (derived from Optiboot by Peter Knight,
+  * Bill Westfield and contributors). No physical-hardware test; experimental.
+@@ -9,7 +9,7 @@
+  * Main size is measured excluding fill and version.
+  *
+  * Deliberately dropped: LED flashes, EEPROM read/write, app-callable SPM service.
+- * Version 358B: 356B instructions plus 2 version bytes, 512B boot section.
++ * Version 350B: only for hardware reset or WDT reset; UCSR0C must be reset to 0x06.
+  * Retained: MCU reset decision + WDT timeout, serial sync, GET_PARAMETER,
+  * SET_DEVICE, SET_DEVICE_EXT, LOAD_ADDRESS, UNIVERSAL, PROG_PAGE, READ_PAGE,
+  * READ_SIGN, LEAVE_PROGMODE; STK500v1 INSYNC/OK framing.
+@@ -19,7 +19,6 @@
+ .global _start
+ _start:
+     rjmp boot_start
+-    ret                     ; disable optional app-callable SPM entry
+ 
+ /* Register allocation:
+  * r1  = zero (cleared on boot and after page fill)
+@@ -55,8 +54,8 @@
+     sts  0xC0, r16         ; UCSR0A
+     ldi  r16, 0x18         ; RXEN0 | TXEN0
+     sts  0xC1, r16         ; UCSR0B
+-    ldi  r16, 0x06         ; 8N1
+-    sts  0xC2, r16         ; UCSR0C
++    ; Reset-only variant: UCSR0C already 0x06 (8N1) after hardware reset.
++    ; NOT compatible with software boot entry after app changed UART0 format.
+     ldi  r16, 16           ; UBRR0 = 16, 117647 actual baud @16MHz (+2.12%)
+     sts  0xC4, r16         ; UBRR0L
+     ldi  r17, 0x0E         ; WDT 1s: WDE|WDP2|WDP1

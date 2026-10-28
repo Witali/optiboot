@@ -1,0 +1,3 @@
+optiboot_mini328_final: code=356B, version=2B, occupied=358/512B, saved=116B vs upstream HEX
+optiboot_mini328_final_tiny: code=354B, version=2B, occupied=356/512B, saved=118B vs upstream HEX
+optiboot_mini328_reset_only_350: code=348B, version=2B, occupied=350/512B, saved=124B vs upstream HEX

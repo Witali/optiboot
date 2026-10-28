@@ -1,0 +1,22 @@
+{
+  "date": "2026-10-28",
+  "base": "Optiboot/optiboot (master)",
+  "target": "ATmega328P 16MHz 115200",
+  "files": {
+    "test_emulator.py": "e1f25fb88fd5c03f1e22fe83bfc60ed00a95160500319592aba20b815c84ab91",
+    "TEST_RESULTS.txt": "41e647ed096aa65ef94887ee2592a52ad212477d3ee0698e441b89dbb29184d3",
+    "optiboot_mini328_stream.o": "c5651b1e022416d948d585de6751502a5b4e7042b57a6f7e89e3f79e39425095",
+    "download_upstream.sh": "d121bcb08dd628ca4501b881819fbf972ee7e0a1080ebb31a48774c8dcfc5eed",
+    "optiboot_mini328.hex": "82beeb2fdab380c130e2c03f70ac3b37245f93bbd0e32b18a29e9f5cbcab6cdb",
+    "optiboot_mini328_stream.hex": "1612afdcf0055ed1f5c981773d5225a5ee65583288337fea65784b99c6f20444",
+    "optiboot_mini328.S": "33ac77a0035bd45a5053c83e8bcb636c78a03df8ebefdf80968c4e7e155c80e8",
+    "build.py": "3052faa269c55371c69f367c0a882883510f5128a8a92a515d8f0c9ff790e1ea",
+    "COPYING": "edaef632cbb643e4e7a221717a6c441a4c1a7c918e6e4d56debc3d8739b233f6",
+    "optiboot_mini328.o": "a2a24054a92463b1743e65f77a2cd788dcd0b5b01c6d3cceb5d97362c7ddda5e",
+    "optiboot_mini328_stream.S": "82621300ff65e86b43f387c37a79bcaf7b02f7d81ccba2a52dde192f463118e7",
+    "README_RU.md": "d6568e7cf42fa780817e56755fa6027b4d8308d8f8637f68a6dec88492e20888",
+    "optiboot_mini328.bin": "dfd964d5bd3806a01af506e9c6efd6cbdf6d53870aa9bf34a62dd3079c278d1c",
+    "optiboot_mini328_stream.bin": "22505e38a94634cbc194d3ef40c73ba51875aa48931fe306ac12afff2ca9e5e4",
+    "upstream/optiboot_atmega328.hex": "7530696c3a53019fcaa96bc320b41995601b1ef40967a8c6d69ca0b7eb89866e"
+  }
+}

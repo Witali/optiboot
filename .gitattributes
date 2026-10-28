@@ -1,0 +1,4 @@
+# Preserve the exact bytes recorded in the research import manifest.
+/docs/atmega328p/** -text
+/optiboot/bootloaders/optiboot_328p/** -text
+/scripts/atmega328p/** -text

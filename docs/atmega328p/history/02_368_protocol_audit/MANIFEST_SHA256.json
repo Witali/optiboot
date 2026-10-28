@@ -1,0 +1,94 @@
+{
+  "schema": 1,
+  "generated": "2026-10-28",
+  "files": {
+    "CHANGES_vs_410B.patch": {
+      "bytes": 8926,
+      "sha256": "09328fd7be529db0a6e273387c9c54dce18bcedce1cddd0c9885b9a7bb7bf2c3"
+    },
+    "COPYING": {
+      "bytes": 17984,
+      "sha256": "edaef632cbb643e4e7a221717a6c441a4c1a7c918e6e4d56debc3d8739b233f6"
+    },
+    "PROTOCOL_AUDIT_RU.md": {
+      "bytes": 9049,
+      "sha256": "420c5ea1b3b6a0bd9ff2ec7a61f7106ff2202bc7a2101234cab700bfd5cc147a"
+    },
+    "README_RU.md": {
+      "bytes": 11324,
+      "sha256": "c894bef5fba9a94d135101ea9cc9a4a2394d989f18b7465674c8a80ce0007915"
+    },
+    "TEST_RESULTS.txt": {
+      "bytes": 1602,
+      "sha256": "33a84a31103c0525e41e6b0b78309339425624f096641a90e41148ea58783adf"
+    },
+    "build.py": {
+      "bytes": 2133,
+      "sha256": "3052faa269c55371c69f367c0a882883510f5128a8a92a515d8f0c9ff790e1ea"
+    },
+    "differential_test.py": {
+      "bytes": 7128,
+      "sha256": "f89125ef79a44512aa0672982a5d055035d4730d4671e1891d360eb2da47abd4"
+    },
+    "download_upstream.sh": {
+      "bytes": 653,
+      "sha256": "d121bcb08dd628ca4501b881819fbf972ee7e0a1080ebb31a48774c8dcfc5eed"
+    },
+    "optiboot_mini328_final.S": {
+      "bytes": 7595,
+      "sha256": "5f4b25fbecb9bf28c59a0bbf6433f55b4520a8cea625d09869a8a70c5d40711e"
+    },
+    "optiboot_mini328_final.bin": {
+      "bytes": 512,
+      "sha256": "5b18de3e5a794d0832847f495e1997211ee3509130e5c8075dc0d2c7ae52f2bb"
+    },
+    "optiboot_mini328_final.hex": {
+      "bytes": 1420,
+      "sha256": "c1162ae46f7f6fb25d4d151286db48e674d3ac840ae59af4096921d916568635"
+    },
+    "optiboot_mini328_final.o": {
+      "bytes": 1552,
+      "sha256": "bd91c58127e5826705ca592b7f4023988a093720bd80a8fab581c1d9782b971a"
+    },
+    "optiboot_mini328_final_tiny.S": {
+      "bytes": 7530,
+      "sha256": "e233a818d571230e961aff42fe7ee35ce7666668d4aa7e287d4f98ef9002dda1"
+    },
+    "optiboot_mini328_final_tiny.bin": {
+      "bytes": 512,
+      "sha256": "935955684e7316a6f1789345dc9711cd349e86aaa95452d6e2387bea7f738378"
+    },
+    "optiboot_mini328_final_tiny.hex": {
+      "bytes": 1420,
+      "sha256": "9236e7a807dfc762ef8863761219a8e7648f09fe3d3eb4752f8e153aaaecaa38"
+    },
+    "optiboot_mini328_final_tiny.o": {
+      "bytes": 1552,
+      "sha256": "cdbde5cf822822d48651084ab8c850c0bd2be603121299846c8a8caf032a561f"
+    },
+    "original_mini_410B_broken_WDT.S": {
+      "bytes": 7366,
+      "sha256": "33ac77a0035bd45a5053c83e8bcb636c78a03df8ebefdf80968c4e7e155c80e8"
+    },
+    "run_all_tests.sh": {
+      "bytes": 188,
+      "sha256": "ba5c5abb628e38186ebfb2200d09d95265b986104719fcdb7f77b2299ef3c7a7"
+    },
+    "test_emulator.py": {
+      "bytes": 13691,
+      "sha256": "27798af1c9be88fdb943cc59668cfbf96b7ede9cec73f4bd5c3f41cca785e349"
+    },
+    "test_invariants.py": {
+      "bytes": 1683,
+      "sha256": "cf17a3cd03bbbe40f24a4dbe535cdd16167f035702332e00d17efbc807ca1680"
+    },
+    "upstream_reference.bin": {
+      "bytes": 512,
+      "sha256": "6d0dfd5601a39900a3abfffce82e30c5c3f5169099c00acb3f3d92ba38528e30"
+    },
+    "upstream_reference.hex": {
+      "bytes": 1352,
+      "sha256": "7530696c3a53019fcaa96bc320b41995601b1ef40967a8c6d69ca0b7eb89866e"
+    }
+  }
+}

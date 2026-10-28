@@ -1,0 +1,12 @@
+Test: EEPROM data path with real AVR instructions (simulated peripheral)
+PASS: 64x16B EEPROM writes and 64x16B reads, all 1024 bytes correct
+PASS: waits for previous EEPROM busy cycle and enforces atomic EEPM=00
+PASS: partial EEPROM packets of lengths 1..15
+PASS: 256-byte EEPROM read (STK length low byte zero)
+PASS: Flash r/w unchanged, bootloader protected, WDT exit correct
+PASS: invalid EOP, overruns, invalid start addresses, oversized/zero writes => no EEPROM modifications
+PASS: EEPROM out-of-range reads rejected without accessing EEPROM
+PASS: truncated packet cannot write EEPROM
+PASS: power-on/watchdog reset app entry
+PASS: 268 differential legacy commands vs previous 358-byte build
+TOTAL: 598 complete valid command-response transactions plus negative tests

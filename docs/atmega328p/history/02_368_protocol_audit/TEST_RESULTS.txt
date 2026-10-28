@@ -1,0 +1,16 @@
+optiboot_mini328_final: code=366B, version=2B, occupied=368/512B, saved=106B vs upstream HEX
+optiboot_mini328_final_tiny: code=364B, version=2B, occupied=366/512B, saved=108B vs upstream HEX
+Testing optiboot_mini328_final...
+  malformed PROG_PAGE: rejected; old Flash page PRESERVED
+  PASS sync+version+device+universal+signature+program+read+leave+power-on; flash_erases=2, flash_writes=2, AVR instructions=3825, stack_depth=2
+Testing optiboot_mini328_final_tiny...
+  malformed PROG_PAGE: rejected; old Flash page PRESERVED
+  PASS sync+version+device+universal+signature+program+read+leave+power-on; flash_erases=2, flash_writes=2, AVR instructions=3825, stack_depth=2
+PASS optiboot_mini328_final: 575 machine-code commands, 2556 RX bytes; FLASH-identical; replies-identical; WDT 0x0E/0x08; original=62275,mini=51270 instructions
+PASS optiboot_mini328_final: EOP reject, EEPROM WRITE unsupported behavior and WDT
+PASS optiboot_mini328_final: reset routing 9 MCUSR states; FE0 gating of watchdog for both firmware images
+PASS optiboot_mini328_final_tiny: 575 machine-code commands, 2556 RX bytes; FLASH-identical; replies-identical; WDT 0x0E/0x08; original=62275,mini=51270 instructions
+PASS optiboot_mini328_final_tiny: EOP reject, EEPROM WRITE unsupported behavior and WDT
+PASS optiboot_mini328_final_tiny: reset routing 9 MCUSR states; FE0 gating of watchdog for both firmware images
+PASS optiboot_mini328_final: 3 SPM timing windows; 4-cycle WDT window; boot-area protection; version 8.3
+PASS optiboot_mini328_final_tiny: 3 SPM timing windows; 4-cycle WDT window; boot-area protection; version 8.3

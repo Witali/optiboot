@@ -1,0 +1,37 @@
+--- 06_508B/optiboot_328_eeprom_universal.S
++++ 07_512B/optiboot_328_verified.S
+@@ -16,6 +16,13 @@
+  * Read-only STK_UNIVERSAL supports low/high/ext fuses and lock bits.
+  * Other UNIVERSAL opcodes still return 0 (no fuse writing/ISP engine).
+  * Code + version must fit 512B boot section; size from build.py.
++ * Datasheet audit fix: Flash PROG_PAGE start must be 128-byte PAGE ALIGNED
++ * (0x0000, 0x0080, ... 0x7D80). The payload is 2..128 even bytes.
++ * This ensures PCWORD=0 during page write; unusual nonaligned STK500v1
++ * Flash writes deliberately trigger watchdog abort before any SPM.
++ * Limitations: high length byte is ignored, EEPROM writes <=16 bytes,
++ * UNIVERSAL only reads fuse/lock, no true chip erase, not full AVR061.
++
+  * Retained: MCU reset decision + WDT timeout, serial sync, GET_PARAMETER,
+  * SET_DEVICE, SET_DEVICE_EXT, LOAD_ADDRESS, UNIVERSAL, PROG_PAGE, READ_PAGE,
+  * READ_SIGN, LEAVE_PROGMODE; STK500v1 INSYNC/OK framing.
+@@ -25,7 +32,7 @@
+ .global _start
+ _start:
+     rjmp boot_start
+-    ret                     ; disable optional app-callable SPM entry
++    ; No app-callable SPM entry; the extra RET stub is removed to make room for safety checks.
+ 
+ /* Register allocation:
+  * r1  = zero (cleared on boot and after page fill)
+@@ -230,6 +237,12 @@
+     breq protocol_error
+     cpi  r25, 65           ; ATmega328P hardware page holds 64 words
+     brsh protocol_error
++    ; Datasheet 26.8.3: Page Write requires PCWORD=0 in Z.
++    ; Reject a non-page-aligned start, preventing SPM address misuse
++    ; and a payload spanning two different 128-byte flash pages.
++    mov  r16, r22
++    andi r16, 0x7F        ; SPM page size: 64 words = 128 bytes
++    brne protocol_error
+     movw r30, r22
+     ldi  r19, 0x01         ; preloaded SPMEN across whole page (saves cycles)
