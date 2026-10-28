@@ -44,7 +44,7 @@ _start:
  * r20 = GET_PARAMETER selector, READ_PAGE memory type, ISP opcode1
  * r21 = UNIVERSAL ISP opcode2 (bit 3 mapped into Z via T flag)
  * r22:r23 = current BYTE address (Flash or EEPROM)
- * r25 = page byte length for READ_PAGE, word count for Flash PROG_PAGE
+ * r24 = zero-based final byte index; final word index after Flash LSR
  * X = EEPROM READ pointer; EEPROM WRITE payload is held on AVR stack
  * Z = flash address, page-fill address, or EEPROM last-byte address
  */
@@ -156,8 +156,8 @@ command_read:
 read_loop:
     lpm  r16, Z+
     rcall tx_char
-    dec  r25
-    brne read_loop
+    subi r24, 1
+    brcc read_loop
     rjmp command_ok
 
 /* EEPROM no SRAM buffer for reading; EEPROM is 1024B on ATmega328P. */
@@ -173,8 +173,8 @@ eeprom_read_loop:
     in   r16, 0x20        ; EEDR
     rcall tx_char
     adiw r26, 1
-    dec  r25
-    brne eeprom_read_loop
+    subi r24, 1
+    brcc eeprom_read_loop
     rjmp command_ok
 
 command_signature:
@@ -232,10 +232,9 @@ command_write:
     cpi  r16, 0x45        ; EEPROM write: stage on stack, validate EOP
     breq eeprom_write
 flash_write:
-    lsr  r25               ; C=odd length; Z=zero; count now in words
-    brcs protocol_error
-    breq protocol_error
-    cpi  r25, 65           ; ATmega328P hardware page holds 64 words
+    lsr  r24               ; C=even length; count becomes final word index
+    brcc protocol_error
+    cpi  r24, 64           ; ATmega328P hardware page holds 64 words
     brsh protocol_error
     ; Datasheet 26.8.3: Page Write requires PCWORD=0 in Z.
     ; Reject a non-page-aligned start, preventing SPM address misuse
@@ -259,8 +258,8 @@ hardware_fill_loop:
     out  0x37, r19         ; SPMEN page buffer fill
     spm
     adiw r30, 2
-    dec  r25
-    brne hardware_fill_loop
+    subi r24, 1
+    brcc hardware_fill_loop
     clr  r1
     rcall verify_eop      ; STK_INSYNC must precede actual erase
     cpi  r23, 0x7E        ; refuse modifying the boot partition
@@ -286,16 +285,14 @@ hardware_fill_loop:
  * Valid EEPROM address range 0x000..0x3FF (inclusive) is enforced.
  */
 eeprom_write:
-    tst  r25
-    breq protocol_error
-    cpi  r25, 17
+    cpi  r24, 16
     brsh protocol_error
     rcall eeprom_range_check
-    mov  r19, r25         ; keep commit count; use r19 for input loop
+    mov  r19, r24         ; keep commit count; use r19 for input loop
 1:  rcall rx_char
     push r16              ; stage byte in stack, no dedicated 16-byte SRAM array
-    dec  r19
-    brne 1b
+    subi r19, 1
+    brcc 1b
     rcall verify_eop      ; validate packet before modifying any EEPROM
 /* Z = last EEPROM byte, retained from eeprom_range_check.
  * Pop bytes in reverse order, write from end of block backwards.
@@ -312,8 +309,8 @@ eeprom_write:
     sbi  0x1F,2          ; EEMPE, 4 CPU cycles to trigger EEPE
     sbi  0x1F,1          ; EEPE, start 3.4ms atomic erase/write
     sbiw r30,1
-    dec  r25
-    brne 2b
+    subi r24, 1
+    brcc 2b
 3:  sbic 0x1F,1          ; final write complete before ACK
     rjmp 3b
     rjmp command_ok
@@ -328,7 +325,8 @@ error_loop:
 read_length:
     rcall rx_char          ; high length byte discarded, as upstream HEX does
     rcall rx_char          ; low length byte
-    mov  r25, r16
+    mov  r24, r16
+    dec  r24               ; zero-based final byte index, including 256-byte reads
     ret
 
 verify_eop:
@@ -371,15 +369,14 @@ wait_spm:
     rjmp wait_spm
     ret
 
-/* EEPROM address is 0..1023.  r25=0 means 256 bytes for READ_PAGE,
+/* EEPROM address is 0..1023.  r24=255 means 256 bytes for READ_PAGE,
  * just as in the historical Optiboot read loop.  Test the inclusive
  * end address = start + (length - 1) to avoid wraparound/wrong writes.
- * Side effects: r16, r30:r31 and flags; r22:r23/r25 preserved.
+ * Side effects: r16, r30:r31 and flags; r22:r23/r24 preserved.
  */
 eeprom_range_check:
     movw r30, r22
-    mov  r16, r25
-    dec  r16
+    mov  r16, r24
     add  r30, r16
     adc  r31, r1          ; zero register kept clear on these paths
     brcs protocol_error  ; reject 0xFFFF -> 0x0000 wrapping

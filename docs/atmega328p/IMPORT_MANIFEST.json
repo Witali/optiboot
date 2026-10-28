@@ -5,7 +5,7 @@
   "date": "2026-10-28",
   "notes": [
     "All 266 original handoff files are accounted for, including seven English stage ZIP editions.",
-    "Assembly, firmware, object files and licenses retain their original bytes.",
+    "Historical assembly, firmware, objects, references and licenses retain their original bytes. Active firmware and tools evolve on experimental; original/current hashes distinguish them.",
     "Documentation is translated into English; document filenames, references and internal stage ZIP inventories are updated.",
     "The exact original documents and stage ZIPs remain in initial import commit db107e21b11ea79675637d330a499c2f02d0973a.",
     "Python and shell tools have repository-relative paths; the current build supports AVR linker relocation resolution and an ignored build directory.",
@@ -234,9 +234,9 @@
       "repository_path": "optiboot/bootloaders/optiboot_328p/optiboot_328_verified.S",
       "original_bytes": 12739,
       "original_sha256": "b82b6b2a4c312e6765e869963ad6ba87b7f26b383e4823f6c3c8b7d1e1126b89",
-      "imported_bytes": 12739,
-      "imported_sha256": "b82b6b2a4c312e6765e869963ad6ba87b7f26b383e4823f6c3c8b7d1e1126b89",
-      "adapted": false
+      "imported_bytes": 12769,
+      "imported_sha256": "4222afda58f98d93341dca6e4b489b705fc83ad02e315df8b81b8ac732fff796",
+      "adapted": true
     },
     {
       "archive_path": "CURRENT/optiboot_328_verified.bin",
@@ -244,8 +244,8 @@
       "original_bytes": 512,
       "original_sha256": "29fe3aa03cc412568160d1990cefa12f7674f243f8c3d6336bdc09fbe79fd642",
       "imported_bytes": 512,
-      "imported_sha256": "29fe3aa03cc412568160d1990cefa12f7674f243f8c3d6336bdc09fbe79fd642",
-      "adapted": false
+      "imported_sha256": "37eeb2872e39f548f3e0139c589f769332fa612cb9a2a5d8629e7222e7a429b5",
+      "adapted": true
     },
     {
       "archive_path": "CURRENT/optiboot_328_verified.hex",
@@ -253,17 +253,17 @@
       "original_bytes": 1420,
       "original_sha256": "3918a262913d19514350c4bc3e41b8a91b7f95fd0fcb5a43a2abb01a65fa5a8b",
       "imported_bytes": 1420,
-      "imported_sha256": "3918a262913d19514350c4bc3e41b8a91b7f95fd0fcb5a43a2abb01a65fa5a8b",
-      "adapted": false
+      "imported_sha256": "cad10d3c5c52749ec42b661c2bc869900aa885b569dfb4a535d6b17e24e06141",
+      "adapted": true
     },
     {
       "archive_path": "CURRENT/optiboot_328_verified.o",
       "repository_path": "optiboot/bootloaders/optiboot_328p/optiboot_328_verified.o",
       "original_bytes": 1764,
       "original_sha256": "3fe991d3e350e3103ac3519bf064a9713b97362abac29afc60e64150c432f6f6",
-      "imported_bytes": 1764,
-      "imported_sha256": "3fe991d3e350e3103ac3519bf064a9713b97362abac29afc60e64150c432f6f6",
-      "adapted": false
+      "imported_bytes": 3024,
+      "imported_sha256": "63ad6f8d12479621fcfa4a5171d4cec22a6c1b888a25dddaec256ace980cd8b3",
+      "adapted": true
     },
     {
       "archive_path": "CURRENT/optiboot_mini328_358.bin",

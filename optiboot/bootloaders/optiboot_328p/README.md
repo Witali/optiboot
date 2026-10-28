@@ -16,8 +16,8 @@ python scripts/atmega328p/run_tests.py --build
 
 The second command needs the LLVM AVR tools and `readelf`, plus `avr-ld` if the
 assembler emits local relocations. Fresh build outputs
-go in `build/`; the committed `.bin`, `.hex`, and `.o` files are the original
-research artifacts. `history/` holds earlier assembly and binary variants;
+go in `build/`; the committed `.bin`, `.hex`, and `.o` files accompany the active
+source revision. `history/` holds earlier assembly and binary variants;
 historical scripts and documents are in the corresponding `scripts/atmega328p/`
 and `docs/atmega328p/` directories. `reference/` holds the supplied upstream images.
 

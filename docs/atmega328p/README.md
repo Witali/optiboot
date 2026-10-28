@@ -10,8 +10,10 @@ and diagnostic functions while retaining a 512-byte boot section.
 The current source is
 [`optiboot_328_verified.S`](../../optiboot/bootloaders/optiboot_328p/optiboot_328_verified.S).
 It targets ATmega328P, a 16 MHz clock, and UART0 at nominal 115200 baud, 8N1.
-The image occupies `0x7E00..0x7FFF`: 510 instruction bytes and two version bytes
-(`03 08`), with no spare space in the boot section.
+The image spans `0x7E00..0x7FFF`. The preparatory counter refactor uses 504
+instruction bytes and two version bytes (`03 08`), leaving six FF-padding bytes
+inside the unchanged 512-byte section. See the
+[size and hardening record](HEADER_HARDENING_2026-10-28.md).
 
 Compared with earlier size-focused prototypes in this research, the functional
 additions are EEPROM read/write and read-only fuse/lock queries. Their limits
@@ -88,8 +90,8 @@ provides the tools listed above.
 The build writes `.o`, `.bin`, and `.hex` into
 `optiboot/bootloaders/optiboot_328p/build/`, which Git ignores. Tests select the
 rebuilt binary automatically with `--build`; `--firmware PATH` selects a specific
-512-byte binary. The committed images and object files are preserved research
-artifacts, not the build output directory.
+512-byte binary. The committed active source, images and object are maintained
+together; historical artifacts are retained in the snapshot directories.
 
 ## Repository layout and provenance
 
@@ -105,8 +107,9 @@ artifacts, not the build output directory.
 
 All 266 files from the handoff are accounted for by
 [`IMPORT_MANIFEST.json`](IMPORT_MANIFEST.json). It records each original path,
-its repository destination, and original/current SHA256 values. Assembly,
-firmware, objects and licenses are byte-for-byte preserved. Research documentation
+its repository destination, and original/current SHA256 values. Historical
+assembly, firmware, objects, references and licenses retain their input bytes;
+the active firmware and tools evolve on this branch. Research documentation
 has been translated into English, including copies inside stage ZIPs; filenames,
 references and internal archive checksums have been updated. The exact original
 handoff documents and ZIPs remain available in the initial import commit
