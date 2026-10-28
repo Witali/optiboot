@@ -30,7 +30,7 @@ hardware Flash page buffer to avoid a separate 128-byte SRAM buffer. The current
 image fits in a 512-byte boot section on ATmega328P at 16 MHz with UART0 at 115200.
 
 See the [experimental firmware documentation](docs/atmega328p/README.md)
-([Russian](docs/atmega328p/README_RU.md)) for features, protocol limits, build/test
+for features, protocol limits, build/test
 commands, and the complete research history. Validation uses a limited software
 AVR model; testing on a physical ATmega328P has not yet been performed.
 

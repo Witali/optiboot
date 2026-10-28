@@ -1,37 +1,58 @@
 [
   {
     "filename": "Optiboot_ATmega328P_358B_350B_Further_Optimization_2026-10-28.zip",
-    "bytes": 43233,
-    "sha256": "7485192b6f0f51927389ecd45610e0ebbeb452a924ae3bbab92d822f0c846e55"
+    "bytes": 41713,
+    "sha256": "6fd33fa20d88ea482448f73116d362b6f13debee3e3730322b2ea5091df9bf0e",
+    "original_bytes": 43233,
+    "original_sha256": "7485192b6f0f51927389ecd45610e0ebbeb452a924ae3bbab92d822f0c846e55",
+    "documentation_language": "en"
   },
   {
     "filename": "Optiboot_ATmega328P_368B_Protocol_Verification_2026-10-28.zip",
-    "bytes": 44968,
-    "sha256": "79b531ed9ea9d800e02925b36045f647d078eadba27e625d913ee58cb0692614"
+    "bytes": 42060,
+    "sha256": "997f9ace6d16802abd585435967e1dc72228b13604fe14ccd0fbb010250a3289",
+    "original_bytes": 44968,
+    "original_sha256": "79b531ed9ea9d800e02925b36045f647d078eadba27e625d913ee58cb0692614",
+    "documentation_language": "en"
   },
   {
     "filename": "Optiboot_ATmega328P_Datasheet_Audit_Verified_512B_2026-10-28.zip",
-    "bytes": 40377,
-    "sha256": "ba0e1ec9dc079f88b63887a5a6ced1a42d8ff81748e6cbad9f6e36d04c6d9963"
+    "bytes": 38050,
+    "sha256": "aa5563badc4f7653e69e39811e029c620f5cd2a76bbca9e55d7478ceda26edee",
+    "original_bytes": 40377,
+    "original_sha256": "ba0e1ec9dc079f88b63887a5a6ced1a42d8ff81748e6cbad9f6e36d04c6d9963",
+    "documentation_language": "en"
   },
   {
     "filename": "Optiboot_ATmega328P_EEPROM_Read_Write_498B_2026-10-28.zip",
-    "bytes": 28813,
-    "sha256": "e8ba8da3a370913acb60d227f2bdc731a1ae58ec7e738f4df6370992d9c726e8"
+    "bytes": 27472,
+    "sha256": "046c4dfeafa5a6bc6ed41b1c73e79c2e5e71567ce7f2a34224d743c6d22d86a0",
+    "original_bytes": 28813,
+    "original_sha256": "e8ba8da3a370913acb60d227f2bdc731a1ae58ec7e738f4df6370992d9c726e8",
+    "documentation_language": "en"
   },
   {
     "filename": "Optiboot_ATmega328P_EEPROM_UNIVERSAL_508B_2026-10-28.zip",
-    "bytes": 44224,
-    "sha256": "a7420de3b58a5210a048ed29fc4c574a00c78b37fe744e11cee109057a14dfb1"
+    "bytes": 42409,
+    "sha256": "6efcdc8dcbe47fdfbce9a0a391287ccc4cc0a3df413c4c1fd6be4ee8ecbcf39a",
+    "original_bytes": 44224,
+    "original_sha256": "a7420de3b58a5210a048ed29fc4c574a00c78b37fe744e11cee109057a14dfb1",
+    "documentation_language": "en"
   },
   {
     "filename": "Optiboot_ATmega328P_Protocol_Features_480B_511B_2026-10-28.zip",
-    "bytes": 35045,
-    "sha256": "99971ee9166ce6903b3f310465254b07774bb0b92956294fa387b66a54b23bc1"
+    "bytes": 33686,
+    "sha256": "b41e205e8bc86f8c9313b174d7d634e186fdac2a247d5691d26275893f6cc04e",
+    "original_bytes": 35045,
+    "original_sha256": "99971ee9166ce6903b3f310465254b07774bb0b92956294fa387b66a54b23bc1",
+    "documentation_language": "en"
   },
   {
     "filename": "Optiboot_ATmega328P_Size_Optimization_2026-10-28.zip",
-    "bytes": 28724,
-    "sha256": "494011753932d85dc40f95effa15d31b8ada7cbbb54e737a7e99169e554d5a50"
+    "bytes": 27528,
+    "sha256": "a039eeff374f5a31658d6d601295d90ae15f5ad68979e3e534ea2fc41d4fc158",
+    "original_bytes": 28724,
+    "original_sha256": "494011753932d85dc40f95effa15d31b8ada7cbbb54e737a7e99169e554d5a50",
+    "documentation_language": "en"
   }
 ]

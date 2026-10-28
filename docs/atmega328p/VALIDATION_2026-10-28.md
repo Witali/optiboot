@@ -5,6 +5,18 @@ All 263 entries covered by the original JSON manifest matched their recorded
 sizes and SHA256 values before import. The repository import manifest accounts
 for all 266 files, including the original inventories and seven nested stage ZIPs.
 
+Documentation was subsequently translated into English throughout the repository
+and stage ZIPs. Translated filenames, references and ZIP inventories were updated.
+The import manifest retains original handoff hashes alongside current hashes;
+`archives/ARCHIVE_MANIFEST.json` does the same for the stage ZIPs. Exact original
+artifacts remain in the initial import commit `db107e2`. Firmware, assembly and
+test program bytes were preserved during the language conversion.
+
+The language pass checked the current repository and all seven stage ZIPs for
+Cyrillic text, validated 97 internal archive checksum entries and all 266 import
+manifest records, and checked documentation links. All five current model suites
+passed again. The source code and firmware images were unchanged.
+
 ## Current firmware
 
 | Artifact | SHA256 |

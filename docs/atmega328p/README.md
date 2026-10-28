@@ -5,8 +5,6 @@ The AVR assembly firmware was optimized with the assistance of artificial
 intelligence. The research combines size optimization with additional EEPROM
 and diagnostic functions while retaining a 512-byte boot section.
 
-[Русская документация](README_RU.md)
-
 ## Features and target
 
 The current source is
@@ -34,7 +32,7 @@ SPM service are omitted in this implementation.
 
 Optimization here means fitting the enhanced feature set into 512 bytes. The
 current enhanced image is larger than some earlier minimal variants; the
-[research changelog](research/02_CHANGELOG_HISTORY_RU.md) records those tradeoffs.
+[research changelog](research/02_CHANGELOG_HISTORY.md) records those tradeoffs.
 
 ## Validation and protocol limits
 
@@ -51,9 +49,9 @@ This firmware implements a subset of STK500v1, not full AVR061. `GET_SIGN_ON`
 returns only an acknowledgement; chip erase is acknowledged without erasing;
 the high length byte is ignored; and an unknown memory type falls back to
 Flash. Do not use `avrdude -e` or attempt fuse/lock writes through this bootloader.
-See the [full supplied audit](current/AUDIT_RU.md),
-[protocol description](research/03_PROTOCOL_AND_HARDWARE_RU.md), and
-[hardware test plan](research/06_HARDWARE_TEST_PLAN_RU.md).
+See the [full translated audit](current/AUDIT.md),
+[protocol description](research/03_PROTOCOL_AND_HARDWARE.md), and
+[hardware test plan](research/06_HARDWARE_TEST_PLAN.md).
 
 ## Build and test
 
@@ -93,27 +91,32 @@ artifacts, not the build output directory.
 |---|---|
 | `optiboot/bootloaders/optiboot_328p/` | Current assembly, supplied firmware and reference images, license, and historical assembly/binary snapshots. |
 | `scripts/atmega328p/` | Current build, simulator, regression suites and test runner; historical tools are in `history/`. |
-| `docs/atmega328p/research/` | Original Russian handoff documents, requirements history, task lists, and recorded test recheck. |
+| `docs/atmega328p/research/` | English translations of the handoff documents, requirements history, task lists, and recorded test recheck. |
 | `docs/atmega328p/current/` | Current audit, change diff, original build/test logs and checksums. |
 | `docs/atmega328p/history/` and `diffs/` | Stage documentation, original manifests and logs, and cross-stage patches. |
-| `docs/atmega328p/archives/` | All seven original stage ZIP files and their original manifest, unchanged. |
+| `docs/atmega328p/archives/` | English editions of all seven stage ZIPs, refreshed internal checksums, and a manifest recording original/current hashes. |
 | `docs/atmega328p/manifests/` | Original archive-wide inventories and checksum lists, unchanged. |
 
 All 266 files from the handoff are accounted for by
 [`IMPORT_MANIFEST.json`](IMPORT_MANIFEST.json). It records each original path,
-its repository destination, and original/imported SHA256 values. Assembly,
-firmware, objects, licenses, documents, and stage ZIPs are byte-for-byte preserved.
+its repository destination, and original/current SHA256 values. Assembly,
+firmware, objects and licenses are byte-for-byte preserved. Research documentation
+has been translated into English, including copies inside stage ZIPs; filenames,
+references and internal archive checksums have been updated. The exact original
+handoff documents and ZIPs remain available in the initial import commit
+[`db107e2`](https://github.com/Witali/optiboot/commit/db107e21b11ea79675637d330a499c2f02d0973a).
 Python and shell paths were adapted to the repository layout; the current build
 also supports the AVR linker when required, uses a separate output directory,
 and the current tests accept a selected
 binary. Archived documents and their checksums describe the original ZIP layout;
 use this page and the import manifest for current paths and commands. Historical
 task lists and copyable agent prompts are records of the research, not current
-development instructions. Original snapshots can also be inspected in the
-unchanged stage ZIPs.
+development instructions. Stage snapshots can also be inspected in the English
+ZIP editions; source code, firmware and test programs inside those editions
+retain their original bytes.
 
 The assembly states GPL-2.0-or-later and preserves the Optiboot attribution to
 Peter Knight, Bill Westfield and contributors. See the
 [included COPYING](../../optiboot/bootloaders/optiboot_328p/COPYING) and
-[original sources/license notes](research/07_SOURCES_LICENSE_RU.md). The fork's
+[translated sources/license notes](research/07_SOURCES_LICENSE.md). The fork's
 existing [LICENSE](../../LICENSE) remains the upstream project license.

@@ -6,7 +6,7 @@ Target: ATmega328P, 16 MHz, UART0 115200 8N1, a 512-byte boot section at `0x7E00
 Tests use a limited software model; physical-hardware validation is pending.
 
 See the [firmware documentation](../../../docs/atmega328p/README.md)
-([Russian](../../../docs/atmega328p/README_RU.md)) for functions, limits and the
+for functions, limits and the
 research history. From the repository root:
 
 ```sh

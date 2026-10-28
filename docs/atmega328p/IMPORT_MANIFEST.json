@@ -4,92 +4,103 @@
   "upstream_commit": "e363ecbe2b6542b5db5b4209589f274c87d833a7",
   "date": "2026-10-28",
   "notes": [
-    "All 266 archive files are accounted for, including seven original stage ZIPs.",
-    "Assembly, binary images, object files, research documents and original manifests are unchanged.",
-    "Python and shell tools have repository-relative paths; the current build supports AVR linker relocation resolution when needed and writes to an ignored build directory.",
-    "Original checksum lists describe the original archive layout; this manifest describes the repository layout."
+    "All 266 original handoff files are accounted for, including seven English stage ZIP editions.",
+    "Assembly, firmware, object files and licenses retain their original bytes.",
+    "Documentation is translated into English; document filenames, references and internal stage ZIP inventories are updated.",
+    "The exact original documents and stage ZIPs remain in initial import commit db107e21b11ea79675637d330a499c2f02d0973a.",
+    "Python and shell tools have repository-relative paths; the current build supports AVR linker relocation resolution and an ignored build directory.",
+    "Original archive-wide inventories describe the input handoff; this manifest records current repository paths and hashes."
   ],
   "entries": [
     {
       "archive_path": "00_START_HERE_RU.md",
-      "repository_path": "docs/atmega328p/research/00_START_HERE_RU.md",
+      "repository_path": "docs/atmega328p/research/00_START_HERE.md",
       "original_bytes": 5056,
       "original_sha256": "7d65e06679affbb65c09be9b66a7a34132ed3eff7bf05a8d5280b53d93cfeecf",
-      "imported_bytes": 5056,
-      "imported_sha256": "7d65e06679affbb65c09be9b66a7a34132ed3eff7bf05a8d5280b53d93cfeecf",
-      "adapted": false
+      "imported_bytes": 3539,
+      "imported_sha256": "888301430ffca677e81cab61d7c3d067f6c39adedb833186347783920b85e0f7",
+      "adapted": true,
+      "documentation_language": "en"
     },
     {
       "archive_path": "01_REPRODUCE_RU.md",
-      "repository_path": "docs/atmega328p/research/01_REPRODUCE_RU.md",
+      "repository_path": "docs/atmega328p/research/01_REPRODUCE.md",
       "original_bytes": 2766,
       "original_sha256": "0438adcc3d35c06b3e24fc83381cb26b76540394359c7ef75b18b6503685508d",
-      "imported_bytes": 2766,
-      "imported_sha256": "0438adcc3d35c06b3e24fc83381cb26b76540394359c7ef75b18b6503685508d",
-      "adapted": false
+      "imported_bytes": 2378,
+      "imported_sha256": "f509ee283e7a9f1820ec80812f7fff07e8325f642d56e3e9e908d2fcd88e9a2d",
+      "adapted": true,
+      "documentation_language": "en"
     },
     {
       "archive_path": "02_CHANGELOG_HISTORY_RU.md",
-      "repository_path": "docs/atmega328p/research/02_CHANGELOG_HISTORY_RU.md",
+      "repository_path": "docs/atmega328p/research/02_CHANGELOG_HISTORY.md",
       "original_bytes": 7659,
       "original_sha256": "110be6ef258a8e168aaa148f9ae9f7dd53f6991916f386573b9ab34d102e365c",
-      "imported_bytes": 7659,
-      "imported_sha256": "110be6ef258a8e168aaa148f9ae9f7dd53f6991916f386573b9ab34d102e365c",
-      "adapted": false
+      "imported_bytes": 4688,
+      "imported_sha256": "a615be66f3b95349a8ae0d231cb42243211385bce04db33732898fa32325c39e",
+      "adapted": true,
+      "documentation_language": "en"
     },
     {
       "archive_path": "03_PROTOCOL_AND_HARDWARE_RU.md",
-      "repository_path": "docs/atmega328p/research/03_PROTOCOL_AND_HARDWARE_RU.md",
+      "repository_path": "docs/atmega328p/research/03_PROTOCOL_AND_HARDWARE.md",
       "original_bytes": 6866,
       "original_sha256": "1b8fe3077e0f430773b4bf57b8ba3bf7ed4fe0c27703db761a41d5b2306d928c",
-      "imported_bytes": 6866,
-      "imported_sha256": "1b8fe3077e0f430773b4bf57b8ba3bf7ed4fe0c27703db761a41d5b2306d928c",
-      "adapted": false
+      "imported_bytes": 4160,
+      "imported_sha256": "cf4add7bc768735ec68070c99cd5911123eca87f864b9b042ff1264c8140ce1d",
+      "adapted": true,
+      "documentation_language": "en"
     },
     {
       "archive_path": "04_TASKS_FOR_NEXT_AGENT_RU.md",
-      "repository_path": "docs/atmega328p/research/04_TASKS_FOR_NEXT_AGENT_RU.md",
+      "repository_path": "docs/atmega328p/research/04_TASKS_FOR_NEXT_AGENT.md",
       "original_bytes": 6094,
       "original_sha256": "0a97e7d2e0b237dcb3a5d5f7d8853dfd9931a2abd3e9a2a7bf6f30165b176deb",
-      "imported_bytes": 6094,
-      "imported_sha256": "0a97e7d2e0b237dcb3a5d5f7d8853dfd9931a2abd3e9a2a7bf6f30165b176deb",
-      "adapted": false
+      "imported_bytes": 3526,
+      "imported_sha256": "c3255173ea17ed6480c17c4a2290b9b53c4299999a8f65a451fd083bfed4a2fa",
+      "adapted": true,
+      "documentation_language": "en"
     },
     {
       "archive_path": "05_USER_REQUEST_HISTORY_RU.md",
-      "repository_path": "docs/atmega328p/research/05_USER_REQUEST_HISTORY_RU.md",
+      "repository_path": "docs/atmega328p/research/05_USER_REQUEST_HISTORY.md",
       "original_bytes": 4079,
       "original_sha256": "1d73baf573b2b49073406a661b8f5083e9b43a2c525cea5c3e3908d3826e9b7d",
-      "imported_bytes": 4079,
-      "imported_sha256": "1d73baf573b2b49073406a661b8f5083e9b43a2c525cea5c3e3908d3826e9b7d",
-      "adapted": false
+      "imported_bytes": 2460,
+      "imported_sha256": "bc774e8d28ab153490a153867c735d8fe49bf5f4be2b5836060f0afa51c84db4",
+      "adapted": true,
+      "documentation_language": "en"
     },
     {
       "archive_path": "06_HARDWARE_TEST_PLAN_RU.md",
-      "repository_path": "docs/atmega328p/research/06_HARDWARE_TEST_PLAN_RU.md",
+      "repository_path": "docs/atmega328p/research/06_HARDWARE_TEST_PLAN.md",
       "original_bytes": 3865,
       "original_sha256": "1870cf0304c38f27f8a644d5615c97fb2831580842ee28795cebb30f9e230a3c",
-      "imported_bytes": 3865,
-      "imported_sha256": "1870cf0304c38f27f8a644d5615c97fb2831580842ee28795cebb30f9e230a3c",
-      "adapted": false
+      "imported_bytes": 2188,
+      "imported_sha256": "8079942d62e18b3afecec1ed9904dde27adcceaffa77cd4f90df7b483d7a6143",
+      "adapted": true,
+      "documentation_language": "en"
     },
     {
       "archive_path": "07_SOURCES_LICENSE_RU.md",
-      "repository_path": "docs/atmega328p/research/07_SOURCES_LICENSE_RU.md",
+      "repository_path": "docs/atmega328p/research/07_SOURCES_LICENSE.md",
       "original_bytes": 3529,
       "original_sha256": "c55748ecea92e0f776ce0d824269e53a3e6ba36750281a5a8f75a3b6a10a8758",
-      "imported_bytes": 3529,
-      "imported_sha256": "c55748ecea92e0f776ce0d824269e53a3e6ba36750281a5a8f75a3b6a10a8758",
-      "adapted": false
+      "imported_bytes": 2463,
+      "imported_sha256": "91d5f9f301297191163612757b4fe249624c29be19e9e3e7f53c5a8f76d6319d",
+      "adapted": true,
+      "documentation_language": "en"
     },
     {
       "archive_path": "08_COPYABLE_PROMPT_FOR_NEXT_AGENT_RU.md",
-      "repository_path": "docs/atmega328p/research/08_COPYABLE_PROMPT_FOR_NEXT_AGENT_RU.md",
+      "repository_path": "docs/atmega328p/research/08_COPYABLE_PROMPT_FOR_NEXT_AGENT.md",
       "original_bytes": 3049,
       "original_sha256": "fece1ede1bd5539f04c70df52f64ee36f579f176a9495b0e4ba28ec0f27545de",
-      "imported_bytes": 3049,
-      "imported_sha256": "fece1ede1bd5539f04c70df52f64ee36f579f176a9495b0e4ba28ec0f27545de",
-      "adapted": false
+      "imported_bytes": 2285,
+      "imported_sha256": "12708343d2730bd686b444bbd8157f1beeb5a9c36c7fc0d6db632ac5e9f843ed",
+      "adapted": true,
+      "documentation_language": "en"
     },
     {
       "archive_path": "COPYING",
@@ -156,12 +167,13 @@
     },
     {
       "archive_path": "CURRENT/AUDIT_RU.md",
-      "repository_path": "docs/atmega328p/current/AUDIT_RU.md",
+      "repository_path": "docs/atmega328p/current/AUDIT.md",
       "original_bytes": 17375,
       "original_sha256": "a79f2263c36580fb9b3260a60026d96a257562f54aeb001e49be4293c6ee26cb",
-      "imported_bytes": 17375,
-      "imported_sha256": "a79f2263c36580fb9b3260a60026d96a257562f54aeb001e49be4293c6ee26cb",
-      "adapted": false
+      "imported_bytes": 8822,
+      "imported_sha256": "6e30d36e3f8d9f8b012168a94b5f9b16d3427ae6c10d40bf6286c5c363aa89ab",
+      "adapted": true,
+      "documentation_language": "en"
     },
     {
       "archive_path": "CURRENT/CHANGELOG_508_TO_512.diff",
@@ -363,12 +375,13 @@
     },
     {
       "archive_path": "HISTORY_SOURCES/01_initial_size_lab/README_RU.md",
-      "repository_path": "docs/atmega328p/history/01_initial_size_lab/README_RU.md",
+      "repository_path": "docs/atmega328p/history/01_initial_size_lab/README.md",
       "original_bytes": 10168,
       "original_sha256": "d6568e7cf42fa780817e56755fa6027b4d8308d8f8637f68a6dec88492e20888",
-      "imported_bytes": 10168,
-      "imported_sha256": "d6568e7cf42fa780817e56755fa6027b4d8308d8f8637f68a6dec88492e20888",
-      "adapted": false
+      "imported_bytes": 5533,
+      "imported_sha256": "57816b087867d12ff9f7d63e645f28a776c8b5a2e46bc2cad5b4d593a83c02f0",
+      "adapted": true,
+      "documentation_language": "en"
     },
     {
       "archive_path": "HISTORY_SOURCES/01_initial_size_lab/TEST_RESULTS.txt",
@@ -516,21 +529,23 @@
     },
     {
       "archive_path": "HISTORY_SOURCES/02_368_protocol_audit/PROTOCOL_AUDIT_RU.md",
-      "repository_path": "docs/atmega328p/history/02_368_protocol_audit/PROTOCOL_AUDIT_RU.md",
+      "repository_path": "docs/atmega328p/history/02_368_protocol_audit/PROTOCOL_AUDIT.md",
       "original_bytes": 9049,
       "original_sha256": "420c5ea1b3b6a0bd9ff2ec7a61f7106ff2202bc7a2101234cab700bfd5cc147a",
-      "imported_bytes": 9049,
-      "imported_sha256": "420c5ea1b3b6a0bd9ff2ec7a61f7106ff2202bc7a2101234cab700bfd5cc147a",
-      "adapted": false
+      "imported_bytes": 4214,
+      "imported_sha256": "48ffd08feedb188f00c2a25f4070d72c1b42da2a728ed3c362d0c7d393a8cc69",
+      "adapted": true,
+      "documentation_language": "en"
     },
     {
       "archive_path": "HISTORY_SOURCES/02_368_protocol_audit/README_RU.md",
-      "repository_path": "docs/atmega328p/history/02_368_protocol_audit/README_RU.md",
+      "repository_path": "docs/atmega328p/history/02_368_protocol_audit/README.md",
       "original_bytes": 11324,
       "original_sha256": "c894bef5fba9a94d135101ea9cc9a4a2394d989f18b7465674c8a80ce0007915",
-      "imported_bytes": 11324,
-      "imported_sha256": "c894bef5fba9a94d135101ea9cc9a4a2394d989f18b7465674c8a80ce0007915",
-      "adapted": false
+      "imported_bytes": 5406,
+      "imported_sha256": "45e30c4814101819436288188b10385a3486a7a4439adce26bfd9286afe1f757",
+      "adapted": true,
+      "documentation_language": "en"
     },
     {
       "archive_path": "HISTORY_SOURCES/02_368_protocol_audit/TEST_RESULTS.txt",
@@ -1272,12 +1287,13 @@
     },
     {
       "archive_path": "HISTORY_SOURCES/03_358_350_size_optimization/README_RU.md",
-      "repository_path": "docs/atmega328p/history/03_358_350_size_optimization/README_RU.md",
+      "repository_path": "docs/atmega328p/history/03_358_350_size_optimization/README.md",
       "original_bytes": 10344,
       "original_sha256": "0c01a254c7bddfb1d13d39ac0cf40902a610b757109153453e31a208638f409a",
-      "imported_bytes": 10344,
-      "imported_sha256": "0c01a254c7bddfb1d13d39ac0cf40902a610b757109153453e31a208638f409a",
-      "adapted": false
+      "imported_bytes": 4862,
+      "imported_sha256": "b6a7b79b0fec090fecead77a4c3406c9d317d3dcce6db8c5dca15dca53fa5bea",
+      "adapted": true,
+      "documentation_language": "en"
     },
     {
       "archive_path": "HISTORY_SOURCES/03_358_350_size_optimization/RESET_ONLY_DIFF.patch",
@@ -1533,12 +1549,13 @@
     },
     {
       "archive_path": "HISTORY_SOURCES/04_480_511_diagnostic_variants/README_RU.md",
-      "repository_path": "docs/atmega328p/history/04_480_511_diagnostic_variants/README_RU.md",
+      "repository_path": "docs/atmega328p/history/04_480_511_diagnostic_variants/README.md",
       "original_bytes": 9799,
       "original_sha256": "bb19f26c68b0778f7a197a58ecb53f9c74083b4bd5f86f545ed52376d9958aed",
-      "imported_bytes": 9799,
-      "imported_sha256": "bb19f26c68b0778f7a197a58ecb53f9c74083b4bd5f86f545ed52376d9958aed",
-      "adapted": false
+      "imported_bytes": 4926,
+      "imported_sha256": "8888a538edac42d0ae5f441cdecd7ebe3b43dfcc2d9616728e8f0e1be940d8c9",
+      "adapted": true,
+      "documentation_language": "en"
     },
     {
       "archive_path": "HISTORY_SOURCES/04_480_511_diagnostic_variants/SHA256SUMS",
@@ -1776,12 +1793,13 @@
     },
     {
       "archive_path": "HISTORY_SOURCES/05_498_eeprom_read_write/README_RU.md",
-      "repository_path": "docs/atmega328p/history/05_498_eeprom_read_write/README_RU.md",
+      "repository_path": "docs/atmega328p/history/05_498_eeprom_read_write/README.md",
       "original_bytes": 10186,
       "original_sha256": "accd2903b965a1f3f5ef6a123ae76851f02f08dc2ac3205b071fd772fa1dfdfa",
-      "imported_bytes": 10186,
-      "imported_sha256": "accd2903b965a1f3f5ef6a123ae76851f02f08dc2ac3205b071fd772fa1dfdfa",
-      "adapted": false
+      "imported_bytes": 5196,
+      "imported_sha256": "3eff0273cd64cc45cc7def5acfffcd0944cfab4a75a261c10737e47e6b65730d",
+      "adapted": true,
+      "documentation_language": "en"
     },
     {
       "archive_path": "HISTORY_SOURCES/05_498_eeprom_read_write/SHA256SUMS",
@@ -1902,12 +1920,13 @@
     },
     {
       "archive_path": "HISTORY_SOURCES/06_508_eeprom_universal/README_RU.md",
-      "repository_path": "docs/atmega328p/history/06_508_eeprom_universal/README_RU.md",
+      "repository_path": "docs/atmega328p/history/06_508_eeprom_universal/README.md",
       "original_bytes": 12253,
       "original_sha256": "545b2fbaf3e0a7a05005599ebecf0a02f938cfcd774eafa530e168bfbfe5cdea",
-      "imported_bytes": 12253,
-      "imported_sha256": "545b2fbaf3e0a7a05005599ebecf0a02f938cfcd774eafa530e168bfbfe5cdea",
-      "adapted": false
+      "imported_bytes": 5890,
+      "imported_sha256": "f5b4a3c5988a5e456ba7172e38ac21eda8ad3eaa69abce634bca6e2b6c99383d",
+      "adapted": true,
+      "documentation_language": "en"
     },
     {
       "archive_path": "HISTORY_SOURCES/06_508_eeprom_universal/SHA256SUMS",
@@ -2100,12 +2119,13 @@
     },
     {
       "archive_path": "HISTORY_SOURCES/07_512_datasheet_audit/AUDIT_RU.md",
-      "repository_path": "docs/atmega328p/history/07_512_datasheet_audit/AUDIT_RU.md",
+      "repository_path": "docs/atmega328p/history/07_512_datasheet_audit/AUDIT.md",
       "original_bytes": 17375,
       "original_sha256": "a79f2263c36580fb9b3260a60026d96a257562f54aeb001e49be4293c6ee26cb",
-      "imported_bytes": 17375,
-      "imported_sha256": "a79f2263c36580fb9b3260a60026d96a257562f54aeb001e49be4293c6ee26cb",
-      "adapted": false
+      "imported_bytes": 8825,
+      "imported_sha256": "3bb0e7cb23ed0fb859c860859514e9c09a93aca6cf7f1b11120fe99d3f0c15f1",
+      "adapted": true,
+      "documentation_language": "en"
     },
     {
       "archive_path": "HISTORY_SOURCES/07_512_datasheet_audit/CHANGELOG_508_TO_512.diff",
@@ -2310,72 +2330,72 @@
       "repository_path": "docs/atmega328p/archives/ARCHIVE_MANIFEST.json",
       "original_bytes": 1330,
       "original_sha256": "093e1919e01021cc70df28bf88fe60a4d67e3bcc65866dba7b8806ead4845fc6",
-      "imported_bytes": 1330,
-      "imported_sha256": "093e1919e01021cc70df28bf88fe60a4d67e3bcc65866dba7b8806ead4845fc6",
-      "adapted": false
+      "imported_bytes": 2422,
+      "imported_sha256": "0c8ecbb81e98db329471c301db82ec62876d5d0a17c8a69bfda7c0dbbecfad02",
+      "adapted": true
     },
     {
       "archive_path": "ORIGINAL_STAGE_ARCHIVES/Optiboot_ATmega328P_358B_350B_Further_Optimization_2026-10-28.zip",
       "repository_path": "docs/atmega328p/archives/Optiboot_ATmega328P_358B_350B_Further_Optimization_2026-10-28.zip",
       "original_bytes": 43233,
       "original_sha256": "7485192b6f0f51927389ecd45610e0ebbeb452a924ae3bbab92d822f0c846e55",
-      "imported_bytes": 43233,
-      "imported_sha256": "7485192b6f0f51927389ecd45610e0ebbeb452a924ae3bbab92d822f0c846e55",
-      "adapted": false
+      "imported_bytes": 41713,
+      "imported_sha256": "6fd33fa20d88ea482448f73116d362b6f13debee3e3730322b2ea5091df9bf0e",
+      "adapted": true
     },
     {
       "archive_path": "ORIGINAL_STAGE_ARCHIVES/Optiboot_ATmega328P_368B_Protocol_Verification_2026-10-28.zip",
       "repository_path": "docs/atmega328p/archives/Optiboot_ATmega328P_368B_Protocol_Verification_2026-10-28.zip",
       "original_bytes": 44968,
       "original_sha256": "79b531ed9ea9d800e02925b36045f647d078eadba27e625d913ee58cb0692614",
-      "imported_bytes": 44968,
-      "imported_sha256": "79b531ed9ea9d800e02925b36045f647d078eadba27e625d913ee58cb0692614",
-      "adapted": false
+      "imported_bytes": 42060,
+      "imported_sha256": "997f9ace6d16802abd585435967e1dc72228b13604fe14ccd0fbb010250a3289",
+      "adapted": true
     },
     {
       "archive_path": "ORIGINAL_STAGE_ARCHIVES/Optiboot_ATmega328P_Datasheet_Audit_Verified_512B_2026-10-28.zip",
       "repository_path": "docs/atmega328p/archives/Optiboot_ATmega328P_Datasheet_Audit_Verified_512B_2026-10-28.zip",
       "original_bytes": 40377,
       "original_sha256": "ba0e1ec9dc079f88b63887a5a6ced1a42d8ff81748e6cbad9f6e36d04c6d9963",
-      "imported_bytes": 40377,
-      "imported_sha256": "ba0e1ec9dc079f88b63887a5a6ced1a42d8ff81748e6cbad9f6e36d04c6d9963",
-      "adapted": false
+      "imported_bytes": 38050,
+      "imported_sha256": "aa5563badc4f7653e69e39811e029c620f5cd2a76bbca9e55d7478ceda26edee",
+      "adapted": true
     },
     {
       "archive_path": "ORIGINAL_STAGE_ARCHIVES/Optiboot_ATmega328P_EEPROM_Read_Write_498B_2026-10-28.zip",
       "repository_path": "docs/atmega328p/archives/Optiboot_ATmega328P_EEPROM_Read_Write_498B_2026-10-28.zip",
       "original_bytes": 28813,
       "original_sha256": "e8ba8da3a370913acb60d227f2bdc731a1ae58ec7e738f4df6370992d9c726e8",
-      "imported_bytes": 28813,
-      "imported_sha256": "e8ba8da3a370913acb60d227f2bdc731a1ae58ec7e738f4df6370992d9c726e8",
-      "adapted": false
+      "imported_bytes": 27472,
+      "imported_sha256": "046c4dfeafa5a6bc6ed41b1c73e79c2e5e71567ce7f2a34224d743c6d22d86a0",
+      "adapted": true
     },
     {
       "archive_path": "ORIGINAL_STAGE_ARCHIVES/Optiboot_ATmega328P_EEPROM_UNIVERSAL_508B_2026-10-28.zip",
       "repository_path": "docs/atmega328p/archives/Optiboot_ATmega328P_EEPROM_UNIVERSAL_508B_2026-10-28.zip",
       "original_bytes": 44224,
       "original_sha256": "a7420de3b58a5210a048ed29fc4c574a00c78b37fe744e11cee109057a14dfb1",
-      "imported_bytes": 44224,
-      "imported_sha256": "a7420de3b58a5210a048ed29fc4c574a00c78b37fe744e11cee109057a14dfb1",
-      "adapted": false
+      "imported_bytes": 42409,
+      "imported_sha256": "6efcdc8dcbe47fdfbce9a0a391287ccc4cc0a3df413c4c1fd6be4ee8ecbcf39a",
+      "adapted": true
     },
     {
       "archive_path": "ORIGINAL_STAGE_ARCHIVES/Optiboot_ATmega328P_Protocol_Features_480B_511B_2026-10-28.zip",
       "repository_path": "docs/atmega328p/archives/Optiboot_ATmega328P_Protocol_Features_480B_511B_2026-10-28.zip",
       "original_bytes": 35045,
       "original_sha256": "99971ee9166ce6903b3f310465254b07774bb0b92956294fa387b66a54b23bc1",
-      "imported_bytes": 35045,
-      "imported_sha256": "99971ee9166ce6903b3f310465254b07774bb0b92956294fa387b66a54b23bc1",
-      "adapted": false
+      "imported_bytes": 33686,
+      "imported_sha256": "b41e205e8bc86f8c9313b174d7d634e186fdac2a247d5691d26275893f6cc04e",
+      "adapted": true
     },
     {
       "archive_path": "ORIGINAL_STAGE_ARCHIVES/Optiboot_ATmega328P_Size_Optimization_2026-10-28.zip",
       "repository_path": "docs/atmega328p/archives/Optiboot_ATmega328P_Size_Optimization_2026-10-28.zip",
       "original_bytes": 28724,
       "original_sha256": "494011753932d85dc40f95effa15d31b8ada7cbbb54e737a7e99169e554d5a50",
-      "imported_bytes": 28724,
-      "imported_sha256": "494011753932d85dc40f95effa15d31b8ada7cbbb54e737a7e99169e554d5a50",
-      "adapted": false
+      "imported_bytes": 27528,
+      "imported_sha256": "a039eeff374f5a31658d6d601295d90ae15f5ad68979e3e534ea2fc41d4fc158",
+      "adapted": true
     },
     {
       "archive_path": "RUN_CURRENT_TESTS.sh",
