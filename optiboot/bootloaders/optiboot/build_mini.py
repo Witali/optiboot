@@ -37,9 +37,9 @@ def best_baud(f_cpu, baud):
 
 
 def make_hex(binary, base):
-    """Intel HEX including extended linear addresses for 128-KiB devices."""
-    if base + len(binary) > 131072:
-        raise ValueError('HEX image extends beyond 128 KiB')
+    """Intel HEX including extended linear addresses up to 256-KiB."""
+    if base + len(binary) > 262144:
+        raise ValueError('HEX image extends beyond 256 KiB')
     lines = []
     last_upper = 0
     for i in range(0,len(binary),16):
@@ -72,17 +72,20 @@ def build(args):
     dev=DEVICES[mcu]
     if args.legacy_eeprom_byte_address and mcu not in ('atmega64a','atmega128a'):
         raise ValueError('Old AVRDUDE EEPROM byte addressing is only supported for ATmega64A/ATmega128A')
-    f_cpu=int(args.f_cpu)
+    f_cpu=int(args.f_cpu) if args.f_cpu is not None else int(os.environ.get('F_CPU', 8000000 if dev['profile'] in ('soft85','soft84') else 16000000))
     if f_cpu<100000 or f_cpu>28000000:
         raise ValueError('F_CPU must be between 100000 and 28000000 Hz')
-    clock_source=args.clock_source
+    clock_source=args.clock_source or os.environ.get('CLOCK_SOURCE', 'internal_rc' if dev['profile'] in ('soft85','soft84') else 'external_crystal')
     if clock_source=='internal_rc' and f_cpu not in (1000000,2000000,4000000,8000000):
         raise ValueError('internal_rc requires an actual CPU clock of 1, 2, 4 or 8 MHz; check fuses/CLKPR')
     if f_cpu > dev['max_mhz']*1000000:
         if not args.allow_overclock:
             raise ValueError(f'{mcu}: rated maximum is {dev["max_mhz"]} MHz. Use --allow-overclock only for deliberate, unverified overclocking.')
         print(f'WARNING: {mcu} at {f_cpu/1e6:g} MHz exceeds rated {dev["max_mhz"]} MHz; clock/voltage/UART reliability NOT guaranteed.',file=sys.stderr)
-    if args.baud == 'auto':
+    soft_serial = dev['profile'] in ('soft85','soft84')
+    if args.baud == 'auto' and soft_serial:
+        baud = 9600 if f_cpu <= 2000000 else 19200 if f_cpu <= 8000000 else 38400 if f_cpu <= 16000000 else 57600
+    elif args.baud == 'auto':
         if clock_source=='internal_rc':
             # conservative nominal defaults: RC error and temperature drift are additional
             baud=9600 if f_cpu<=1000000 else (19200 if f_cpu<=2000000 else 38400)
@@ -91,7 +94,11 @@ def build(args):
     else:
         baud=int(args.baud)
         if baud<=0:raise ValueError('BAUD_RATE must be positive')
-    uart=best_baud(f_cpu,baud)
+    uart=best_baud(f_cpu,baud) if not soft_serial else {
+        'u2x':0,'ubrr':0,'actual_baud':f_cpu/round(f_cpu/baud),
+        'baud_error_percent':100*(f_cpu/round(f_cpu/baud)-baud)/baud}
+    if soft_serial and not (100 <= round(f_cpu/baud) <= 750):
+        raise ValueError('Software UART needs 100..750 CPU cycles per bit; choose another baud/clock')
     error_lim=1.5 if clock_source=='internal_rc' else 2.5
     if abs(uart['baud_error_percent'])>error_lim and not args.allow_baud_error:
         raise ValueError(f'UART error {uart["baud_error_percent"]:+.2f}% exceeds {error_lim:.1f}% limit; change baud or --allow-baud-error')
@@ -100,13 +107,14 @@ def build(args):
     tcname,cc,oc,tcflags=compiler_tools(args.toolchain)
     output=Path(args.output_dir).resolve() if args.output_dir else ROOT/'output'/mcu
     output.mkdir(parents=True,exist_ok=True)
+    virtual = bool(dev.get('virtual_boot'))
     # Hardware BOOTSZ1:0 supports exactly four sizes (factor 2 each).
     # MAX is 2KiB on 8/16KiB AVRs, 4KiB on 32KiB AVRs, and
-    # 8KiB on the supported 64/128KiB AVRs.  Flash//2 is NOT a valid
+    # 8KiB on the supported 64/128/256KiB AVRs.  Flash//2 is NOT a valid
     # substitute: it silently allowed non-existent 4/8KiB fuse selections.
     max_boot = 2048 if dev['flash'] <= 16384 else (4096 if dev['flash'] <= 32768 else 8192)
     hardware_boot_sizes = [max_boot//8, max_boot//4, max_boot//2, max_boot]
-    capacities = [b for b in hardware_boot_sizes if b >= dev['default_boot']]
+    capacities = [dev['default_boot']] if virtual else [b for b in hardware_boot_sizes if b >= dev['default_boot']]
     if args.boot_bytes != 'auto':
         size=int(args.boot_bytes)
         if size not in capacities:
@@ -134,7 +142,16 @@ def build(args):
                 if not shutil.which('avr-ld'):
                     raise RuntimeError('Local AVR relocations require avr-ld (binutils-avr); do not flash an unlinked object')
                 image_obj = output/(mcu+'.elf')
-                arch = 'avr51' if dev['flash'] > 65536 else ('avr4' if dev['flash'] <= 8192 else 'avr5')
+                if soft_serial or mcu == 'attiny841':
+                    arch = 'avr25'
+                elif virtual:
+                    arch = 'avr35'
+                elif dev['flash'] > 131072:
+                    arch = 'avr6'
+                elif dev['flash'] > 65536:
+                    arch = 'avr51'
+                else:
+                    arch = 'avr4' if dev['flash'] <= 8192 else 'avr5'
                 # Preserve section-relative offsets and instruction sizes. HEX supplies
                 # the physical boot address; linker relaxation must remain disabled.
                 subprocess.run(['avr-ld','-m',arch,'-Ttext=0','-e','_start',str(obj),'-o',str(image_obj)],
@@ -173,13 +190,21 @@ def build(args):
         result={'mcu':mcu,'flash_bytes':dev['flash'],'eeprom_bytes':dev['eeprom'],'flash_page_bytes':dev['page'],
             'f_cpu_hz':f_cpu,'clock_source':clock_source,'baud_requested':baud,**uart,'toolchain':tcname,
             'boot_bytes':boot_bytes,'boot_start_hex':f'0x{base:04X}','code_bytes':code_bytes,
-            'boot_size_max_bytes':max_boot,
-            'bootsz1_0_bits':f'{(hardware_boot_sizes.index(boot_bytes) ^ 3):02b}',
-            'bootrst_programmed_required':True,
+            'boot_size_max_bytes':None if virtual else max_boot,
+            'bootsz1_0_bits':None if virtual else f'{(hardware_boot_sizes.index(boot_bytes) ^ 3):02b}',
+            'bootrst_programmed_required':not virtual,
+            'virtual_boot_vector_patch_required':virtual,
+            'selfprgen_fuse_programmed_required':virtual,
+            'virtual_boot_flash_transfer_bytes':128 if mcu=='attiny1634' else 16 if mcu=='attiny841' else 64 if soft_serial else None,
+            'soft_uart':soft_serial, 'soft_uart_tx_pin':'PB0' if mcu=='attiny85' else 'PA1' if mcu=='attiny84' else None,
+            'soft_uart_rx_pin':'PB1' if mcu=='attiny85' else 'PA2' if mcu=='attiny84' else None,
+            'hardware_boot_fuse_supported':not virtual,
             'eeprom_host_addressing':'byte' if args.legacy_eeprom_byte_address else 'word',
             'signature_hex':''.join(f'{v:02X}' for v in dev['sig']),'bin_sha256':sha,
+            'production_ready':False,
             'silicon_tested':False,'avrdude_hardware_tested':False,'overclock':f_cpu>dev['max_mhz']*1000000}
         (output/(mcu+'.json')).write_text(json.dumps(result,indent=2)+'\n')
+        if virtual:print('WARNING: Virtual Boot ATtiny cannot start from reset without patching application reset and EE_RDY vectors. Do not flash .hex as a complete image.',file=sys.stderr)
         print(f'OK {mcu}: {len(b)} bytes (code {code_bytes}) at 0x{base:04X} | {f_cpu/1e6:g} MHz / {baud} baud, U2X={uart["u2x"]}, UBRR={uart["ubrr"]}, error={uart["baud_error_percent"]:+.2f}%')
         print(f'    HEX {output/(mcu+".hex")} SHA256 {sha}')
         return result
@@ -189,8 +214,8 @@ def build(args):
 def main():
     a=argparse.ArgumentParser(description=__doc__)
     a.add_argument('--mcu',default=os.environ.get('MINI_MCU',os.environ.get('MCU','atmega328p')))
-    a.add_argument('--f-cpu',type=int,default=int(os.environ.get('F_CPU',16000000)))
-    a.add_argument('--clock-source',choices=SUPPORTED_CLOCKS,default=os.environ.get('CLOCK_SOURCE','external_crystal'))
+    a.add_argument('--f-cpu',type=int)
+    a.add_argument('--clock-source',choices=SUPPORTED_CLOCKS)
     a.add_argument('--baud',default=os.environ.get('BAUD_RATE','auto'))
     a.add_argument('--boot-bytes',default='auto')
     a.add_argument('--allow-overclock',action='store_true')

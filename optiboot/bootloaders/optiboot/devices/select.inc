@@ -1,4 +1,4 @@
-/* Device selection follows the compiler -mmcu option. */
+/* MCU device selection from compiler -mmcu. */
 #if defined(__AVR_ATmega328P__)
 #include "atmega328p.inc"
 #elif defined(__AVR_ATmega328__)
@@ -29,6 +29,52 @@
 #include "atmega1284.inc"
 #elif defined(__AVR_ATmega1284P__)
 #include "atmega1284p.inc"
+#elif defined(__AVR_ATmega8__)
+#include "atmega8.inc"
+#elif defined(__AVR_ATmega8A__)
+#include "atmega8a.inc"
+#elif defined(__AVR_ATmega8515__)
+#include "atmega8515.inc"
+#elif defined(__AVR_ATmega8535__)
+#include "atmega8535.inc"
+#elif defined(__AVR_ATmega162__)
+#include "atmega162.inc"
+#elif defined(__AVR_ATmega164P__)
+#include "atmega164p.inc"
+#elif defined(__AVR_ATmega164A__)
+#include "atmega164a.inc"
+#elif defined(__AVR_ATmega324P__)
+#include "atmega324p.inc"
+#elif defined(__AVR_ATmega324A__)
+#include "atmega324a.inc"
+#elif defined(__AVR_ATmega324PB__)
+#include "atmega324pb.inc"
+#elif defined(__AVR_ATmega644__)
+#include "atmega644.inc"
+#elif defined(__AVR_ATmega644P__)
+#include "atmega644p.inc"
+#elif defined(__AVR_ATmega644A__)
+#include "atmega644a.inc"
+#elif defined(__AVR_ATmega644PA__)
+#include "atmega644pa.inc"
+#elif defined(__AVR_ATmega640__)
+#include "atmega640.inc"
+#elif defined(__AVR_ATmega1280__)
+#include "atmega1280.inc"
+#elif defined(__AVR_ATmega1281__)
+#include "atmega1281.inc"
+#elif defined(__AVR_ATmega2560__)
+#include "atmega2560.inc"
+#elif defined(__AVR_ATmega2561__)
+#include "atmega2561.inc"
+#elif defined(__AVR_ATtiny841__)
+#include "attiny841.inc"
+#elif defined(__AVR_ATtiny1634__)
+#include "attiny1634.inc"
+#elif defined(__AVR_ATtiny85__)
+#include "attiny85.inc"
+#elif defined(__AVR_ATtiny84__)
+#include "attiny84.inc"
 #else
-#error Unsupported MCU: select an ATmega profile defined in devices/
+#error Unsupported MCU: define a device profile
 #endif

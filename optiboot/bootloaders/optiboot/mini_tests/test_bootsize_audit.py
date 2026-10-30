@@ -12,8 +12,13 @@ class TestBootFuseSizes(unittest.TestCase):
                 flash=profile['flash']
                 maxboot=2048 if flash <=16384 else 4096 if flash <=32768 else 8192
                 allowed=[maxboot//8, maxboot//4, maxboot//2, maxboot]
-                self.assertIn(profile['default_boot'],allowed)
-                self.assertLessEqual(profile['default_boot'],maxboot)
+                if profile.get('virtual_boot'):
+                    # Virtual Boot ATtiny has no BOOTSZ fuses; 1024 is a
+                    # reserved Flash region rather than a hardware section.
+                    self.assertEqual(profile['default_boot'],1024)
+                else:
+                    self.assertIn(profile['default_boot'],allowed)
+                    self.assertLessEqual(profile['default_boot'],maxboot)
                 self.assertEqual(len(allowed),4)
     def test_unsupported_fuse_sizes_rejected(self):
         for chip,bad in [('atmega16',4096),('atmega88',4096),('atmega168',8192),('atmega328p',8192),('atmega32a',8192)]:
@@ -31,6 +36,6 @@ class TestBootFuseSizes(unittest.TestCase):
                 self.assertEqual(manifest['boot_start_hex'],'0x1FC00')
     def test_source_references_correct_boot_branch(self):
         s=(ROOT/'optiboot_mini.S').read_text()
-        self.assertIn('#if MINI_FLASH_128K || (BOOT_BYTES > 4096)',s)
+        self.assertIn('#elif MINI_FLASH_BANKED || (BOOT_BYTES > 4096)',s)
 
 if __name__=='__main__':unittest.main()

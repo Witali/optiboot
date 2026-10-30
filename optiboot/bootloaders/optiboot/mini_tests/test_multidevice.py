@@ -34,7 +34,8 @@ class BuildTest(unittest.TestCase):
             for chip,dev in build.DEVICES.items():
                 with self.subTest(chip=chip):
                     folder=Path(t)/chip
-                    cli('--mcu',chip,'--output-dir',folder)
+                    frequency = 8000000 if chip in ('attiny84','attiny85') else 12000000 if chip=='attiny1634' else 16000000
+                    cli('--mcu',chip,'--f-cpu',frequency,'--output-dir',folder)
                     report=json.loads((folder/(chip+'.json')).read_text())
                     b=(folder/(chip+'.bin')).read_bytes()
                     self.assertEqual(report['flash_bytes'],dev['flash'])

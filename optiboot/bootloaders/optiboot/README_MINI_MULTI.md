@@ -2,7 +2,13 @@
 
 This is an **experimental multi-device port** of the existing Optiboot Mini assembly, not a replacement for upstream `optiboot.c`. The default is **ATmega328P / 16 MHz / external crystal / UART 115200, 8N1**, as on the Arduino Uno.
 
-The stock `make atmega328` target and legacy `make mini328` target remain available; this adds a separate `make mini` target. `make mini` consumes `MINI_MCU`, `MCU` or an explicitly supplied `MCU_TARGET`. It uses `F_CPU` or the project's `AVR_FREQ`; otherwise it defaults to 16 MHz. Device selection is also automatic for anyone compiling `optiboot_mini.S` using `-mmcu=<chip>`: `devices/select.inc` reads compiler-defined `__AVR_ATmega...__` macros.
+There are **38 profiles: 34 ATmega and four experimental Virtual Boot ATtiny**.
+ATmega2560/2561 support four Flash banks; ATtiny84/85 use software UART.
+See the [expanded import report](../../../docs/mini/EXPANDED_IMPORT_2026-10-30.md)
+for the handoff decisions and validation, and the
+[Virtual Boot guide](../../../docs/mini/VIRTUAL_BOOT.md) for ATtiny installation.
+
+The stock `make atmega328` target and standalone `make mini328` target remain available. `make mini` consumes `MINI_MCU`, `MCU` or an explicitly supplied `MCU_TARGET`. It uses `F_CPU` or the project's `AVR_FREQ`; otherwise it defaults to 16 MHz. ATtiny84/85 default to 8 MHz internal RC and 19200 baud even when the parent Makefile has unrelated board defaults. Set `F_CPU=12000000` for ATtiny1634. Device selection is automatic for anyone compiling `optiboot_mini.S` using `-mmcu=<chip>`: `devices/select.inc` reads compiler-defined `__AVR_ATmega...__` and `__AVR_ATtiny...__` macros.
 
 ## Examples
 
@@ -16,6 +22,12 @@ make mini MCU=atmega328p F_CPU=20000000 BAUD_RATE=115200
 make mini MCU=atmega328p F_CPU=24000000 MINI_ALLOW_OVERCLOCK=1
 make mini MCU=atmega128a F_CPU=16000000  # 1024-byte boot; extended Flash addressing
 make mini MCU=atmega1284p F_CPU=20000000 # 1024-byte boot; MCU rated up to 20 MHz
+make mini MCU=atmega8
+make mini MCU=atmega2560                 # 256 KiB Flash, 1024-byte boot section
+make mini MCU=attiny841                  # hardware UART, Virtual Boot
+make mini MCU=attiny1634 F_CPU=12000000   # 128-byte Flash transfer groups
+make mini MCU=attiny84                   # software UART, 8 MHz / 19200
+make mini MCU=attiny85
 make mini_list
 make mini_test
 ```
@@ -38,7 +50,18 @@ The toolchain requires Clang/LLVM AVR support or AVR-GCC/avr-objcopy, plus `read
 | ATmega32A | 32 KiB | 128 B | 1 KiB | **512 B** | Yes (emulator smoke-tested) | No |
 | ATmega64A | 64 KiB | 256 B | 2 KiB | 1024 B (minimum) | Yes | No |
 | **ATmega128A** | 128 KiB | 256 B | 4 KiB | **1024 B** (606 B code) | Yes (emulated) | No |
-| **ATmega1284 / 1284P** | 128 KiB | 256 B | 4 KiB | **1024 B** (608 B code) | Yes (emulated) | No |
+| **ATmega1284 / 1284P** | 128 KiB | 256 B | 4 KiB | **1024 B** (592 B code) | Yes (emulated) | No |
+| ATmega8 / 8A / 8515 / 8535 | 8 KiB | 64 B | 512 B | 512 B | Yes | No |
+| ATmega162 | 16 KiB | 128 B | 512 B | 512 B | Yes | No |
+| ATmega164A / 164P | 16 KiB | 128 B | 512 B | 512 B | Yes | No |
+| ATmega324A / 324P / 324PB | 32 KiB | 128 B | 1 KiB | 512 B | Yes | No |
+| ATmega644 / 644A / 644P / 644PA | 64 KiB | 256 B | 2 KiB | 1024 B | Yes | No |
+| ATmega640 | 64 KiB | 256 B | 4 KiB | 1024 B | Yes | No |
+| ATmega1280 / 1281 | 128 KiB | 256 B | 4 KiB | 1024 B | Yes | No |
+| ATmega2560 / 2561 | 256 KiB | 256 B | 4 KiB | 1024 B | Yes | No |
+| ATtiny841 | 8 KiB | 16 B | 512 B | 1024 B, Virtual Boot | Yes | No |
+| ATtiny1634 | 16 KiB | 32 B, erase 4 pages | 256 B | 1024 B, Virtual Boot | Yes | No |
+| ATtiny84 / 85 | 8 KiB | 64 B | 512 B | 1024 B, Virtual Boot, software UART | Yes | No |
 
 The ATmega16/32A use `uart/legacy.inc`: `SBIS` polls RXC, FE and UDRE directly in the low I/O space without a temporary `IN` instruction. This preserves UART status checks and saves four bytes, allowing **512-byte** boot sections for both parts. ATmega16 boots at `0x3E00`, ATmega32A at `0x7E00` (when BOOTSZ/BOOTRST fuses are correctly configured). The ATmega64A requires 1024 bytes of boot Flash at minimum; it also has a different SPMCSR location and a 256-byte page. Its 256-byte `PROG_PAGE` form is handled with a distinct code path. The boot address is derived from device Flash size and the actual selected boot section, never from a hardcoded ATmega328P value.
 
@@ -46,17 +69,29 @@ ATmega128A, ATmega1284, and ATmega1284P now have a 17-bit Flash address path. Th
 
 Chip signatures, UART register maps, SPM location and EEPROM address registers live in `devices/*.inc`. New unrecognised devices are deliberately rejected by `select.inc` until their maps are reviewed.
 
+ATmega2560/2561 use `STK_UNIVERSAL 0x4D` to latch the extended word-address
+bank, with RAMPZ/ELPM/SPM and Intel HEX extended-linear-address records.
+ATtiny841/1634 use dedicated hardware UART modules. All four ATtiny profiles
+require ISP seed installation and application RESET/EE_RDY vector relocation.
+ATtiny1634 must receive complete 128-byte groups because one erase affects four
+32-byte pages. The dedicated [ATtiny uploader](tiny/flash_tiny.py) handles this.
+
 ## Clock and baud-rate configuration
 
-`F_CPU` is the **actual CPU clock**, not merely the oscillator's nominal frequency: take CKDIV8/CLKPR into account. `CLOCK_SOURCE=external_crystal` is the default. `external_clock` and `internal_rc` are supported as build settings, but **neither this tool nor the bootloader changes fuses or calibrates the oscillator**.
+`F_CPU` is the **actual CPU clock**, not merely the oscillator's nominal frequency: take CKDIV8/CLKPR into account. `CLOCK_SOURCE=external_crystal` is the hardware-UART default; ATtiny84/85 default to `internal_rc`. `external_clock` and `internal_rc` are supported as build settings, but **neither this tool nor the bootloader changes fuses or calibrates the oscillator**.
 
 When `BAUD_RATE=auto`, external clocks prefer 115200 if the calculated UART error is within 2.5%, otherwise 57600. Internal RC defaults to 9600 (1 MHz), 19200 (2 MHz), or 38400 (4/8 MHz), with a tighter 1.5% calculated-divider-error limit. The build searches normal (16x) and double-speed (8x) UART modes, selecting the lowest nominal error. Actual internal RC oscillator tolerance, voltage, and temperature drift are additional and **must be measured**.
+
+Software UART has a separate policy: 9600 baud up to 2 MHz, 19200 up to 8 MHz,
+38400 up to 16 MHz, and 57600 above that. Its delay loops require 100–750 CPU
+cycles per bit; unsupported combinations are rejected. ATtiny84 uses TX PA1 /
+RX PA2; ATtiny85 uses TX PB0 / RX PB1, 8N1, without timer interrupts.
 
 Supported build input frequencies include 10, 12, 16 and 20 MHz (subject to each device's datasheet limit). 24, 25 and 28 MHz are deliberate **out-of-spec overclocking experiments** on all listed parts and require `MINI_ALLOW_OVERCLOCK=1` or `--allow-overclock`. This switch is an acknowledgement, not a guarantee that the chip, clock source, or UART works. The datasheet operating-frequency and voltage limits still apply. For legacy ATmega16/32A, calibrated RC frequency selection and OSCCAL values require particular care: the ATmega32A datasheet documents factory calibration loading for its default 1 MHz RC mode. A build option does not select a fuse nor load OSCCAL automatically.
 
 ## Protocol and compatibility
 
-The assembly retains the existing Optiboot Mini STK500v1-compatible subset: page write/read of Flash, 1–16-byte EEPROM writes, EEPROM reads, `GET_SIGN_ON`, signature, read-only fuse/lock `UNIVERSAL`, watchdog timeout, and the established classic Optiboot no-op Chip Erase acknowledgement. Read-modify-write of partially written Flash pages is *not* added. Real Chip Erase and fuse writes remain ISP-only. The EEPROM memory addressing assumes the **classic-AVR `avrdude -c arduino` word-address convention**; configure avrdude for the correct exact chip (`-p ...`).
+The assembly retains the existing Optiboot Mini STK500v1-compatible subset: page write/read of Flash, 1–16-byte EEPROM writes, EEPROM reads, `GET_SIGN_ON`, signature, read-only fuse/lock `UNIVERSAL`, watchdog timeout, and the established classic Optiboot no-op Chip Erase acknowledgement. ATmega2560/2561 additionally support the `UNIVERSAL 0x4D` address-bank command. Read-modify-write of partially written Flash pages is *not* added. Real Chip Erase and fuse writes remain ISP-only. The EEPROM memory addressing assumes the **classic-AVR `avrdude -c arduino` word-address convention**; configure avrdude for the correct exact chip (`-p ...`). Virtual Boot ATtiny uploads require the dedicated uploader and patched application described in the linked guide.
 
 **Verification status:** the old ATmega328P 16 MHz image is bit-identical and its historical software-emulation results carry over to that configuration. ATmega16/32A and ATmega128A/1284/1284P additionally have AVR-opcode-level peripheral smoke tests (not hardware-accurate timing). All MCU ports remain **unverified with real avrdude or on silicon**. Treat all non-328P firmware images as *port candidates*, not production firmware.
 
@@ -90,8 +125,8 @@ No function or protocol command has been removed to achieve 512 bytes.
 | ATmega328P | 500 B | 12 B | 512 B | `0x7E00` |
 | ATmega64A | 568 B | 12 B | 1024 B (hardware minimum) | `0xFC00` |
 | ATmega128A | 606 B | 12 B | 1024 B (hardware minimum) | `0x1FC00` |
-| ATmega1284 | 608 B | 12 B | 1024 B (hardware minimum) | `0x1FC00` |
-| ATmega1284P | 608 B | 12 B | 1024 B (hardware minimum) | `0x1FC00` |
+| ATmega1284 | 592 B | 12 B | 1024 B (hardware minimum) | `0x1FC00` |
+| ATmega1284P | 592 B | 12 B | 1024 B (hardware minimum) | `0x1FC00` |
 
 The tests execute AVR instructions for sync, sign-on, signatures, fuse reads,
 Flash page programming and verification, EEPROM R/W, RX framing-error
@@ -108,4 +143,4 @@ python3 build_mini.py --mcu atmega64a --legacy-eeprom-byte-address
 make mini MCU=atmega128a MINI_OLD_AVRDUDE_EEPROM=1
 ```
 
-The old-host variant only changes EEPROM address interpretation; Flash always takes a word address. **Do not mix host conventions** for EEPROM read/write. The full test and reproduction notes are at the package root in `docs/AUDIT_2026-10-30.md`.
+The old-host variant only changes EEPROM address interpretation; Flash always takes a word address. **Do not mix host conventions** for EEPROM read/write. The [original import report](../../../docs/mini/IMPORT_2026-10-30.md) records the earlier audit and validation scope.

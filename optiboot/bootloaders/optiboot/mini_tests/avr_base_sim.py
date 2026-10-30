@@ -102,6 +102,10 @@ class AVR:
             newpc=self.stack.pop()
         elif op==0x94f8: # cli
             pass
+        elif op==0x9488: # clc
+            self.carry=False
+        elif op==0x9408: # sec
+            self.carry=True
         elif op==0x95a8: # wdr
             self.wdr_count+=1
         elif op==0x95e8: # spm
@@ -178,6 +182,9 @@ class AVR:
         elif op&0xff00==0x9a00: # sbi
             addr=0x20+((op>>3)&0x1f); bit=op&7
             self.io_write(addr,self.io_read(addr)|(1<<bit))
+        elif op&0xff00==0x9800: # CBI
+            addr=0x20+((op>>3)&0x1f);bit=op&7
+            self.io_write(addr,self.io_read(addr)&~(1<<bit))
         elif op&0xff00==0x9900: # SBIC
             addr=0x20+((op>>3)&0x1f);bit=op&7
             if not (self.io_read(addr)&(1<<bit)):
@@ -231,9 +238,11 @@ class AVR:
             x=self.x();self.mem[x]=self.reg[rd];self.set_x(x+1)
         elif op&0xfe0f==0x9007: # ELPM Rd,Z+ (17+ bit Flash address)
             z=self.z()
-            rampz=self.io.get(0x5b,0) & 1
+            # RAMPZ is a bank register (1 bit on 128K, 2 bits on 256K).
+            # ELPM Z+ increments the full RAMPZ:Z register on wrap.
+            rampz=self.io.get(0x5b,0)
             self.reg[rd]=self.flash[(rampz<<16)|z]
-            if z==0xffff:self.io[0x5b]=rampz ^ 1
+            if z==0xffff:self.io[0x5b]=(rampz + 1)&0xff
             self.set_z(z+1)
         elif op&0xfe0f==0x9005: # lpm Rd, Z+
             z=self.z();self.reg[rd]=self.flash[z];self.set_z(z+1)

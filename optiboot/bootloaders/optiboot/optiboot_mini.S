@@ -10,9 +10,9 @@
  * implements STK_GET_SIGN_ON with AVR061's "AVR STK" reply.
  *
  * Uses Y as stable USART0 base for modern parts; legacy parts use IN/OUT.
- * For 128 KiB Flash: r3 holds the 17th byte-address bit, RAMPZ drives
+ * For 128/256 KiB Flash: r3 holds upper byte-address bits, RAMPZ drives
  * ELPM/SPM, and full-bank overflow and boot-sector writes are rejected.
- * The 128 KiB targets use 1024-byte boot sections (not constrained to 512 B).
+ * 128/256 KiB targets use 1024-byte boot sections (not limited to 512 B).
  * Shares two-byte receive and common error responses across handlers.
  * Keeps avrdude -c arduino format, read/write FLASH, 1..16B EEPROM writes,
  * EEPROM read, read-only UNIVERSAL fuse/lock commands, WDT and SPM interlock.
@@ -26,14 +26,13 @@
  */
 
 #include "devices/select.inc"
-#include "uart/select.inc"
-
 #ifndef F_CPU
 #define F_CPU 16000000UL
 #endif
 #ifndef BAUD_RATE
 #define BAUD_RATE 115200UL
 #endif
+#include "uart/select.inc"
 #ifndef MINI_U2X
 #define MINI_U2X 1
 #endif
@@ -43,11 +42,14 @@
 #if MINI_UBRR < 0 || MINI_UBRR > 4095
 #error Unsupported UART divider
 #endif
-#if FLASH_SIZE > 131072
-#error STK500v1 LOAD_ADDRESS alone does not address more than 128 KiB Flash
+#if FLASH_SIZE > 262144
+#error This implementation addresses at most 256 KiB of Flash
 #endif
-#if MINI_FLASH_128K && (FLASH_SIZE != 131072)
-#error The 17-bit RAMPZ addressing port expects a 128 KiB device
+#if MINI_FLASH_BANKED && ((FLASH_SIZE != 131072) && (FLASH_SIZE != 262144))
+#error RAMPZ addressing is supported for 128 or 256 KiB devices
+#endif
+#if MINI_FLASH_256K && FLASH_SIZE != 262144
+#error The STK_UNIVERSAL extended address port requires 256 KiB
 #endif
 /* AVRDUDE releases before its 2022 STK500v1 fix can use BYTE addresses
  * for EEPROM on ATmega64A/ATmega128A, unlike the normal WORD convention.
@@ -66,7 +68,8 @@ _start:
 /* Register allocation:
  * r1  = cleared on entry; later used as HIGH data byte during Flash fill
  * r2  = copy of MCUSR for application startup
- * r3  = 128 KiB Flash address bank bit (RAMPZ), when MINI_FLASH_128K
+ * r3  = Flash 64-KiB bank index (RAMPZ), when MINI_FLASH_BANKED
+ * r4  = high word-address bit for 256-KiB STK500v1 LOAD_EXT_ADDR
  * r29 = zero from boot entry; must remain zero (Y=0x00C0 on modern USART)
  * r16 = UART byte/input/output value
  * r17 = watchdog configuration value
@@ -91,13 +94,16 @@ boot_start:
 #endif
     clr r1                 ; AVR zero register restored for application
     clr r29                ; zero register available from very first instruction
-#if MINI_FLASH_128K
-    clr r3                 ; 17th bit of the current Flash byte address (RAMPZ)
+#if MINI_FLASH_BANKED
+    clr r3                 ; current Flash byte-address bank index (RAMPZ)
     out RAMPZ_IO,r3
 #endif
-    in   r16, 0x34         ; MCUSR
+#if MINI_FLASH_256K
+    clr r4                 ; extended word address (from STK_UNIVERSAL 4D)
+#endif
+    in   r16, MCUSR_IO     ; MCUSR varies on ATtiny1634
     mov  r2, r16
-    out  0x34, r29         ; clear reset reason (r29=0)
+    out  MCUSR_IO, r29     ; clear reset reason (r29=0)
     wdr
     clr  r17
     rcall wdt_config        ; disable watchdog on application start
@@ -106,7 +112,12 @@ boot_start:
     andi r16, 0x0A         ; WDRF | EXTRF
     cpi  r16, 0x02         ; enter only on external reset without WDRF
     breq start_uart
-#if MINI_FLASH_128K || (BOOT_BYTES > 4096)
+#if MINI_VIRTUAL_BOOT
+    ; No BOOTRST fuse: reset-vector has been patched by tiny/patch_vectors.py.
+    ; The reserved EEPROM-ready vector holds a relocated RJMP into the app.
+    ; Jump through the end of FLASH so the short RJMP wraps to the vector.
+    rjmp boot_end + (MINI_APP_VECTOR_WORD * 2)
+#elif MINI_FLASH_BANKED || (BOOT_BYTES > 4096)
     jmp 0                  ; direct reset vector (also needed for 8KiB boot on 64KiB AVR)
 #else
     rjmp boot_end          ; PC wraps from the end of Flash to address zero
@@ -148,7 +159,12 @@ next_command:
     brne .Ldispatch_read_page
     rjmp command_write
 .Ldispatch_read_page:  cpi  r16, 0x74         ; READ_PAGE
+#if MINI_FLASH_256K
+    brne .Ldispatch_read_signature
+    rjmp command_read
+#else
     breq command_read
+#endif
 .Ldispatch_read_signature:  cpi  r16, 0x75         ; READ_SIGN
     breq command_signature
 .Ldispatch_leave_program_mode:  cpi  r16, 0x51         ; LEAVE_PROGMODE
@@ -174,8 +190,8 @@ static_bytes:
     clr r20              ; select LPM branch in every iteration
     ldi r31,(((FLASH_SIZE - 1) >> 8) & 0xFF)
     rcall verify_eop
-#if MINI_FLASH_128K
-    ldi r16,1              ; footer is at 0x1FFF4, in upper 64-KiB bank
+#if MINI_FLASH_BANKED
+    ldi r16,((FLASH_SIZE - 1) >> 16)  ; footer bank = 1 for 128K, 3 for 256K
     out RAMPZ_IO,r16
 #endif
     rjmp read_loop
@@ -209,9 +225,13 @@ command_address:
     movw r22, r24         ; low/high bytes into address register pair
     lsl  r22               ; word -> byte address
     rol  r23
-#if MINI_FLASH_128K
+#if MINI_FLASH_BANKED
     clr  r3
-    adc  r3, r29          ; 17th bit: original LOAD_ADDRESS word bit 15
+    adc  r3, r29          ; word bit 15 becomes byte-address bit 16
+#if MINI_FLASH_256K
+    bst  r4,0             ; 4D 00 <bank> 00 -> 17th word-address bit
+    bld  r3,1             ; 18th byte-address bit / RAMPZ bit 1
+#endif
 #elif MINI_SPM_EXT
     brcc .Lme64_error_skip_0
     rjmp protocol_error
@@ -226,6 +246,30 @@ command_address:
  */
 universal_handler:
     rcall read_length      ; first two opcode bytes
+#if MINI_FLASH_256K
+    ; AVRdude STK500v1 extension: 56 4D 00 <word_addr[23:16]> 00 20
+    ; 256 KiB has only one extended word-address bit.  Reject other values
+    ; rather than allowing wrap-around into another writable page.
+    cpi r24,0x4D
+    brne .Lordinary_universal
+    tst r25
+    brne .Lordinary_universal
+    rcall rx_char
+    cpi r16,2
+    brlo .Lvalid_extended_word_address
+    rjmp protocol_error
+.Lvalid_extended_word_address:
+    mov r4,r16
+    rcall rx_char          ; trailing ISP byte must be zero
+    tst r16
+    breq .Lvalid_extended_opcode_tail
+    rjmp protocol_error
+.Lvalid_extended_opcode_tail:
+    rcall verify_eop
+    clr r16
+    rjmp universal_response
+.Lordinary_universal:
+#endif
     ldi r19,2
     rcall discard_and_verify
     clr r16                   ; unsupported ISP command -> 0
@@ -257,7 +301,7 @@ command_read:
     subi r24,1           ; high length 0 accepts 0..255, 1 accepts only low=0
     brcs .Lread_length_valid              ; original high byte 0
     or   r24,r25         ; (high-1)|low must be zero for 0x0100
-#if MINI_SPM_EXT
+#if MINI_SPM_EXT || FLASH_PAGE_BYTES == 256 || MINI_UART_STYLE == 4
     breq .Lme64_error_skip_1
     rjmp protocol_error
 .Lme64_error_skip_1:
@@ -290,14 +334,14 @@ command_read:
 #endif
 read_check_common:
     rcall memory_range_check
-#if MINI_FLASH_128K
-    out RAMPZ_IO,r3      ; ELPM Z+ increments RAMPZ across 0xFFFF->0x10000
+#if MINI_FLASH_BANKED
+    out RAMPZ_IO,r3      ; ELPM Z+ increments RAMPZ across 64-KiB boundaries
 #endif
     movw r30,r22
 read_loop:
     sbrc r20,0           ; E odd; F even
     rjmp read_eeprom_byte
-#if MINI_FLASH_128K
+#if MINI_FLASH_BANKED
     elpm r16,Z+
 #else
     lpm r16,Z+
@@ -321,7 +365,7 @@ read_send:
 verify_eop:
     rcall rx_char
     cpi  r16, 0x20         ; CRC_EOP = ' '
-#if MINI_SPM_EXT
+#if MINI_SPM_EXT || FLASH_PAGE_BYTES == 256 || MINI_UART_STYLE == 4
     breq .Lme64_error_skip_2
     rjmp protocol_error
 .Lme64_error_skip_2:
@@ -348,8 +392,8 @@ memory_range_check:
     dec  r16
     add  r30, r16
     adc  r31, r29         ; YH is zero in every supported register profile
-#if MINI_FLASH_128K
-    ; r18=0: 128-KiB Flash; r18=EEPROM_SIZE>>8: EEPROM.
+#if MINI_FLASH_BANKED
+    ; r18=0: banked Flash; r18=EEPROM_SIZE>>8: EEPROM.
     ; Addition wrapping at 0xFFFF is valid ONLY for bank-0 Flash reads.
     brcs .Lrange_carry
     tst r18
@@ -363,8 +407,14 @@ memory_range_check:
 .Lrange_carry:
     tst r18
     brne .Lrange_reject     ; EEPROM 16-bit wrap is always invalid
+#if MINI_FLASH_256K
+    mov r16,r3
+    cpi r16,3
+    breq .Lrange_reject     ; bank 3 wraps beyond 0x3FFFF
+#else
     tst r3
-    brne .Lrange_reject     ; Flash bank-1 wraps past 0x1FFFF
+    brne .Lrange_reject    ; bank 1 wraps beyond 0x1FFFF
+#endif
 .Lrange_pass:
     ret
 #elif MINI_SPM_EXT
@@ -379,7 +429,7 @@ memory_range_check:
     breq .Lrange_ok
 #endif
     cp   r31, r18
-#if MINI_SPM_EXT
+#if MINI_SPM_EXT || FLASH_PAGE_BYTES == 256 || MINI_UART_STYLE == 4
     brlo .Lme64_error_skip_4
     rjmp protocol_error
 .Lme64_error_skip_4:
@@ -398,7 +448,7 @@ command_write:
     tst r24
     breq .Lwrite_high_zero
     cpi r24,1
-#if MINI_SPM_EXT
+#if MINI_SPM_EXT || FLASH_PAGE_BYTES == 256 || MINI_UART_STYLE == 4
     breq .Lme64_error_skip_5
     rjmp protocol_error
 .Lme64_error_skip_5:
@@ -406,7 +456,7 @@ command_write:
     brne protocol_error
 #endif
     tst r25
-#if MINI_SPM_EXT
+#if MINI_SPM_EXT || FLASH_PAGE_BYTES == 256 || MINI_UART_STYLE == 4
     breq .Lme64_error_skip_6
     rjmp protocol_error
 .Lme64_error_skip_6:
@@ -416,7 +466,7 @@ command_write:
     rjmp .Lwrite_length_ok
 .Lwrite_high_zero:
     tst r25
-#if MINI_SPM_EXT
+#if MINI_SPM_EXT || FLASH_PAGE_BYTES == 256 || MINI_UART_STYLE == 4
     brne .Lme64_error_skip_7
     rjmp protocol_error
 .Lme64_error_skip_7:
@@ -426,7 +476,7 @@ command_write:
 .Lwrite_length_ok:
 #else
     tst r24
-#if MINI_SPM_EXT
+#if MINI_SPM_EXT || FLASH_PAGE_BYTES == 256 || MINI_UART_STYLE == 4
     breq .Lme64_error_skip_8
     rjmp protocol_error
 .Lme64_error_skip_8:
@@ -434,7 +484,7 @@ command_write:
     brne protocol_error
 #endif
     tst r25
-#if MINI_SPM_EXT
+#if MINI_SPM_EXT || FLASH_PAGE_BYTES == 256 || MINI_UART_STYLE == 4
     brne .Lme64_error_skip_9
     rjmp protocol_error
 .Lme64_error_skip_9:
@@ -455,6 +505,61 @@ read_bad_memtype:
     ldi r16,0x11         ; INSYNC was already sent, report STK_FAILED
     rjmp command_finish
 flash_write:
+#if MINI_UART_STYLE == 4
+    ; ATtiny1634 erases an ENTIRE 4-page group (4 x 32 = 128 bytes).
+    ; Never erase on each 32-byte write: doing so destroys the other 3 pages.
+    ; Require one 128-byte STK_PROG_PAGE block, stage it in SRAM stack,
+    ; verify CRC_EOP, erase once, then fill/write four 32-byte pages.
+    ; Stock AVRDUDE typically sends 32-byte pages; a special sender is needed.
+    tst r24                   ; require exactly 0x0080 bytes
+    breq .Ltiny_high_ok
+    rjmp protocol_error
+.Ltiny_high_ok:
+    cpi r25,128
+    breq .Ltiny_length_ok
+    rjmp protocol_error
+.Ltiny_length_ok:
+    mov r16,r22
+    andi r16,127             ; 128-byte group aligned
+    breq .Ltiny_align_ok
+    rjmp protocol_error
+.Ltiny_align_ok:
+    cpi r23,(BOOT_START >> 8)
+    brlo .Ltiny_boot_safe
+    rjmp protocol_error
+.Ltiny_boot_safe:
+    ldi r19,128
+.Ltiny_receive_group:
+    rcall rx_char
+    push r16                 ; 128 bytes on normal SRAM stack
+    dec r19
+    brne .Ltiny_receive_group
+    rcall verify_eop          ; malformed packet never erases Flash
+    movw r30,r22
+    ldi r16,3                ; erase all four pages once
+    rcall spm_execute_wait
+    movw r30,r22
+    ldi r16,128
+    add r30,r16              ; Z = start+128, fill backwards
+    adc r31,r29
+    ldi r20,4                ; pages remaining
+.Ltiny_next_page:
+    ldi r25,16               ; 16 words per physical page
+.Ltiny_next_word:
+    sbiw r30,2
+    pop r1                   ; reverse staging: high byte first
+    pop r0
+    ldi r16,1
+    out SPMCSR_IO,r16
+    spm
+    dec r25
+    brne .Ltiny_next_word
+    ldi r16,5
+    rcall spm_execute_wait   ; writes this 32-byte page, clears temp buffer
+    dec r20
+    brne .Ltiny_next_page
+    rjmp command_ok
+#else
 #if FLASH_PAGE_BYTES == 256
     tst r24
     breq .Lflash_short_page
@@ -463,7 +568,7 @@ flash_write:
 .Lflash_short_page:
 #endif
     lsr r25                ; convert even bytes to words
-#if MINI_SPM_EXT
+#if MINI_SPM_EXT || FLASH_PAGE_BYTES == 256 || MINI_UART_STYLE == 4
     brcc .Lme64_error_skip_10
     rjmp protocol_error
 .Lme64_error_skip_10:
@@ -471,7 +576,7 @@ flash_write:
     brcs protocol_error
 #endif
     cpi r25, ((FLASH_PAGE_BYTES / 2) + 1)
-#if MINI_SPM_EXT
+#if MINI_SPM_EXT || FLASH_PAGE_BYTES == 256 || MINI_UART_STYLE == 4
     brlo .Lme64_error_skip_11
     rjmp protocol_error
 .Lme64_error_skip_11:
@@ -486,7 +591,7 @@ flash_write:
     ; and a payload spanning two different physical flash pages.
     mov  r16, r22
     andi r16, (FLASH_PAGE_BYTES - 1)  ; page-aligned address
-#if MINI_SPM_EXT
+#if MINI_SPM_EXT || FLASH_PAGE_BYTES == 256 || MINI_UART_STYLE == 4
     breq .Lme64_error_skip_12
     rjmp protocol_error
 .Lme64_error_skip_12:
@@ -494,7 +599,7 @@ flash_write:
     brne protocol_error
 #endif
     movw r30, r22
-#if MINI_FLASH_128K
+#if MINI_FLASH_BANKED
     out RAMPZ_IO,r3      ; required for SPM temporary-buffer fill / erase / write
 #endif
     ldi  r19, 0x01         ; preloaded SPMEN across whole page (saves cycles)
@@ -521,18 +626,24 @@ hardware_fill_loop:
     ; r1 now contains the last Flash word high byte. No later code
     ; uses r1 as its zero register; r29 (YH) remains zero permanently.
     rcall verify_eop      ; STK_INSYNC must precede actual erase
-#if MINI_FLASH_128K
-    ; Boot section occupies 0x1FC00..0x1FFFF with BOOT_BYTES=1024.
-    ; The low Flash bank is entirely safe, as is bank-1 below BOOT_START.
+#if MINI_FLASH_BANKED
+    ; Reject only the last physical Flash bank above BOOT_START.
+    ; Other banks and addresses below BOOT_START are writable.
+#if MINI_FLASH_256K
+    mov r16,r3
+    cpi r16,3
+    brne .Lboot_target_safe
+#else
     tst r3
     breq .Lboot_target_safe
+#endif
     cpi r23, ((BOOT_START >> 8) & 0xFF)
     brlo .Lboot_target_safe
     rjmp protocol_error
 .Lboot_target_safe:
 #else
     cpi  r23, (BOOT_START >> 8) ; reject addresses within boot section
-#if MINI_SPM_EXT
+#if MINI_SPM_EXT || FLASH_PAGE_BYTES == 256 || MINI_UART_STYLE == 4
     brlo .Lme64_error_skip_13
     rjmp protocol_error
 .Lme64_error_skip_13:
@@ -549,6 +660,7 @@ hardware_fill_loop:
     ldi  r16, 0x11        ; RWWSRE|SPMEN
     rcall spm_execute_wait
     rjmp command_ok
+#endif /* MINI_UART_STYLE == 4 */
 
 /* EEPROM write: push 1..16 received bytes onto normal AVR hardware stack.
  * avrdude -c arduino sends EEPROM data in 16-byte blocks for ATmega328P.
@@ -562,7 +674,7 @@ hardware_fill_loop:
 eeprom_write:
 #if FLASH_PAGE_BYTES == 256
     tst r24               ; EEPROM blocks never use the 256-byte form
-#if MINI_SPM_EXT
+#if MINI_SPM_EXT || FLASH_PAGE_BYTES == 256 || MINI_UART_STYLE == 4
     breq .Lme64_error_skip_14
     rjmp protocol_error
 .Lme64_error_skip_14:
@@ -571,7 +683,7 @@ eeprom_write:
 #endif
 #endif
     cpi r25,17
-#if MINI_SPM_EXT
+#if MINI_SPM_EXT || FLASH_PAGE_BYTES == 256 || MINI_UART_STYLE == 4
     brlo .Lme64_error_skip_15
     rjmp protocol_error
 .Lme64_error_skip_15:
@@ -656,6 +768,18 @@ wdt_config:
     std  Y+0, r18
     std  Y+0, r17
     ldi  r28, 0xC0
+#elif MINI_VIRTUAL_BOOT && MINI_UART_STYLE != 5
+    ; ATtiny841/1634 use protected I/O write via CCP (0xD8), NOT WDCE.
+    ; tiny841 CCP is extended-memory 0x71, tiny1634 CCP is I/O 0x2F.
+    ; The following OUT to WDTCSR occurs within 4 instruction cycles.
+    ldi r18,0xD8
+#if MINI_UART_STYLE == 3
+    sts 0x71,r18
+#else
+    out 0x2F,r18
+#endif
+    out WDT_IO,r17
+    ldi r18,0x18             ; needed for RXEN|TXEN by MINI_UART_INIT
 #else
     ldi r18,0x18
     out WDT_IO,r18
@@ -686,6 +810,10 @@ wait_spm:
  * r18=top address high-byte limit (zero sentinel for 64 KiB); clobbers r16, Z, flags.
  */
 
+
+#if MINI_UART_STYLE == 5
+    MINI_UART_SOFT_ROUTINES
+#endif
 
 /* The boot section, signature and AVR061 GET_SIGN_ON footer are device-relative.
  * BOOTSZ and BOOTRST fuses must match the emitted image.

@@ -12,8 +12,8 @@ The label **ATmega1284A** is not the supported silicon part name; choose
 | MCU | Flash | EEPROM | Page | Signature | Code | Footer | Boot | Boot byte start |
 |---|---:|---:|---:|---|---:|---:|---:|---|
 | ATmega128A | 128 KiB | 4 KiB | 256 B | 1E 97 02 | 606 B | 12 B | 1024 B | `0x1FC00` |
-| ATmega1284 | 128 KiB | 4 KiB | 256 B | 1E 97 06 | 608 B | 12 B | 1024 B | `0x1FC00` |
-| ATmega1284P | 128 KiB | 4 KiB | 256 B | 1E 97 05 | 608 B | 12 B | 1024 B | `0x1FC00` |
+| ATmega1284 | 128 KiB | 4 KiB | 256 B | 1E 97 06 | 592 B | 12 B | 1024 B | `0x1FC00` |
+| ATmega1284P | 128 KiB | 4 KiB | 256 B | 1E 97 05 | 592 B | 12 B | 1024 B | `0x1FC00` |
 
 All sizes are build results for the default 16 MHz / 115200 baud / U2X=1
 configuration compiled with LLVM/Clang AVR. The boot section also includes
