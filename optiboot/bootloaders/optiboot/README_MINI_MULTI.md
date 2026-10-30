@@ -41,7 +41,8 @@ The toolchain requires Clang/LLVM AVR support or AVR-GCC/avr-objcopy, plus `read
 | MCU | Flash | Flash page | EEPROM | Current boot section | Build verified | Hardware tested |
 |---|---:|---:|---:|---:|---|---|
 | ATmega328P | 32 KiB | 128 B | 1 KiB | 512 B | Yes (bit-identical baseline) | No |
-| ATmega328 / ATmega328PB | 32 KiB | 128 B | 1 KiB | 512 B | Yes | No |
+| ATmega328 | 32 KiB | 128 B | 1 KiB | 512 B | Yes | No |
+| ATmega328PB | 32 KiB | 128 B | 1 KiB | 512 B | Yes | Yes: 16 MHz / 115200, [report](../../../docs/mini/HARDWARE_ATMEGA328PB_2026-10-30.md) |
 | ATmega168 / ATmega168P | 16 KiB | 128 B | 512 B | 512 B | Yes | No |
 | ATmega88 / ATmega88P | 8 KiB | 64 B | 512 B | 512 B | Yes | No |
 | ATmega324PA | 32 KiB | 128 B | 1 KiB | 512 B | Yes | No |
@@ -93,7 +94,7 @@ Supported build input frequencies include 10, 12, 16 and 20 MHz (subject to each
 
 The assembly retains the existing Optiboot Mini STK500v1-compatible subset: page write/read of Flash, 1–16-byte EEPROM writes, EEPROM reads, `GET_SIGN_ON`, signature, read-only fuse/lock `UNIVERSAL`, watchdog timeout, and the established classic Optiboot no-op Chip Erase acknowledgement. ATmega2560/2561 additionally support the `UNIVERSAL 0x4D` address-bank command. Read-modify-write of partially written Flash pages is *not* added. Real Chip Erase and fuse writes remain ISP-only. The EEPROM memory addressing assumes the **classic-AVR `avrdude -c arduino` word-address convention**; configure avrdude for the correct exact chip (`-p ...`). Virtual Boot ATtiny uploads require the dedicated uploader and patched application described in the linked guide.
 
-**Verification status:** the old ATmega328P 16 MHz image is bit-identical and its historical software-emulation results carry over to that configuration. ATmega16/32A and ATmega128A/1284/1284P additionally have AVR-opcode-level peripheral smoke tests (not hardware-accurate timing). All MCU ports remain **unverified with real avrdude or on silicon**. Treat all non-328P firmware images as *port candidates*, not production firmware.
+**Verification status:** the old ATmega328P 16 MHz image is bit-identical and its historical software-emulation results carry over to that configuration. ATmega16/32A and ATmega128A/1284/1284P additionally have AVR-opcode-level peripheral smoke tests (not hardware-accurate timing). The **ATmega328PB / 16 MHz / external crystal / 115200 / 512-byte Boot** configuration passed 42 physical checks with real AVRDUDE, including Flash/EEPROM transfers, watchdog/reset stress, protected-region rejection and autonomous startup after a power cycle. See the [hardware report and reproduction steps](../../../docs/mini/HARDWARE_ATMEGA328PB_2026-10-30.md). Other configurations remain unverified on silicon; all ports remain experimental rather than production-qualified.
 
 To avoid bricking a target, check fuse settings, BOOTRST, BOOTSZ, CKDIV8, oscillator, USART wiring, and ISP recovery availability. Consult the chip datasheet for the exact fuse encoding; do not reuse ATmega328P fuse values on legacy devices.
 

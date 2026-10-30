@@ -2,7 +2,7 @@
  * Optiboot Mini STK500v1 multi-device experimental port, October 2026.
  * Default ATmega328P / 16MHz / UART0 115200 8N1; target via -mmcu and device includes.
  * Boot origin/footer are calculated from FLASH_SIZE and BOOT_BYTES.
- * Experimental: no silicon test and no real avrdude run.
+ * Experimental: see README_MINI_MULTI.md for configuration-specific hardware coverage.
  *
  * Fixes vs the 512B Optiboot Mini: checks BOTH length bytes for
  * STK_READ_PAGE/STK_PROG_PAGE, supports valid read length 0x0100=256,
