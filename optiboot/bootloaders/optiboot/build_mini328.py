@@ -56,11 +56,22 @@ def main():
     binpath = HERE / "optiboot_mini328.bin"
     hexpath = HERE / "optiboot_mini328.hex"
     subprocess.run([compiler, *flags, "-c", str(SOURCE), "-o", str(obj)], check=True)
+    image_obj = obj
     if shutil.which("readelf"):
         reloc = subprocess.check_output(["readelf", "-r", str(obj)], text=True)
         if "There are no relocations in this file" not in reloc:
-            raise RuntimeError("Unresolved linker relocations: not a position-independent binary")
-    subprocess.run([objcopy, "-O", "binary", "-j", ".text", str(obj), str(binpath)], check=True)
+            if not shutil.which("avr-ld"):
+                raise RuntimeError("Local AVR relocations require avr-ld (binutils-avr); do not flash an unlinked object")
+            image_obj = HERE / "optiboot_mini328.elf"
+            # Keep offsets and instruction sizes; Intel HEX supplies the boot address.
+            subprocess.run(["avr-ld", "-m", "avr5", "-Ttext=0", "-e", "_start",
+                            str(obj), "-o", str(image_obj)], check=True)
+            reloc = subprocess.check_output(["readelf", "-r", str(image_obj)], text=True)
+            if "There are no relocations in this file" not in reloc:
+                raise RuntimeError("Linked image has unresolved relocations; do not flash this image")
+    else:
+        raise RuntimeError("Missing readelf: cannot verify AVR relocations safely")
+    subprocess.run([objcopy, "-O", "binary", "-j", ".text", str(image_obj), str(binpath)], check=True)
     binary = binpath.read_bytes()
     if len(binary) != SIZE:
         raise RuntimeError(f"Expected {SIZE} bytes, got {len(binary)}")

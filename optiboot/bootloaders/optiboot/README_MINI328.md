@@ -13,6 +13,11 @@ make mini328_check
 
 The build uses `build_mini328.py` to assemble `optiboot_mini328.S` and emit a 512-byte BIN plus an Intel HEX file with absolute addresses `0x7E00–0x7FFF`. `mini328_check` also verifies the BIN SHA-256 against the regression-tested reference.
 
+Install Clang/LLVM with AVR support or AVR-GCC/avr-objcopy, and `readelf`.
+Assemblers that emit local relocations also require `avr-ld` from binutils-avr.
+Linking preserves section offsets and instruction sizes; Intel HEX supplies the
+boot address. Unresolved relocations are rejected before extracting the binary.
+
 Only the ATmega328P with a 16 MHz clock and USART0 at 115200 baud is supported by this assembly build. It does not inherit all customization options from the original C implementation.
 
 ## Added features compared with the usual Arduino Uno firmware

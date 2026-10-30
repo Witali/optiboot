@@ -22,7 +22,7 @@ make mini_test
 
 The equivalent standalone invocation is `python3 build_mini.py --mcu atmega324pa --f-cpu 12000000 --baud auto`.
 
-The toolchain requires Clang/LLVM AVR support or AVR-GCC/avr-objcopy. It generates `output/<mcu>/<mcu>.hex`, `.bin`, `.o` and `.json` (build manifest). A failed size or baud check produces an error instead of a misleading ready-to-flash HEX. The default Uno build is checked against the previous regression-tested binary SHA-256.
+The toolchain requires Clang/LLVM AVR support or AVR-GCC/avr-objcopy, plus `readelf` and `llvm-objdump`. Assemblers that emit local relocations also require `avr-ld` from binutils-avr. The build resolves those relocations at section address zero without linker relaxation; Intel HEX supplies the physical boot address. It generates `output/<mcu>/<mcu>.hex`, `.bin`, `.o`, optional `.elf` and `.json` (build manifest). A failed size or baud check produces an error instead of a misleading ready-to-flash HEX. Use `--verify-baseline` with the standalone builder to require the previous regression-tested Uno binary SHA-256.
 
 ## Build support table
 

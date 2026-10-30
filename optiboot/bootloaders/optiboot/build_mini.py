@@ -126,12 +126,25 @@ def build(args):
             if args.boot_bytes == 'auto':
                 continue
             raise RuntimeError(last_message)
-        # Hand-assembled object must have no unresolved external relocations.
+        # Some assemblers leave local branches for the linker to resolve.
+        image_obj = obj
         if shutil.which('readelf'):
             rel=subprocess.run(['readelf','-r',str(obj)],capture_output=True,text=True,check=True).stdout
             if 'There are no relocations in this file' not in rel:
-                raise RuntimeError('Unresolved relocations detected; do not flash this image')
-        subprocess.run([oc,'-O','binary','-j','.text',str(obj),str(image)],check=True,capture_output=True)
+                if not shutil.which('avr-ld'):
+                    raise RuntimeError('Local AVR relocations require avr-ld (binutils-avr); do not flash an unlinked object')
+                image_obj = output/(mcu+'.elf')
+                arch = 'avr51' if dev['flash'] > 65536 else ('avr4' if dev['flash'] <= 8192 else 'avr5')
+                # Preserve section-relative offsets and instruction sizes. HEX supplies
+                # the physical boot address; linker relaxation must remain disabled.
+                subprocess.run(['avr-ld','-m',arch,'-Ttext=0','-e','_start',str(obj),'-o',str(image_obj)],
+                               check=True,capture_output=True,text=True)
+                rel=subprocess.run(['readelf','-r',str(image_obj)],capture_output=True,text=True,check=True).stdout
+                if 'There are no relocations in this file' not in rel:
+                    raise RuntimeError('Linked image has unresolved relocations; do not flash this image')
+        else:
+            raise RuntimeError('Missing readelf: cannot verify AVR relocations safely')
+        subprocess.run([oc,'-O','binary','-j','.text',str(image_obj),str(image)],check=True,capture_output=True)
         b=image.read_bytes()
         if len(b)>boot_bytes:
             last_message=f'{len(b)} bytes exceed {boot_bytes} bytes of boot space'
