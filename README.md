@@ -34,6 +34,20 @@ for features, protocol limits, build/test
 commands, and the complete research history. Validation uses a limited software
 AVR model; testing on a physical ATmega328P has not yet been performed.
 
+## Experimental multi-device Optiboot Mini
+
+The optional `make mini` assembly target supports 15 AVR device profiles,
+including ATmega16/32A, ATmega64A and ATmega128A/1284/1284P. It adds EEPROM
+read/write and read-only fuse/lock diagnostics within a 512-byte or 1024-byte
+boot section, depending on the device. The standalone `make mini328_check`
+target verifies the frozen ATmega328P reference image.
+
+See the [multi-device build guide](optiboot/bootloaders/optiboot/README_MINI_MULTI.md)
+for configuration and protocol limits, and the
+[2026-10-30 import validation](docs/mini/IMPORT_2026-10-30.md) for provenance and
+test results. Validation uses software emulation; physical MCU and real serial
+AVRDUDE tests remain outstanding.
+
 ## Notes on IDE Version compatibility
 Optiboot is "compatible", in a loose sense, with all versions of the Arduino IDE.  It was originally written at about the same time as v1.0, and has some "quirks" that date back to that timeframe.  Most significantly, the directory structure of the git repository is "weird."
 
