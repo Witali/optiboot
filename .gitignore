@@ -1,3 +1,6 @@
+# Ignore task worktrees
+/.worktree/
+
 # Ignore compiled output files
 /optiboot/bootloaders/optiboot/*.elf # exclude .elf files
 /optiboot/bootloaders/optiboot/*.hex # exclude .hex files
