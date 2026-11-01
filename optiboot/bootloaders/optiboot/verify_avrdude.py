@@ -128,13 +128,15 @@ def verify(chip, edition, args):
         if edition != 'flashread256':
             command += ['-U', 'eeprom:w:' + native_path(ee, windows) + ':r']
         # AVRDUDE's normal verification is enabled: no -V and no signature override.
+        if windows and os.name != 'nt':
+            time.sleep(0.5)  # Let WSL advertise this new localhost listener.
         try:
-            for attempt in range(3):
+            for attempt in range(5):
                 result = subprocess.run(command, capture_output=True, text=True, timeout=args.timeout)
                 if not result.returncode or target.had_input:
                     break
                 # Retry only an unopened transport; never replay a written target.
-                time.sleep(0.2)
+                time.sleep(0.3*(attempt+1))
         except subprocess.TimeoutExpired as error:
             output = (error.stdout or b'') + (error.stderr or b'')
             if isinstance(output, bytes):
