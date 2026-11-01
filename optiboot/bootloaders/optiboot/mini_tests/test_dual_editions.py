@@ -80,9 +80,9 @@ class DualEditionTests(unittest.TestCase):
                     build_dual.build_command(chip,'compact',None)
 
     def test_matrix_sizes_features_and_artifact_hashes(self):
-        self.assertEqual(self.entries['passed'], 63)
+        self.assertEqual(self.entries['passed'], 65)
         self.assertEqual(self.entries['failed'], 0)
-        self.assertEqual(len(self.entries['firmware']), 63)
+        self.assertEqual(len(self.entries['firmware']), 65)
         for chip, dev in build_mini.DEVICES.items():
             for edition in build_dual.available_editions(chip):
                 with self.subTest(chip=chip,edition=edition):

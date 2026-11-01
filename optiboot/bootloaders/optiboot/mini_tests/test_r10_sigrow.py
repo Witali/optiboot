@@ -73,6 +73,7 @@ class R10SignatureSource(unittest.TestCase):
         cls.binaries = {}
         for chip,mode in [('atmega328p','--app-spm-512'),('atmega328pb','--app-spm-512'),
                           ('atmega88p','--app-spm-512'),('atmega168p','--app-spm-512'),
+                          ('atmega168pb','--app-spm-512'),
                           ('atmega164pa','--app-spm-512'),('atmega324pa','--app-spm-512'),
                           ('atmega644p','--compact-64k'),('atmega644a','--compact-64k'),
                           ('atmega1284p','--compact-banked'),('atmega1284','--compact-banked'),
@@ -141,7 +142,7 @@ class R10SignatureSource(unittest.TestCase):
         self.assertEqual(meta['signature_source'],'hardware')
 
     def test_signature_reads_do_not_change_eeprom_flash(self):
-        for chip in ('atmega328p','atmega88p','atmega168p','atmega164pa','atmega324pa','atmega644a','atmega1284p'):
+        for chip in ('atmega328p','atmega88p','atmega168p','atmega168pb','atmega164pa','atmega324pa','atmega644a','atmega1284p'):
             with self.subTest(chip=chip):
                 c=self.cpu(chip)
                 dev=build_mini.DEVICES[chip]

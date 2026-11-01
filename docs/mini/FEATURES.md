@@ -2,7 +2,7 @@
 
 Mini is an optional assembly implementation for classic AVR devices. Its
 current public generator offers three editions from one assembly source:
-FlashRead256 for 13 parts, Compact for 25, and Full for all 38. The original
+FlashRead256 for 14 parts, Compact for 26, and Full for all 39. The original
 Optiboot repository layout, C source, board targets and stock HEX files remain
 available.
 
@@ -17,11 +17,11 @@ available.
 | Actual fuse/lock reads | No | No | Yes | Inspect configuration without an ISP read session |
 | Application SPM ABI | No | Hardware-Boot ATmega | Hardware-Boot ATmega | Application Flash service with Boot-region guards |
 | Input and address checks | Yes | Yes | Yes | Reject invalid lengths, types, alignment, overflow and Boot writes |
-| Supported device/edition profiles | 13 | 25 | 38 | 76 supported combinations, with explicit build metadata |
+| Supported device/edition profiles | 14 | 26 | 39 | 79 supported combinations, with explicit build metadata |
 
 The write-only 256-byte edition has been removed. The read/write edition now
 occupies a real 256-byte Boot section, with 249..255 useful bytes at
-16 MHz / 115200 on all 13 supported ATmega parts. It requires aligned full-page
+16 MHz / 115200 on all 14 supported ATmega parts. It requires aligned full-page
 writes, page-aligned reads, and hardware-reset entry. The audited Arduino
 AVRDUDE path supplies full write pages automatically for ordinary HEX files;
 see the [Arduino protocol audit](ARDUINO_PROTOCOL_AUDIT_2026-11-01.md).
@@ -40,12 +40,12 @@ optional C build configurations can differ.
 
 | Area | Mini contribution | Evidence and scope |
 |---|---|---|
-| Smallest verified upload profile | Flash write plus readback in 256 bytes on 13 eligible parts | Size/layout checks and executed instructions for each part; no physical validation yet |
+| Smallest verified upload profile | Flash write plus readback in 256 bytes on 14 eligible parts | Size/layout checks and executed instructions for each part; no physical validation yet |
 | EEPROM support | Included in Compact/Full, rather than a default-disabled EEPROM option | Every EEPROM byte transferred in each supported profile's memory test |
 | Real fuse/lock inspection | Full returns actual bytes for four read-only UNIVERSAL operations | Instruction-model tests; older Basic PB build also has separate physical evidence |
 | Defensive protocol checks | Explicit packet, memory-type, length, alignment, overflow and Boot-region checks | Negative-case regressions; no power-loss atomicity guarantee |
 | Large AVR addressing | Extended Flash support through 256 KiB, independent EEPROM addressing | Actual AVRDUDE tested against instruction models, including upper-bank Flash followed by EEPROM |
-| Configuration and build output | Validated edition/device/clock combinations, BIN/HEX agreement and SHA-256 metadata | 423 clock/edition builds and self-contained generator tests |
+| Configuration and build output | Validated edition/device/clock combinations, BIN/HEX agreement and SHA-256 metadata | Earlier 423 clock/edition builds plus 18 ATmega168PB builds and self-contained generator tests |
 | Reproducibility | Model tests, clock matrix, full-memory runner and actual AVRDUDE loopback runner | Sources and sanitized results are checked in; raw board backups are excluded |
 
 ## Build and validation
@@ -66,6 +66,10 @@ contains the complete part table, host contract and FlashRead256 page-padding
 command. The [2026-11-01 report](UART_VALIDATION_2026-11-01.md) records the
 current software checks and exact image hashes. ATtiny uses the separate
 [Virtual Boot workflow](VIRTUAL_BOOT.md).
+
+The [ATmega168PB addendum](ATMEGA168PB_2026-11-01.md) documents the newly added
+39th profile, its three editions and additional software validation. Earlier
+reports retain their original device counts and source revisions.
 
 The [2026-10-30 hardware report](HARDWARE_ATMEGA328PB_2026-10-30.md) records
 42 physical checks on one ATmega328PB Nano running the older Basic image with

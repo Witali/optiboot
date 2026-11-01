@@ -87,6 +87,28 @@
     "hardware_min_boot_bytes": 256,
     "dual_compact_enabled": true
   },
+  "atmega168pb": {
+    "flash": 16384,
+    "eeprom": 512,
+    "page": 128,
+    "sig": [
+      30,
+      148,
+      21
+    ],
+    "max_mhz": 20,
+    "profile": "modern",
+    "ramend": 1279,
+    "default_boot": 512,
+    "virtual_boot": false,
+    "flash_erase_group_bytes": 128,
+    "spm512_capable": true,
+    "wide_branches": false,
+    "wdt_ccp_style": 0,
+    "sigrow_lpm_supported_by_datasheet": true,
+    "hardware_min_boot_bytes": 256,
+    "dual_compact_enabled": true
+  },
   "atmega168": {
     "flash": 16384,
     "eeprom": 512,

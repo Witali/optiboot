@@ -21,8 +21,10 @@ ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT / 'mini_tests'))
 
 
-def cases(all_clocks):
+def cases(all_clocks, mcu=None):
     for chip, dev in build_mini.DEVICES.items():
+        if mcu and chip != mcu:
+            continue
         for edition in generator.valid_types(chip):
             clocks = ((8000000, 10000000, 12000000, 16000000, 20000000)
                       if all_clocks else (8000000, 16000000))
@@ -138,6 +140,7 @@ def main():
     parser.add_argument('--output', type=Path, default=ROOT / 'output/validation')
     parser.add_argument('--jobs', type=int, default=4)
     parser.add_argument('--all-clocks', action='store_true')
+    parser.add_argument('--mcu', choices=tuple(build_mini.DEVICES))
     parser.add_argument('--smoke', action='store_true')
     parser.add_argument('--stress', action='store_true')
     args = parser.parse_args()
@@ -146,7 +149,7 @@ def main():
     args.output.mkdir(parents=True, exist_ok=True)
     started = time.monotonic()
     matrix, folders, builds, failures = [], {}, [], []
-    jobs = list(cases(args.all_clocks))
+    jobs = list(cases(args.all_clocks, args.mcu))
     with ThreadPoolExecutor(max_workers=args.jobs) as pool:
         pending = {pool.submit(build_case, case, args.output): case for case in jobs}
         for count, future in enumerate(as_completed(pending), 1):

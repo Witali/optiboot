@@ -25,10 +25,10 @@ class GeneratorSelectionTests(unittest.TestCase):
                 gen.parse_frequency(text)
 
     def test_edition_policy(self):
-        self.assertEqual(len(gen.build_mini.DEVICES), 38)
-        self.assertEqual(sum('compact' in gen.valid_types(m) for m in gen.build_mini.DEVICES), 25)
-        self.assertEqual(sum('full' in gen.valid_types(m) for m in gen.build_mini.DEVICES), 38)
-        self.assertEqual(sum('flashread256' in gen.valid_types(m) for m in gen.build_mini.DEVICES), 13)
+        self.assertEqual(len(gen.build_mini.DEVICES), 39)
+        self.assertEqual(sum('compact' in gen.valid_types(m) for m in gen.build_mini.DEVICES), 26)
+        self.assertEqual(sum('full' in gen.valid_types(m) for m in gen.build_mini.DEVICES), 39)
+        self.assertEqual(sum('flashread256' in gen.valid_types(m) for m in gen.build_mini.DEVICES), 14)
         self.assertTrue(all('flash256' not in gen.valid_types(m) for m in gen.build_mini.DEVICES))
         for m, meta in gen.build_mini.DEVICES.items():
             if not meta['virtual_boot'] and meta['hardware_min_boot_bytes'] >= 1024:
@@ -101,6 +101,25 @@ class GeneratorBuildTests(unittest.TestCase):
         self.assertEqual((r['boot_bytes'],r['baud']), (256,38400))
         self.assertLessEqual(r['payload_bytes'],256)
         self.assertTrue(r['features']['flash_read'])
+
+    def test_atmega168pb_signature_and_layout_in_every_edition(self):
+        from mini_tests.device_models import create
+        from mini_tests.flashread_models import make_cpu
+        for edition, boot, start in (('flashread256',256,'0x3F00'),
+                                      ('compact',512,'0x3E00'), ('full',1024,'0x3C00')):
+            with self.subTest(edition=edition):
+                info = gen.build_one('atmega168pb', edition, 16_000_000, out=self.output_dir)
+                self.assertEqual((info['boot_bytes'],info['boot_start']), (boot,start))
+                self.assertEqual((info['flash_bytes'],info['flash_page_bytes'],info['eeprom_bytes']),
+                                 (16384,128,512))
+                folder = Path(info['files']['bin']).parent
+                cpu, _, _ = (make_cpu('atmega168pb',folder) if edition == 'flashread256'
+                              else create('atmega168pb',folder))
+                self.assertEqual(cpu.send(b'u '), bytes.fromhex('14 1e 94 15 10'))
+                if edition != 'flashread256':
+                    self.assertEqual(info['signature_source'], 'hardware')
+                    self.assertEqual(cpu.send(bytes.fromhex('56 30 00 02 00 20')),
+                                     bytes.fromhex('14 15 10'))
 
     def test_flashread256_16mhz(self):
         r = gen.build_one('atmega16', 'flashread256', 16_000_000, out=self.output_dir)

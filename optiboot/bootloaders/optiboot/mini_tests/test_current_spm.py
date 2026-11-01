@@ -71,7 +71,7 @@ class CurrentSPMTests(unittest.TestCase):
                         self.assertEqual(bytes(cpu.flash), before)
                     self.assertEqual(cpu.flash[cpu.boot_start:], boot)
                     checked += 1
-        self.assertEqual(checked, 55)
+        self.assertEqual(checked, 57)
 
     def test_virtual_profiles_have_no_hardware_boot_spm_entry(self):
         for chip, dev in build_mini.DEVICES.items():
@@ -84,7 +84,7 @@ class CurrentSPMTests(unittest.TestCase):
                 self.assertIsNone(meta['app_spm_entry_byte_address'])
                 self.assertEqual((folder/(chip+'.bin')).read_bytes()[:2], b'\xf8\x94')
 
-    def test_reset_cause_and_application_handoff_for_all_63_profiles(self):
+    def test_reset_cause_and_application_handoff_for_all_65_profiles(self):
         for chip, dev in build_mini.DEVICES.items():
             for edition in build_dual.available_editions(chip):
                 for cause in range(16):

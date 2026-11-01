@@ -1,7 +1,7 @@
 /* Optiboot Mini application SPM interface, compatible with Optiboot 8.x.
  *
  * Only include this with the matching Full (--app-spm, 1024B) or Compact
- * (--app-spm-512, 512B on 21 supported ATmega, plus
+ * (--app-spm-512, 512B on 22 supported ATmega, plus
  * -DOPTIBOOT_MINI_SPM512=1) image. Set OPTIBOOT_MINI_BOOT_BYTES to the actual
  * fuse-selected boot size. Not compatible with Virtual Boot ATtiny.
  * LLVM/clang AVR call encoding was tested; test with your avr-gcc version.

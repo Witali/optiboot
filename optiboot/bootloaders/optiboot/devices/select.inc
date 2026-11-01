@@ -7,6 +7,8 @@
 #include "atmega328pb.inc"
 #elif defined(__AVR_ATmega168P__)
 #include "atmega168p.inc"
+#elif defined(__AVR_ATmega168PB__)
+#include "atmega168pb.inc"
 #elif defined(__AVR_ATmega168__)
 #include "atmega168.inc"
 #elif defined(__AVR_ATmega88P__)

@@ -69,10 +69,11 @@ def verify(chip, edition, output):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', type=Path, default=ROOT/'output/toolchains')
+    parser.add_argument('--mcu', choices=tuple(build_mini.DEVICES))
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=True)
     passed, failed = [], []
-    for chip in build_mini.DEVICES:
+    for chip in (args.mcu,) if args.mcu else build_mini.DEVICES:
         for edition in generate_firmware.valid_types(chip):
             try:
                 passed.append(verify(chip, edition, args.output))

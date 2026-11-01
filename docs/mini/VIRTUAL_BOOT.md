@@ -121,4 +121,4 @@ Test actual reset and watchdog paths, SELFPRGEN, SPM/EEPROM latency, grouped
 erase, UART waveforms, oscillator calibration, application dispatch and power
 loss on physical devices. Keep ISP recovery available throughout. ATtiny44/45
 are future work and are not included in the
-38 supported build profiles.
+39 supported build profiles.

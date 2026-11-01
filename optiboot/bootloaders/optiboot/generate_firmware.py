@@ -180,7 +180,7 @@ def build_one(mcu: str, edition: str, hz: int, *, baud: str='auto',
     mcu = mcu.lower().strip()
     edition = EDITION_ALIASES.get(edition.lower().strip(), '')
     if mcu not in build_mini.DEVICES:
-        raise ValueError(f'Unknown MCU {mcu!r}; run --list to see all 38')
+        raise ValueError(f'Unknown MCU {mcu!r}; run --list to see supported devices')
     if not edition:
         raise ValueError('Unknown firmware type; choose compact, full or flashread256')
     if edition not in valid_types(mcu):

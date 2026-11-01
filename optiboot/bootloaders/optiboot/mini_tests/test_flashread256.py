@@ -42,7 +42,7 @@ class FlashRead256Tests(unittest.TestCase):
         self.assertEqual((cpu.erase_count, cpu.write_count), (erase, write))
 
     def test_real_256_byte_layout_and_hashes(self):
-        self.assertEqual(len(build_flashread.TARGETS), 13)
+        self.assertEqual(len(build_flashread.TARGETS), 14)
         for (chip, hz), folder in self.outputs.items():
             with self.subTest(chip=chip, hz=hz):
                 blob = (folder / (chip + '.bin')).read_bytes()

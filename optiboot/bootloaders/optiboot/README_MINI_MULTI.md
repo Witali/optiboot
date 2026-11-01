@@ -7,13 +7,13 @@ three editions from `optiboot_mini.S` and its device/UART includes.
 
 | Edition | Reserved Boot area | Profiles | Flash read/write | EEPROM read/write | Fuse/lock reads, sign-on | Application SPM ABI |
 |---|---:|---:|---|---|---|---|
-| `flashread256` | 256 B | 13 ATmega | Yes; aligned full-page writes | No | No | No |
-| `compact` | 512 B on 21 ATmega; 1024 B Virtual Boot on four ATtiny | 25 | Yes | Yes | No | Yes on ATmega |
-| `full` | 1024 B | All 38 | Yes | Yes | Yes | Yes on 34 ATmega |
+| `flashread256` | 256 B | 14 ATmega | Yes; aligned full-page writes | No | No | No |
+| `compact` | 512 B on 22 ATmega; 1024 B Virtual Boot on four ATtiny | 26 | Yes | Yes | No | Yes on ATmega |
+| `full` | 1024 B | All 39 | Yes | Yes | Yes | Yes on 35 ATmega |
 
 The write-only 256-byte edition is removed. The former oversized readback
 prototype is replaced by a real 256-byte image. At 16 MHz / 115200 baud its
-code and three signature bytes occupy 249..255 bytes on all 13 supported
+code and three signature bytes occupy 249..255 bytes on all 14 supported
 parts; the remaining bytes are `0xFF` padding. ATmega328P/PB have a physical
 512-byte minimum and cannot use this edition.
 
@@ -22,6 +22,9 @@ See the [feature comparison](../../../docs/mini/FEATURES.md),
 and [ATtiny workflow](../../../docs/mini/VIRTUAL_BOOT.md). The older
 [ATmega328PB hardware report](../../../docs/mini/HARDWARE_ATMEGA328PB_2026-10-30.md)
 applies to its recorded SHA-256 only, not these new editions.
+
+The [ATmega168PB addendum](../../../docs/mini/ATMEGA168PB_2026-11-01.md)
+extends the earlier 38-device results with the 39th device and its three editions.
 
 ## Build and select an edition
 
@@ -43,6 +46,9 @@ Flash geometry explicitly when the installed old avr-libc lacks PB headers.
 python3 generate_firmware.py --list
 python3 generate_firmware.py atmega8 flashread256 16MHz
 python3 generate_firmware.py atmega168p flashread256 8MHz
+python3 generate_firmware.py atmega168pb flashread256 16MHz
+python3 generate_firmware.py atmega168pb compact 16MHz
+python3 generate_firmware.py atmega168pb full 16MHz
 python3 generate_firmware.py atmega328pb compact 16MHz
 python3 generate_firmware.py atmega328pb full 16MHz
 python3 generate_firmware.py atmega2560 full 16MHz
@@ -70,12 +76,12 @@ Internal RC accuracy still requires physical validation and calibration.
 
 | MCU group | FlashRead256 | Compact | Full |
 |---|---|---|---|
-| ATmega8, 8A, 8515, 8535, 16, 162, 164A/P/PA, 168/P, 88/P | 256 B | 512 B | 1024 B |
+| ATmega8, 8A, 8515, 8535, 16, 162, 164A/P/PA, 168/P/PB, 88/P | 256 B | 512 B | 1024 B |
 | ATmega328, 328P, 328PB, 32A, 324A/P/PA/PB | Unavailable | 512 B | 1024 B |
 | ATmega64A, 640, 644/A/P/PA, 128A, 1280, 1281, 1284/P, 2560, 2561 | Unavailable | Unavailable: hardware minimum 1024 B | 1024 B |
 | ATtiny84, 85, 841, 1634 | Unavailable | 1024 B Virtual Boot | 1024 B Virtual Boot |
 
-This is 76 edition/device profiles. ATtiny1634 is limited to 12 MHz in these
+This is 79 edition/device profiles. ATtiny1634 is limited to 12 MHz in these
 profiles; the others have individual ratings in `devices.json`. The generator
 refuses unsupported combinations instead of labelling a 1024-byte hardware
 Boot area as 256 or 512 bytes. ATmega2560/2561 use extended Flash banks;

@@ -21,10 +21,10 @@ class UnifiedFirmwareTests(unittest.TestCase):
         self.assertNotIn('patch_image(', (ROOT/'build_mini_compat.py').read_text())
         self.assertNotIn('patch_image(', (ROOT/'build_dual.py').read_text())
 
-    def test_exact_21_capabilities(self):
+    def test_exact_22_capabilities(self):
         expected={'atmega328p','atmega328','atmega328pb','atmega324a',
                   'atmega324p','atmega324pa','atmega324pb','atmega168',
-                  'atmega168p','atmega164a','atmega164p','atmega164pa',
+                  'atmega168p','atmega168pb','atmega164a','atmega164p','atmega164pa',
                   'atmega8','atmega8a','atmega8515','atmega8535','atmega88','atmega88p',
                   'atmega16','atmega32a','atmega162'}
         self.assertEqual(set(build_mini.SPM512_COMPATIBLE),expected)
