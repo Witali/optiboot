@@ -1,69 +1,79 @@
 # Optiboot Mini: features, benefits and validation
 
-Optiboot Mini is an experimental, optional assembly implementation for classic
-AVR devices. Its main contribution is a compact combination of EEPROM
-transfers, actual fuse/lock reads and explicit protocol bounds checks. The
-ATmega328P/PB configuration fits 500 bytes of instructions and a 12-byte footer
-inside a 512-byte boot section, leaving 32,256 application bytes.
+Mini is an optional assembly implementation for classic AVR devices. Its
+current public generator offers three editions from one assembly source:
+FlashRead256 for 13 parts, Compact for 25, and Full for all 38. The original
+Optiboot repository layout, C source, board targets and stock HEX files remain
+available.
 
-The existing C implementation already offers a 512-byte bootloader, fast
-uploads, fast application startup and broad AVR support. Mini does not claim
-to introduce those capabilities to Optiboot or to outperform it in measured
-upload speed. The comparison below uses the stock C source defaults at
-`e363ecbe2b6542b5db5b4209589f274c87d833a7`; optional C configurations can differ.
+| Capability | FlashRead256 | Compact | Full | Practical benefit / limit |
+|---|---|---|---|---|
+| Reserved Boot area | 256 B | 512 B ATmega; 1024 B Virtual ATtiny | 1024 B | Respect each chip's physical Boot minimum |
+| Flash write and readback | Yes | Yes | Yes | Normal upload verification remains enabled |
+| EEPROM write/read | No | Yes | Yes | Serial configuration transfer and verification |
+| READ_SIGN | Yes | Yes | Yes | Exact part signature checking |
+| UNIVERSAL signature query | No | Yes | Yes | Additional host compatibility |
+| GET_SIGN_ON / SET_PARAMETER | No | No | Yes | Full protocol clients and diagnostics |
+| Actual fuse/lock reads | No | No | Yes | Inspect configuration without an ISP read session |
+| Application SPM ABI | No | Hardware-Boot ATmega | Hardware-Boot ATmega | Application Flash service with Boot-region guards |
+| Input and address checks | Yes | Yes | Yes | Reject invalid lengths, types, alignment, overflow and Boot writes |
+| Supported device/edition profiles | 13 | 25 | 38 | 76 supported combinations, with explicit build metadata |
 
-| Capability | Existing Optiboot C implementation | Mini addition and practical benefit | Evidence / limit |
-|---|---|---|---|
-| Compact boot section | Already targets 512 bytes on ATmega328P | Combines EEPROM R/W, fuse/lock reads, sign-on and bounds checks in the same 512-byte section on 328P/PB | Bit-identical 328P reference; 500 B code + 12 B footer; PB hardware tested |
-| EEPROM read/write/verify | Available through `SUPPORT_EEPROM` or `BIGBOOT`; disabled by default | Included in Mini's base image; allows serial backup, configuration updates and readback without an ISP session | Writes of 1..16 B per packet; all 1024 B and each write length tested on PB |
-| Fuse and lock inspection | `UNIVERSAL` normally returns a dummy byte, apart from extended-address handling | Returns actual low/high/extended fuse and lock bytes through four read-only `UNIVERSAL` opcodes | Compared with direct silicon reads on PB; writes still require ISP |
-| Standard sign-on | No `GET_SIGN_ON` payload handler in the default C source | Replies with `AVR STK`, useful for protocol clients and diagnostics | Protocol-model tests and PB hardware |
-| Malformed packets and memory bounds | Existing Optiboot framing and programming behavior | Explicit memory-type, length, alignment, overflow and boot-write checks; receive data before committing an erase/write | Negative cases in models and on PB; not power-loss atomicity |
-| Device configuration | Broad AVR support already exists | Adds 38 Mini build profiles with reviewed register maps, signatures and memory geometry in one builder | All 38 assemble; only the specified PB configuration has physical evidence |
-| Large Flash addressing | Existing C supports extended addresses | Mini implements RAMPZ/ELPM/SPM and 256 KiB bank selection while retaining its checks | Instruction-model coverage; no physical large-AVR validation; 1024 B boot section |
-| Clock and baud selection | Existing build options select clock and baud | Builder chooses normal/U2X divisors, checks nominal error and device limits, and records layout, settings and hash in JSON | Divider checks are software checks; no oscillator calibration or fuse changes |
-| Small ATtiny experiments | Existing Optiboot has tiny/Virtual Boot options | Four Mini Virtual Boot profiles, vector/seed tools and a dedicated uploader; software UART on ATtiny84/85 | Software tests only; 1024 B reservation, ISP seed and vector relocation required |
-| Repeatable validation | Existing project build/test facilities | Adds 70 software tests and a reproducible Windows USB bench runner with verified backups and restoration | 42 named physical checks on one ATmega328PB Nano; detailed report linked below |
+The write-only 256-byte edition has been removed. The read/write edition now
+occupies a real 256-byte Boot section, with 249..255 useful bytes at
+16 MHz / 115200 on all 13 supported ATmega parts. It requires aligned full-page
+writes, page-aligned reads, and hardware-reset entry. ATmega328P/PB cannot use
+256-byte Boot sections. Compact and Full retain EEPROM support; Full retains
+the extra sign-on and fuse/lock query handlers.
 
-## Integration and usage
+## Comparison with the original C implementation
 
-The original source tree is preserved. Mini sources, device/UART includes and
-build helpers live in `optiboot/bootloaders/optiboot/`. `Makefile.custom`
-includes optional Mini targets; `optiboot.c`, the main Makefile and stock HEX
-images are unchanged. The frozen `mini328` target retains a fixed 328P
-reference; `mini` selects the current multi-device implementation.
+The stock Optiboot C implementation already provides compact images, fast
+uploads, fast application startup, broad AVR support and an application SPM
+service. Mini does not claim to introduce those features to Optiboot or to
+improve measured upload speed. Relative to C source defaults at
+`e363ecbe2b6542b5db5b4209589f274c87d833a7`, Mini offers the following combination;
+optional C build configurations can differ.
+
+| Area | Mini contribution | Evidence and scope |
+|---|---|---|
+| Smallest verified upload profile | Flash write plus readback in 256 bytes on 13 eligible parts | Size/layout checks and executed instructions for each part; no physical validation yet |
+| EEPROM support | Included in Compact/Full, rather than a default-disabled EEPROM option | Every EEPROM byte transferred in each supported profile's memory test |
+| Real fuse/lock inspection | Full returns actual bytes for four read-only UNIVERSAL operations | Instruction-model tests; older Basic PB build also has separate physical evidence |
+| Defensive protocol checks | Explicit packet, memory-type, length, alignment, overflow and Boot-region checks | Negative-case regressions; no power-loss atomicity guarantee |
+| Large AVR addressing | Extended Flash support through 256 KiB, independent EEPROM addressing | Actual AVRDUDE tested against instruction models, including upper-bank Flash followed by EEPROM |
+| Configuration and build output | Validated edition/device/clock combinations, BIN/HEX agreement and SHA-256 metadata | 423 clock/edition builds and self-contained generator tests |
+| Reproducibility | Model tests, clock matrix, full-memory runner and actual AVRDUDE loopback runner | Sources and sanitized results are checked in; raw board backups are excluded |
+
+## Build and validation
 
 From `optiboot/bootloaders/optiboot/`:
 
 ```sh
-make mini                                # ATmega328P, 16 MHz, 115200
-make mini MINI_MCU=atmega328pb
-make mini328_check                       # fixed reference image
-make mini_test                           # software regression suite
+python3 generate_firmware.py atmega8 flashread256 16MHz
+python3 generate_firmware.py atmega328pb compact 16MHz
+python3 generate_firmware.py atmega328pb full 16MHz
+make mini_test
+make mini_matrix
+make mini328_check
 ```
 
-See the [build and device guide](../../optiboot/bootloaders/optiboot/README_MINI_MULTI.md)
-for toolchain requirements, clock limits and all profiles. Hardware-UART ATmega
-uploads use standard AVRDUDE with the exact part selection. Experimental
-ATtiny uploads require the [Virtual Boot workflow](VIRTUAL_BOOT.md).
-
-## Validation scope and tradeoffs
+The [build guide](../../optiboot/bootloaders/optiboot/README_MINI_MULTI.md)
+contains the complete part table, host contract and FlashRead256 page-padding
+command. The [2026-11-01 report](UART_VALIDATION_2026-11-01.md) records the
+current software checks and exact image hashes. ATtiny uses the separate
+[Virtual Boot workflow](VIRTUAL_BOOT.md).
 
 The [2026-10-30 hardware report](HARDWARE_ATMEGA328PB_2026-10-30.md) records
-42 checks on one ATmega328PB Nano: complete application Flash and EEPROM
-transfers, actual fuse/lock inspection, invalid-packet and boundary rejection,
-50 watchdog resets, 20 external-reset cycles, autonomous startup after a
-physical power cycle, and byte-for-byte restoration of the original memories.
-The [public runner and probe sources](../../scripts/hardware/nano_usb/README.md)
-make that configuration reproducible. User application/EEPROM backups and raw
-captures are excluded.
+42 physical checks on one ATmega328PB Nano running the older Basic image with
+SHA-256 `149ebc0347815b42daaa20defce83342462306e9ddd3f15c63eeb59baafd70d1`.
+Those results do not qualify the new Compact, Full or FlashRead256 binaries.
+No boards were accessed in the current software-only test round.
 
-Other MCUs, alternate clocks and electrical margins have not been validated
-on silicon. This remains an experimental alternative with fewer customization
-options than the C implementation: no startup LED animation or
-application-callable SPM service, and no complete AVR061 programmer interface.
-Fuse/lock writes and true Chip Erase remain ISP operations. Partial Flash
-writes erase unspecified bytes in the page rather than preserving them.
-ATtiny Virtual Boot lacks hardware boot-section protection; its software-UART
-receiver also lacks the hardware-UART inactivity exit after external reset.
-Those constraints are documented in the device and Virtual Boot guides.
+The new editions remain experimental. Software models do not establish silicon
+errata, real SPM/EEPROM latency, oscillator tolerance, electrical UART timing or
+power-loss recovery. ATtiny Virtual Boot has no hardware Boot-region protection
+and requires an ISP seed plus vector relocation. Mini has fewer customization
+options than the C implementation: use the C targets for startup LED animation
+and other unsupported options. Fuse/lock writes and true Chip Erase require
+an ISP programmer.

@@ -9,10 +9,14 @@ comments, documentation, messages and test descriptions in English.
 1. Preserve the hardware-UART ATmega `avrdude -c arduino` interface and documented
    Flash page semantics. ATtiny Virtual Boot has a separate uploader and vector
    contract; do not imply interchangeable host support.
-2. Retain EEPROM transfers, read-only fuse/lock `UNIVERSAL` operations, sign-on,
-   watchdog handling, EEPROM/SPM interlocks and address/boot-boundary checks.
-3. Keep the default ATmega328P image within its 512-byte boot section at
-   `0x7E00..0x7FFF`. Respect each other MCU's physical boot-section minimum.
+2. Retain each edition's documented features, watchdog handling, EEPROM/SPM
+   interlocks and address/boot-boundary checks. FlashRead256 must retain Flash
+   readback; do not restore the removed write-only edition. Compact includes
+   EEPROM and application SPM on hardware-Boot ATmega; Full adds sign-on,
+   SET_PARAMETER and read-only fuse/lock `UNIVERSAL` operations.
+3. Keep Compact ATmega328P within its 512-byte boot section at `0x7E00..0x7FFF`,
+   Full within 1024 bytes, and FlashRead256 within 256 physical bytes on every
+   eligible device. Respect each MCU's physical boot-section minimum.
 4. Review signature, register map, Flash/EEPROM geometry, reset behavior and
    datasheet clock limits before adding a device profile. Regenerate the device
    includes with `python3 gen_devices.py` when changing its profile inputs.
@@ -31,12 +35,16 @@ Run from `optiboot/bootloaders/optiboot/`, with the toolchain described in
 make mini328_check
 python3 build_mini.py --verify-baseline
 make mini_test
+make mini_matrix
 ```
 
-The self-contained `mini_tests/` suite covers 38 builds and selected
-instruction-level protocol/peripheral models. No external handoff archive is
-required. `mini_tests/fixtures/` holds earlier legacy images and symbol objects
-used for response-equivalence regression tests.
+`mini_test` runs both `mini_tests/` and `generator_tests/`, building test images
+in temporary directories without an external handoff archive. The matrix runner
+builds all public edition/device/clock cases and exercises the exact binaries.
+`mini_tests/fixtures/` holds earlier images, symbol objects and expected hashes
+for response-equivalence and reference regressions. See the
+[current validation report](../../../docs/mini/UART_VALIDATION_2026-11-01.md)
+for the actual AVRDUDE loopback runner and software/hardware scope.
 
 For changes to shared Makefile integration, also build the stock `atmega328`
 target and compare its output with an unmodified checkout using the same
@@ -48,8 +56,9 @@ The [ATmega328PB report](../../../docs/mini/HARDWARE_ATMEGA328PB_2026-10-30.md)
 records 42 successful physical checks on one Nano at 16 MHz / 115200 baud.
 The [reproduction guide](../../../scripts/hardware/nano_usb/README.md) provides
 the runner, probes, backups and restoration procedure for that exact build.
-Other profiles still need hardware validation. Keep board memory backups and
-raw captures local; they are not test fixtures for publication.
+That evidence applies only to the older image hash in the report. The new
+editions still need hardware validation. Keep board memory backups and raw
+captures local; they are not test fixtures for publication.
 
 When changing a protocol operation, document its packet/response format,
 address units, host command, bounds and failure behavior. Update

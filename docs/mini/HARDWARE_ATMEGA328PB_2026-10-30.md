@@ -1,5 +1,10 @@
 # ATmega328PB Nano hardware validation
 
+Scope: this is historical evidence for the exact Basic firmware hash below.
+The newer Compact, Full and FlashRead256 editions have separate
+[software-only results](UART_VALIDATION_2026-11-01.md); they have not inherited
+this physical qualification.
+
 Date: 2026-10-30. One connected Nano with a physical ATmega328PB was tested
 through its USB serial interface. **All 42 named hardware checks passed**,
 including a physical power cycle. The original application and complete EEPROM
