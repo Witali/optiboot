@@ -34,8 +34,14 @@ class TestBootFuseSizes(unittest.TestCase):
                 manifest=json.loads((Path(t)/(chip+'.json')).read_text())
                 self.assertEqual((manifest['boot_bytes'],manifest['boot_size_max_bytes'],manifest['bootsz1_0_bits']), (1024,8192,'11'))
                 self.assertEqual(manifest['boot_start_hex'],'0x1FC00')
-    def test_source_references_correct_boot_branch(self):
-        s=(ROOT/'optiboot_mini.S').read_text()
-        self.assertIn('#elif MINI_FLASH_BANKED || (BOOT_BYTES > 4096)',s)
+    def test_maximum_boot_section_is_located_at_flash_end(self):
+        with tempfile.TemporaryDirectory() as folder:
+            p=subprocess.run([sys.executable,str(ROOT/'build_mini.py'),
+                '--mcu','atmega1284p','--boot-bytes','8192','--output-dir',folder],
+                capture_output=True,text=True)
+            self.assertEqual(p.returncode,0,p.stderr)
+            meta=json.loads((Path(folder)/'atmega1284p.json').read_text())
+            self.assertEqual(meta['boot_start_hex'],'0x1E000')
+            self.assertEqual(meta['bootsz1_0_bits'],'00')
 
 if __name__=='__main__':unittest.main()

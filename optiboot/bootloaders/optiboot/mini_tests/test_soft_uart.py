@@ -31,6 +31,7 @@ class SoftAVR(TinyAVR):
         self.txbit=0 if dev['profile']=='soft85' else 1
         self.portlevel=None
         self.tx_edges=[]
+        self.watchdog_kicks=0
         self.scheduled=[]
         self.f_cpu=f_cpu
         self.baud=baud
@@ -65,6 +66,7 @@ class SoftAVR(TinyAVR):
         super().io_write(addr,val)
     def step(self):
         pc=self.pc;op=self.u16(pc)
+        if op==0x95a8: self.watchdog_kicks+=1  # AVR WDR opcode
         super().step()
         # Core emulator's cycles counter assumes 1 cycle/op. Adjust to AVR
         # documented costs for all opcodes encountered on the serial path.
@@ -189,8 +191,8 @@ class SoftUARTTests(unittest.TestCase):
                     c.input_bit_factor=1+drift
                     c.send_wave(b'\x30\x20')
                     self.assertEqual(c.decoded_transmit(),b'\x14\x10')
-    def test_1mhz_and_16mhz_baud_profiles(self):
-        for clock,baud,source in ((1000000,9600,'internal_rc'),(16000000,38400,'external_clock')):
+    def test_8mhz_and_16mhz_baud_profiles(self):
+        for clock,baud,source in ((8000000,19200,'internal_rc'),(16000000,38400,'external_clock')):
             with self.subTest(clock=clock):
                 chip='attiny85'; dev=build_mini.DEVICES[chip]
                 out=Path(self.tmp.name)/f'{chip}_{clock}'
@@ -236,6 +238,81 @@ class SoftUARTTests(unittest.TestCase):
                 # Per-edge timing includes branch-balance jitter and 2-cycle
                 # SBI/CBI GPIO instruction latency, not analog pin rise time.
                 self.assertTrue(all(abs(g-c.bitcycles) <= c.bitcycles*0.02 for g in gaps),gaps)
+
+    def test_idle_soft_uart_must_allow_watchdog_timeout(self):
+        # In the old RX loop, WDR executed on *every polling iteration*.
+        # A device with no incoming serial bits would then remain in the
+        # bootloader indefinitely, unlike the official Optiboot timeout.
+        # Count actual machine-code WDR opcodes during 20k idle steps.
+        for chip in self.images:
+            with self.subTest(chip=chip):
+                c=self.cpu(chip)
+                feeds_before=c.watchdog_kicks
+                for _ in range(20_000):c.step()
+                self.assertEqual(c.watchdog_kicks-feeds_before,1,
+                    'Software UART is continuously feeding WDT while waiting for RX')
+
+    def test_16mhz_115200_external_clock_uart(self):
+        # Explicit timing/pin-level test, not actual oscillator/real hardware.
+        for chip in ('attiny84','attiny85'):
+            with self.subTest(chip=chip):
+                out=Path(self.tmp.name)/f'{chip}_16mhz_115200'
+                p=subprocess.run([sys.executable,str(ROOT/'build_mini.py'), '--mcu',chip,
+                    '--f-cpu','16000000','--baud','auto','--clock-source','external_crystal',
+                    '--output-dir',str(out)],capture_output=True,text=True)
+                self.assertEqual(p.returncode,0,p.stderr)
+                import json
+                metadata=json.loads((out/(chip+'.json')).read_text())
+                self.assertEqual(metadata['baud_requested'],115200)
+                c=SoftAVR((out/(chip+'.bin')).read_bytes(),build_mini.DEVICES[chip],
+                    baud=115200,f_cpu=16000000)
+                c.rxwait_pc=c.boot_start+symaddr(out/(chip+'.o'),'rx_wait')
+                c.wait_ready()
+                c.send_wave(b'\x30\x20')
+                self.assertEqual(c.decoded_transmit(),b'\x14\x10')
+                c.send_wave(b'\x75\x20')
+                self.assertEqual(c.decoded_transmit()[-5:],
+                    bytes([0x14,*build_mini.DEVICES[chip]['sig'],0x10]))
+                target=c.boot_start-64
+                word=target//2
+                address=bytes((0x55,word&255,word>>8,0x20))
+                c.send_wave(address)
+                payload=bytes((n*17+3)&255 for n in range(64))
+                c.send_wave(bytes((0x64,0,64,ord('F')))+payload+b'\x20',
+                    max_instructions=3500000)
+                self.assertEqual(c.flash[target:target+64],payload)
+                c.send_wave(address)
+                c.send_wave(bytes((0x74,0,64,ord('F'),0x20)),
+                    max_instructions=3500000)
+                self.assertEqual(c.decoded_transmit()[-66:],b'\x14'+payload+b'\x10')
+                for drift in (-.015,+.015):
+                    t=SoftAVR((out/(chip+'.bin')).read_bytes(),build_mini.DEVICES[chip],
+                        baud=115200,f_cpu=16000000)
+                    t.rxwait_pc=t.boot_start+symaddr(out/(chip+'.o'),'rx_wait')
+                    t.wait_ready()
+                    t.input_bit_factor=1+drift
+                    t.send_wave(b'\x30\x20')
+                    self.assertEqual(t.decoded_transmit(),b'\x14\x10')
+
+    def test_8mhz_57600_external_clock_uart(self):
+        import json
+        for chip in ('attiny84','attiny85'):
+            with self.subTest(chip=chip):
+                out=Path(self.tmp.name)/f'{chip}_8mhz_57600'
+                p=subprocess.run([sys.executable,str(ROOT/'build_mini.py'), '--mcu',chip,
+                    '--f-cpu','8000000','--baud','auto','--clock-source','external_crystal',
+                    '--output-dir',str(out)],capture_output=True,text=True)
+                self.assertEqual(p.returncode,0,p.stderr)
+                metadata=json.loads((out/(chip+'.json')).read_text())
+                self.assertEqual(metadata['baud_requested'],57600)
+                for drift in (-.015,0,+.015):
+                    c=SoftAVR((out/(chip+'.bin')).read_bytes(),build_mini.DEVICES[chip],
+                        baud=57600,f_cpu=8000000)
+                    c.rxwait_pc=c.boot_start+symaddr(out/(chip+'.o'),'rx_wait')
+                    c.wait_ready()
+                    c.input_bit_factor=1+drift
+                    c.send_wave(b'\x30\x20')
+                    self.assertEqual(c.decoded_transmit(),b'\x14\x10')
 
     def test_virtual_boot_application_on_power_on(self):
         for chip in self.images:

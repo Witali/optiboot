@@ -6,11 +6,16 @@
     out UART_A_IO,r16
     out UART_B_IO,r18
     ldi r16,0x06
-    sts UART_C_MEM,r16
+    ldi r28, UART_H_MEM
+    std Y+(UART_C_MEM-UART_H_MEM),r16
     ldi r16,(MINI_UBRR & 0xFF)
     out UART_L_IO,r16
+#if MINI_UBRR < 256
+    std Y+0,r29
+#else
     ldi r16,((MINI_UBRR >> 8) & 0x0F)
-    sts UART_H_MEM,r16
+    std Y+0,r16
+#endif
 .endm
 .macro MINI_UART_STATUS
     in r18,UART_A_IO

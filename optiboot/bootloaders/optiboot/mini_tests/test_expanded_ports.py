@@ -180,6 +180,23 @@ class ExpandedPorts(unittest.TestCase):
                 another=self.cpu(chip)
                 another.execute_until_error(bytes((0x56,0x4d,0,2,0,0x20)),another.error_pc)
                 self.assertEqual(another.erase_count,0)
+
+    def test_eeprom_after_upper_flash_bank_without_host_bank_reset(self):
+        for chip in B256:
+            with self.subTest(chip=chip):
+                c=self.cpu(chip)
+                self.assertEqual(c.ext_addr(1),b'\x14\x00\x10')
+                self.assertEqual(c.load_addr(0x30000),b'\x14\x10')
+                self.assertEqual(c.read_flash(16),b'\x14'+bytes([255]*16)+b'\x10')
+                # AVRDUDE 8 omits 4D for EEPROM, so the Flash latch remains set.
+                self.assertEqual(c.load_addr(0),b'\x14\x10')
+                data=bytes(range(16))
+                self.assertEqual(c.send(b'd\x00\x10E'+data+b' '),b'\x14\x10')
+                self.assertEqual(c.load_addr(0),b'\x14\x10')
+                self.assertEqual(c.send(b't\x00\x10E '),b'\x14'+data+b'\x10')
+                # A genuine high word-address bit must still be rejected.
+                self.assertEqual(c.load_addr(0x10000),b'\x14\x10')
+                c.execute_until_error(b't\x00\x10E ',c.error_pc,limit=50000)
     def test_256k_invalid_eop_and_flash_end_read(self):
         for chip in B256:
             with self.subTest(chip=chip):

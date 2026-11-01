@@ -65,14 +65,15 @@ class TinyAVR(AVR128):
             self.page_buf[addr&(self.page_size-1)]=self.reg[0]
             self.page_buf[(addr+1)&(self.page_size-1)]=self.reg[1]
         elif cmd==3:
-            pages=4 if self.profile=='tiny1634' else 1
+            pages=4 if self.profile in ('tiny1634','tiny841') else 1
             group=page&~(self.page_size*pages-1)
-            if group>=self.boot_start:raise AssertionError('Boot erase')
+            # No dedicated boot area on these tinyAVRs. Direct application
+            # SPM can physically erase boot code; do not pretend protection!
             self.flash[group:group+self.page_size*pages]=b'\xff'*(self.page_size*pages)
             self.group_erases.append(group)
             self.erase_count+=1
         elif cmd==5:
-            if page>=self.boot_start:raise AssertionError('Boot page write')
+            # No hardware boot-section protection; caller must validate addr.
             if not self.page_buf:raise AssertionError('Empty hardware page buffer')
             for offset,v in self.page_buf.items():self.flash[page+offset]=v
             self.page_buf.clear();self.write_count+=1
@@ -113,15 +114,17 @@ class TinyVirtualTests(unittest.TestCase):
                 self.assertIn(0x0E,c.wdt_writes)
                 self.assertEqual(c.send(b'1 '),b'\x14AVR STK\x10')
                 self.assertEqual(c.send(b'u '),b'\x14'+bytes(self.boots[chip][2]['sig'])+b'\x10')
-    def test_tiny841_write_and_read_page(self):
+    def test_tiny841_four_page_erase_and_write(self):
         c=self.cpu('attiny841')
-        page=c.boot_start-16
-        b=bytes((i*3+11)&255 for i in range(16))
+        page=c.boot_start-64
+        b=bytes((i*3+11)&255 for i in range(64))
         self.assertEqual(c.load_address(page),b'\x14\x10')
         self.assertEqual(c.write_flash(b),b'\x14\x10')
-        self.assertEqual(c.flash[page:page+16],b)
+        self.assertEqual(c.group_erases,[page])
+        self.assertEqual(c.page_writes,[page+48,page+32,page+16,page])
+        self.assertEqual(c.flash[page:page+64],b)
         self.assertEqual(c.load_address(page),b'\x14\x10')
-        self.assertEqual(c.read_flash(16),b'\x14'+b+b'\x10')
+        self.assertEqual(c.read_flash(64),b'\x14'+b+b'\x10')
     def test_tiny1634_group_erase_and_four_page_writes(self):
         c=self.cpu('attiny1634')
         group=c.boot_start-128
@@ -155,6 +158,15 @@ class TinyVirtualTests(unittest.TestCase):
                 self.assertEqual(c.send(bytes((0x64,0,16,ord('E')))+data+b' '),b'\x14\x10')
                 self.assertEqual(c.eeprom[offset:offset+16],data)
                 self.assertEqual(c.send(bytes((0x74,0,16,ord('E'),0x20))),b'\x14'+data+b'\x10')
+    def test_tiny841_refuses_partial_group_before_erasing(self):
+        c=self.cpu('attiny841')
+        group=c.boot_start-64
+        c.load_address(group)
+        c.execute_until_error(bytes((0x64,0,16,ord('F')))+bytes(16)+b' ',c.error_pc,limit=50000)
+        self.assertEqual(c.group_erases,[])
+        self.assertEqual(c.erase_count,0)
+        self.assertEqual(c.flash[group:group+64],b'\xff'*64)
+
     def test_tiny1634_bad_frame_does_not_erase_group(self):
         c=self.cpu('attiny1634')
         group=c.boot_start-128

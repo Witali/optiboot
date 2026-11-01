@@ -12,7 +12,14 @@
     "profile": "modern",
     "ramend": 2303,
     "default_boot": 512,
-    "virtual_boot": false
+    "virtual_boot": false,
+    "flash_erase_group_bytes": 128,
+    "spm512_capable": true,
+    "wide_branches": false,
+    "wdt_ccp_style": 0,
+    "sigrow_lpm_supported_by_datasheet": true,
+    "hardware_min_boot_bytes": 512,
+    "dual_compact_enabled": true
   },
   "atmega328": {
     "flash": 32768,
@@ -27,7 +34,14 @@
     "profile": "modern",
     "ramend": 2303,
     "default_boot": 512,
-    "virtual_boot": false
+    "virtual_boot": false,
+    "flash_erase_group_bytes": 128,
+    "spm512_capable": true,
+    "wide_branches": false,
+    "wdt_ccp_style": 0,
+    "sigrow_lpm_supported_by_datasheet": true,
+    "hardware_min_boot_bytes": 512,
+    "dual_compact_enabled": true
   },
   "atmega328pb": {
     "flash": 32768,
@@ -42,7 +56,14 @@
     "profile": "modern",
     "ramend": 2303,
     "default_boot": 512,
-    "virtual_boot": false
+    "virtual_boot": false,
+    "flash_erase_group_bytes": 128,
+    "spm512_capable": true,
+    "wide_branches": false,
+    "wdt_ccp_style": 0,
+    "sigrow_lpm_supported_by_datasheet": true,
+    "hardware_min_boot_bytes": 512,
+    "dual_compact_enabled": true
   },
   "atmega168p": {
     "flash": 16384,
@@ -57,7 +78,14 @@
     "profile": "modern",
     "ramend": 1279,
     "default_boot": 512,
-    "virtual_boot": false
+    "virtual_boot": false,
+    "flash_erase_group_bytes": 128,
+    "spm512_capable": true,
+    "wide_branches": false,
+    "wdt_ccp_style": 0,
+    "sigrow_lpm_supported_by_datasheet": true,
+    "hardware_min_boot_bytes": 256,
+    "dual_compact_enabled": true
   },
   "atmega168": {
     "flash": 16384,
@@ -72,7 +100,14 @@
     "profile": "modern",
     "ramend": 1279,
     "default_boot": 512,
-    "virtual_boot": false
+    "virtual_boot": false,
+    "flash_erase_group_bytes": 128,
+    "spm512_capable": true,
+    "wide_branches": false,
+    "wdt_ccp_style": 0,
+    "sigrow_lpm_supported_by_datasheet": true,
+    "hardware_min_boot_bytes": 256,
+    "dual_compact_enabled": true
   },
   "atmega88p": {
     "flash": 8192,
@@ -87,7 +122,14 @@
     "profile": "modern",
     "ramend": 1279,
     "default_boot": 512,
-    "virtual_boot": false
+    "virtual_boot": false,
+    "flash_erase_group_bytes": 64,
+    "spm512_capable": true,
+    "wide_branches": false,
+    "wdt_ccp_style": 0,
+    "sigrow_lpm_supported_by_datasheet": true,
+    "hardware_min_boot_bytes": 256,
+    "dual_compact_enabled": true
   },
   "atmega88": {
     "flash": 8192,
@@ -102,7 +144,14 @@
     "profile": "modern",
     "ramend": 1279,
     "default_boot": 512,
-    "virtual_boot": false
+    "virtual_boot": false,
+    "flash_erase_group_bytes": 64,
+    "spm512_capable": true,
+    "wide_branches": false,
+    "wdt_ccp_style": 0,
+    "sigrow_lpm_supported_by_datasheet": true,
+    "hardware_min_boot_bytes": 256,
+    "dual_compact_enabled": true
   },
   "atmega324pa": {
     "flash": 32768,
@@ -117,7 +166,14 @@
     "profile": "modern",
     "ramend": 2303,
     "default_boot": 512,
-    "virtual_boot": false
+    "virtual_boot": false,
+    "flash_erase_group_bytes": 128,
+    "spm512_capable": true,
+    "wide_branches": false,
+    "wdt_ccp_style": 0,
+    "sigrow_lpm_supported_by_datasheet": true,
+    "hardware_min_boot_bytes": 512,
+    "dual_compact_enabled": true
   },
   "atmega164pa": {
     "flash": 16384,
@@ -132,7 +188,14 @@
     "profile": "modern",
     "ramend": 1279,
     "default_boot": 512,
-    "virtual_boot": false
+    "virtual_boot": false,
+    "flash_erase_group_bytes": 128,
+    "spm512_capable": true,
+    "wide_branches": false,
+    "wdt_ccp_style": 0,
+    "sigrow_lpm_supported_by_datasheet": true,
+    "hardware_min_boot_bytes": 256,
+    "dual_compact_enabled": true
   },
   "atmega16": {
     "flash": 16384,
@@ -147,7 +210,14 @@
     "profile": "legacy",
     "ramend": 1119,
     "default_boot": 512,
-    "virtual_boot": false
+    "virtual_boot": false,
+    "flash_erase_group_bytes": 128,
+    "spm512_capable": true,
+    "wide_branches": false,
+    "wdt_ccp_style": 0,
+    "sigrow_lpm_supported_by_datasheet": false,
+    "hardware_min_boot_bytes": 256,
+    "dual_compact_enabled": true
   },
   "atmega32a": {
     "flash": 32768,
@@ -162,7 +232,14 @@
     "profile": "legacy",
     "ramend": 2143,
     "default_boot": 512,
-    "virtual_boot": false
+    "virtual_boot": false,
+    "flash_erase_group_bytes": 128,
+    "spm512_capable": true,
+    "wide_branches": false,
+    "wdt_ccp_style": 0,
+    "sigrow_lpm_supported_by_datasheet": false,
+    "hardware_min_boot_bytes": 512,
+    "dual_compact_enabled": true
   },
   "atmega64a": {
     "flash": 65536,
@@ -177,7 +254,14 @@
     "profile": "mega64",
     "ramend": 4351,
     "default_boot": 1024,
-    "virtual_boot": false
+    "virtual_boot": false,
+    "flash_erase_group_bytes": 256,
+    "spm512_capable": false,
+    "wide_branches": true,
+    "wdt_ccp_style": 0,
+    "sigrow_lpm_supported_by_datasheet": false,
+    "hardware_min_boot_bytes": 1024,
+    "dual_compact_enabled": false
   },
   "atmega128a": {
     "flash": 131072,
@@ -192,7 +276,14 @@
     "profile": "mega128",
     "ramend": 4351,
     "default_boot": 1024,
-    "virtual_boot": false
+    "virtual_boot": false,
+    "flash_erase_group_bytes": 256,
+    "spm512_capable": false,
+    "wide_branches": true,
+    "wdt_ccp_style": 0,
+    "sigrow_lpm_supported_by_datasheet": false,
+    "hardware_min_boot_bytes": 1024,
+    "dual_compact_enabled": false
   },
   "atmega1284": {
     "flash": 131072,
@@ -207,7 +298,14 @@
     "profile": "modern128",
     "ramend": 16639,
     "default_boot": 1024,
-    "virtual_boot": false
+    "virtual_boot": false,
+    "flash_erase_group_bytes": 256,
+    "spm512_capable": false,
+    "wide_branches": true,
+    "wdt_ccp_style": 0,
+    "sigrow_lpm_supported_by_datasheet": true,
+    "hardware_min_boot_bytes": 1024,
+    "dual_compact_enabled": false
   },
   "atmega1284p": {
     "flash": 131072,
@@ -222,7 +320,14 @@
     "profile": "modern128",
     "ramend": 16639,
     "default_boot": 1024,
-    "virtual_boot": false
+    "virtual_boot": false,
+    "flash_erase_group_bytes": 256,
+    "spm512_capable": false,
+    "wide_branches": true,
+    "wdt_ccp_style": 0,
+    "sigrow_lpm_supported_by_datasheet": true,
+    "hardware_min_boot_bytes": 1024,
+    "dual_compact_enabled": false
   },
   "atmega8": {
     "flash": 8192,
@@ -237,7 +342,14 @@
     "profile": "legacy",
     "ramend": 1119,
     "default_boot": 512,
-    "virtual_boot": false
+    "virtual_boot": false,
+    "flash_erase_group_bytes": 64,
+    "spm512_capable": true,
+    "wide_branches": false,
+    "wdt_ccp_style": 0,
+    "sigrow_lpm_supported_by_datasheet": false,
+    "hardware_min_boot_bytes": 256,
+    "dual_compact_enabled": true
   },
   "atmega8a": {
     "flash": 8192,
@@ -252,7 +364,14 @@
     "profile": "legacy",
     "ramend": 1119,
     "default_boot": 512,
-    "virtual_boot": false
+    "virtual_boot": false,
+    "flash_erase_group_bytes": 64,
+    "spm512_capable": true,
+    "wide_branches": false,
+    "wdt_ccp_style": 0,
+    "sigrow_lpm_supported_by_datasheet": false,
+    "hardware_min_boot_bytes": 256,
+    "dual_compact_enabled": true
   },
   "atmega8515": {
     "flash": 8192,
@@ -267,7 +386,14 @@
     "profile": "legacy",
     "ramend": 607,
     "default_boot": 512,
-    "virtual_boot": false
+    "virtual_boot": false,
+    "flash_erase_group_bytes": 64,
+    "spm512_capable": true,
+    "wide_branches": false,
+    "wdt_ccp_style": 0,
+    "sigrow_lpm_supported_by_datasheet": false,
+    "hardware_min_boot_bytes": 256,
+    "dual_compact_enabled": true
   },
   "atmega8535": {
     "flash": 8192,
@@ -282,7 +408,14 @@
     "profile": "legacy",
     "ramend": 607,
     "default_boot": 512,
-    "virtual_boot": false
+    "virtual_boot": false,
+    "flash_erase_group_bytes": 64,
+    "spm512_capable": true,
+    "wide_branches": false,
+    "wdt_ccp_style": 0,
+    "sigrow_lpm_supported_by_datasheet": false,
+    "hardware_min_boot_bytes": 256,
+    "dual_compact_enabled": true
   },
   "atmega162": {
     "flash": 16384,
@@ -297,7 +430,14 @@
     "profile": "legacy",
     "ramend": 1279,
     "default_boot": 512,
-    "virtual_boot": false
+    "virtual_boot": false,
+    "flash_erase_group_bytes": 128,
+    "spm512_capable": true,
+    "wide_branches": false,
+    "wdt_ccp_style": 0,
+    "sigrow_lpm_supported_by_datasheet": false,
+    "hardware_min_boot_bytes": 256,
+    "dual_compact_enabled": true
   },
   "atmega164p": {
     "flash": 16384,
@@ -312,7 +452,14 @@
     "profile": "modern",
     "ramend": 1279,
     "default_boot": 512,
-    "virtual_boot": false
+    "virtual_boot": false,
+    "flash_erase_group_bytes": 128,
+    "spm512_capable": true,
+    "wide_branches": false,
+    "wdt_ccp_style": 0,
+    "sigrow_lpm_supported_by_datasheet": true,
+    "hardware_min_boot_bytes": 256,
+    "dual_compact_enabled": true
   },
   "atmega164a": {
     "flash": 16384,
@@ -327,7 +474,14 @@
     "profile": "modern",
     "ramend": 1279,
     "default_boot": 512,
-    "virtual_boot": false
+    "virtual_boot": false,
+    "flash_erase_group_bytes": 128,
+    "spm512_capable": true,
+    "wide_branches": false,
+    "wdt_ccp_style": 0,
+    "sigrow_lpm_supported_by_datasheet": true,
+    "hardware_min_boot_bytes": 256,
+    "dual_compact_enabled": true
   },
   "atmega324p": {
     "flash": 32768,
@@ -342,7 +496,14 @@
     "profile": "modern",
     "ramend": 2303,
     "default_boot": 512,
-    "virtual_boot": false
+    "virtual_boot": false,
+    "flash_erase_group_bytes": 128,
+    "spm512_capable": true,
+    "wide_branches": false,
+    "wdt_ccp_style": 0,
+    "sigrow_lpm_supported_by_datasheet": true,
+    "hardware_min_boot_bytes": 512,
+    "dual_compact_enabled": true
   },
   "atmega324a": {
     "flash": 32768,
@@ -357,7 +518,14 @@
     "profile": "modern",
     "ramend": 2303,
     "default_boot": 512,
-    "virtual_boot": false
+    "virtual_boot": false,
+    "flash_erase_group_bytes": 128,
+    "spm512_capable": true,
+    "wide_branches": false,
+    "wdt_ccp_style": 0,
+    "sigrow_lpm_supported_by_datasheet": true,
+    "hardware_min_boot_bytes": 512,
+    "dual_compact_enabled": true
   },
   "atmega324pb": {
     "flash": 32768,
@@ -372,7 +540,14 @@
     "profile": "modern",
     "ramend": 2303,
     "default_boot": 512,
-    "virtual_boot": false
+    "virtual_boot": false,
+    "flash_erase_group_bytes": 128,
+    "spm512_capable": true,
+    "wide_branches": false,
+    "wdt_ccp_style": 0,
+    "sigrow_lpm_supported_by_datasheet": false,
+    "hardware_min_boot_bytes": 512,
+    "dual_compact_enabled": true
   },
   "atmega644": {
     "flash": 65536,
@@ -387,7 +562,14 @@
     "profile": "modern",
     "ramend": 4351,
     "default_boot": 1024,
-    "virtual_boot": false
+    "virtual_boot": false,
+    "flash_erase_group_bytes": 256,
+    "spm512_capable": false,
+    "wide_branches": true,
+    "wdt_ccp_style": 0,
+    "sigrow_lpm_supported_by_datasheet": true,
+    "hardware_min_boot_bytes": 1024,
+    "dual_compact_enabled": false
   },
   "atmega644p": {
     "flash": 65536,
@@ -402,7 +584,14 @@
     "profile": "modern",
     "ramend": 4351,
     "default_boot": 1024,
-    "virtual_boot": false
+    "virtual_boot": false,
+    "flash_erase_group_bytes": 256,
+    "spm512_capable": false,
+    "wide_branches": true,
+    "wdt_ccp_style": 0,
+    "sigrow_lpm_supported_by_datasheet": true,
+    "hardware_min_boot_bytes": 1024,
+    "dual_compact_enabled": false
   },
   "atmega644a": {
     "flash": 65536,
@@ -417,7 +606,14 @@
     "profile": "modern",
     "ramend": 4351,
     "default_boot": 1024,
-    "virtual_boot": false
+    "virtual_boot": false,
+    "flash_erase_group_bytes": 256,
+    "spm512_capable": false,
+    "wide_branches": true,
+    "wdt_ccp_style": 0,
+    "sigrow_lpm_supported_by_datasheet": true,
+    "hardware_min_boot_bytes": 1024,
+    "dual_compact_enabled": false
   },
   "atmega644pa": {
     "flash": 65536,
@@ -432,7 +628,14 @@
     "profile": "modern",
     "ramend": 4351,
     "default_boot": 1024,
-    "virtual_boot": false
+    "virtual_boot": false,
+    "flash_erase_group_bytes": 256,
+    "spm512_capable": false,
+    "wide_branches": true,
+    "wdt_ccp_style": 0,
+    "sigrow_lpm_supported_by_datasheet": true,
+    "hardware_min_boot_bytes": 1024,
+    "dual_compact_enabled": false
   },
   "atmega640": {
     "flash": 65536,
@@ -447,7 +650,14 @@
     "profile": "modern",
     "ramend": 8703,
     "default_boot": 1024,
-    "virtual_boot": false
+    "virtual_boot": false,
+    "flash_erase_group_bytes": 256,
+    "spm512_capable": false,
+    "wide_branches": true,
+    "wdt_ccp_style": 0,
+    "sigrow_lpm_supported_by_datasheet": true,
+    "hardware_min_boot_bytes": 1024,
+    "dual_compact_enabled": false
   },
   "atmega1280": {
     "flash": 131072,
@@ -462,7 +672,14 @@
     "profile": "modern128",
     "ramend": 8703,
     "default_boot": 1024,
-    "virtual_boot": false
+    "virtual_boot": false,
+    "flash_erase_group_bytes": 256,
+    "spm512_capable": false,
+    "wide_branches": true,
+    "wdt_ccp_style": 0,
+    "sigrow_lpm_supported_by_datasheet": true,
+    "hardware_min_boot_bytes": 1024,
+    "dual_compact_enabled": false
   },
   "atmega1281": {
     "flash": 131072,
@@ -477,7 +694,14 @@
     "profile": "modern128",
     "ramend": 8703,
     "default_boot": 1024,
-    "virtual_boot": false
+    "virtual_boot": false,
+    "flash_erase_group_bytes": 256,
+    "spm512_capable": false,
+    "wide_branches": true,
+    "wdt_ccp_style": 0,
+    "sigrow_lpm_supported_by_datasheet": true,
+    "hardware_min_boot_bytes": 1024,
+    "dual_compact_enabled": false
   },
   "atmega2560": {
     "flash": 262144,
@@ -492,7 +716,14 @@
     "profile": "modern256",
     "ramend": 8703,
     "default_boot": 1024,
-    "virtual_boot": false
+    "virtual_boot": false,
+    "flash_erase_group_bytes": 256,
+    "spm512_capable": false,
+    "wide_branches": true,
+    "wdt_ccp_style": 0,
+    "sigrow_lpm_supported_by_datasheet": true,
+    "hardware_min_boot_bytes": 1024,
+    "dual_compact_enabled": false
   },
   "atmega2561": {
     "flash": 262144,
@@ -507,7 +738,14 @@
     "profile": "modern256",
     "ramend": 8703,
     "default_boot": 1024,
-    "virtual_boot": false
+    "virtual_boot": false,
+    "flash_erase_group_bytes": 256,
+    "spm512_capable": false,
+    "wide_branches": true,
+    "wdt_ccp_style": 0,
+    "sigrow_lpm_supported_by_datasheet": true,
+    "hardware_min_boot_bytes": 1024,
+    "dual_compact_enabled": false
   },
   "attiny841": {
     "flash": 8192,
@@ -522,7 +760,14 @@
     "profile": "tiny841",
     "ramend": 767,
     "default_boot": 1024,
-    "virtual_boot": true
+    "virtual_boot": true,
+    "flash_erase_group_bytes": 64,
+    "spm512_capable": false,
+    "wide_branches": true,
+    "wdt_ccp_style": 1,
+    "sigrow_lpm_supported_by_datasheet": false,
+    "hardware_min_boot_bytes": null,
+    "dual_compact_enabled": true
   },
   "attiny1634": {
     "flash": 16384,
@@ -537,7 +782,14 @@
     "profile": "tiny1634",
     "ramend": 1279,
     "default_boot": 1024,
-    "virtual_boot": true
+    "virtual_boot": true,
+    "flash_erase_group_bytes": 128,
+    "spm512_capable": false,
+    "wide_branches": true,
+    "wdt_ccp_style": 2,
+    "sigrow_lpm_supported_by_datasheet": false,
+    "hardware_min_boot_bytes": null,
+    "dual_compact_enabled": true
   },
   "attiny85": {
     "flash": 8192,
@@ -552,7 +804,14 @@
     "profile": "soft85",
     "ramend": 607,
     "default_boot": 1024,
-    "virtual_boot": true
+    "virtual_boot": true,
+    "flash_erase_group_bytes": 64,
+    "spm512_capable": false,
+    "wide_branches": false,
+    "wdt_ccp_style": 0,
+    "sigrow_lpm_supported_by_datasheet": false,
+    "hardware_min_boot_bytes": null,
+    "dual_compact_enabled": true
   },
   "attiny84": {
     "flash": 8192,
@@ -567,6 +826,13 @@
     "profile": "soft84",
     "ramend": 607,
     "default_boot": 1024,
-    "virtual_boot": true
+    "virtual_boot": true,
+    "flash_erase_group_bytes": 64,
+    "spm512_capable": false,
+    "wide_branches": false,
+    "wdt_ccp_style": 0,
+    "sigrow_lpm_supported_by_datasheet": false,
+    "hardware_min_boot_bytes": null,
+    "dual_compact_enabled": true
   }
 }

@@ -5,8 +5,9 @@ Never use without an ISP recovery programmer. Before uploading an application,
 run patch_vectors.py on its HEX. The bootloader must be preinstalled with ISP,
 SELFPRGEN enabled, and reset redirected to the bootloader.
 
-ATtiny1634 erases four 32-byte pages at once; its safe transfer size is 128,
-not the physical 32-byte page size often advertised by AVRDUDE.
+ATtiny841 erases four 16-byte pages at once (64-byte transfer), and ATtiny1634
+four 32-byte pages at once (128-byte transfer). Sending one physical page could
+erase adjacent application data. Never use 16B/32B isolated writes on these.
 
 This script is NOT tested against real hardware. Requires pyserial on host.
 """
@@ -53,7 +54,7 @@ class Stk500Mini:
 def upload(link,image,mcu,verify=True):
     t=TARGETS[mcu]
     boot=t['flash']-t['boot']
-    group=128 if mcu=='attiny1634' else 16 if mcu=='attiny841' else 64
+    group=128 if mcu=='attiny1634' else 64
     if not image:raise ValueError('Empty Intel HEX')
     if max(image)>=boot or min(image)<0:
         raise ValueError('Image enters reserved boot region')

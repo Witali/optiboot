@@ -1,14 +1,22 @@
 /* Modern contiguous USART0 registers at 0xC0..0xC6 (ATmega328P family). */
 .macro MINI_UART_INIT
+#if MINI_FLASH256_UART_RESET_OPT && !MINI_U2X
+    /* Reset state UCSR0A.U2X0 is already zero. */
+#else
     ldi r16,(MINI_U2X << 1)
     std Y+0,r16
+#endif
     std Y+1,r18
+#if !MINI_FLASH256_UART_RESET_OPT
     ldi r16,0x06
     std Y+2,r16
+#endif
     ldi r16,(MINI_UBRR & 0xFF)
     std Y+4,r16
 #if MINI_UBRR < 256
+#if !MINI_FLASH256_UART_RESET_OPT
     std Y+5,r29
+#endif
 #else
     ldi r16,((MINI_UBRR >> 8) & 0x0F)
     std Y+5,r16
