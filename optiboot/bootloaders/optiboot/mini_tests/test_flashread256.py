@@ -121,6 +121,22 @@ class FlashRead256Tests(unittest.TestCase):
                     self.assertEqual(bytes(cpu.flash), before)
                     self.assertEqual((cpu.erase_count, cpu.write_count), (0, 0))
 
+    def test_every_boot_page_is_rejected_before_any_spm_instruction(self):
+        for (chip, hz), folder in self.outputs.items():
+            dev = build_flashread.build_mini.DEVICES[chip]
+            for address in range(dev['flash']-256, dev['flash'], dev['page']):
+                with self.subTest(chip=chip, hz=hz, boot_page=address):
+                    cpu, _, _ = make_cpu(chip, folder)
+                    calls = []
+                    original = cpu.spm
+                    def observe():
+                        calls.append(cpu.z())
+                        original()
+                    cpu.spm = observe
+                    self.assertEqual(cpu.send(address_packet(address)), b'\x14\x10')
+                    self.reject(cpu, write_packet(bytes([0xa5]*dev['page'])))
+                    self.assertEqual(calls, [], 'Boot request reached SPM, including buffer fill')
+
     def test_eeprom_busy_blocks_spm_until_completion(self):
         for (chip, hz), folder in self.outputs.items():
             with self.subTest(chip=chip, hz=hz):

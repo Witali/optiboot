@@ -22,7 +22,10 @@ available.
 The write-only 256-byte edition has been removed. The read/write edition now
 occupies a real 256-byte Boot section, with 249..255 useful bytes at
 16 MHz / 115200 on all 13 supported ATmega parts. It requires aligned full-page
-writes, page-aligned reads, and hardware-reset entry. ATmega328P/PB cannot use
+writes, page-aligned reads, and hardware-reset entry. The audited Arduino
+AVRDUDE path supplies full write pages automatically for ordinary HEX files;
+see the [Arduino protocol audit](ARDUINO_PROTOCOL_AUDIT_2026-11-01.md).
+ATmega328P/PB cannot use
 256-byte Boot sections. Compact and Full retain EEPROM support; Full retains
 the extra sign-on and fuse/lock query handlers.
 

@@ -7,6 +7,11 @@ applies only to its recorded Basic image, not to these editions.
 Firmware, generator and test source commit:
 `6449f85aa2fefade2f838f9a5c5feac3e7fb91b6`.
 
+The later [Arduino protocol audit](ARDUINO_PROTOCOL_AUDIT_2026-11-01.md) adds
+ordinary unpadded-HEX cases. AVRDUDE 8.0-arduino.1 supplies full write pages
+automatically, so the manual preparation tool is optional for that upload path.
+It also verifies rejection of every FlashRead256 Boot page before any SPM.
+
 ## Supported firmware
 
 | Edition | Device profiles | Physical/reserved area | Included memory operations |

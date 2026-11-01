@@ -1,0 +1,2129 @@
+{
+  "date": "2026-11-01",
+  "software_only": true,
+  "physical_board_access": false,
+  "firmware_source_commit": "6449f85aa2fefade2f838f9a5c5feac3e7fb91b6",
+  "audit_base_commit": "6f7b78c3814feddba1fc7058443cc0a0d5a3f1ff",
+  "arduino_avr_boards": "1.8.8",
+  "avrdude": "8.0-arduino.1",
+  "protocol": "Arduino STK500v1 subset",
+  "full_avr061_conformance": false,
+  "normal_application_hex_upload_supported_in_models": true,
+  "self_boot_update_supported": false,
+  "source_sha256_lf_normalized": {
+    "verify_arduino.py": "1d7c71dd0826a1e584a0cc65df730dfbcb4f0ecd8860c118838b83005657dd95",
+    "mini_tests/test_flashread256.py": "b87b378a0ec6f7d17864d86ac3fca07088c97711ca59ff977daa611dd273aa6b",
+    "generate_firmware.py": "9df1280dcdc691a5ddf81c14881f7ac4b22b2dcc51b2e042a00ceb16c39fd254",
+    "flashread/prepare_avrdude_hex.py": "aeff552772fef1553cf1bbf462b9ac59db54be4cb2f5956df59175cd4c36b28e"
+  },
+  "totals": {
+    "default_profiles": 13,
+    "default_host_cases": 52,
+    "default_verified_application_uploads": 39,
+    "default_blocked_boot_writes": 13,
+    "stock_nano168_baud_cases": 4,
+    "stock_verified_application_uploads": 3,
+    "stock_blocked_boot_writes": 1,
+    "targeted_firmware_tests": 8,
+    "generator_tests": 16,
+    "direct_boot_page_attempts": 76,
+    "failures": 0
+  },
+  "default_host_cases": [
+    {
+      "mcu": "atmega168p",
+      "mode": "short_even",
+      "upload_accepted": true,
+      "boot_unchanged": true,
+      "no_spm_on_boot_attempt": null,
+      "verified_by_avrdude": true,
+      "firmware_guard_rejected": false,
+      "host_process_timed_out": false,
+      "host_return_code": 0,
+      "unopened_transport_retries": 0,
+      "request_counts": {
+        "ENTER_PROGMODE": 1,
+        "GET_PARAMETER": 6,
+        "GET_SYNC": 3,
+        "LEAVE_PROGMODE": 1,
+        "LOAD_ADDRESS": 5,
+        "PROG_PAGE": 2,
+        "READ_PAGE": 3,
+        "READ_SIGN": 1,
+        "SET_DEVICE": 1,
+        "SET_DEVICE_EXT": 1
+      },
+      "write_packet_lengths": [
+        128,
+        128
+      ],
+      "get_parameter_ids": [
+        128,
+        129,
+        130,
+        152
+      ],
+      "trailing_request_bytes": 0,
+      "sha256": "62972341f2e54d966c8de72ea0f8d8044072e4adfa09fec442d20524f0b3f981",
+      "baud": 115200,
+      "software_only": true
+    },
+    {
+      "mcu": "atmega168p",
+      "mode": "short_odd",
+      "upload_accepted": true,
+      "boot_unchanged": true,
+      "no_spm_on_boot_attempt": null,
+      "verified_by_avrdude": true,
+      "firmware_guard_rejected": false,
+      "host_process_timed_out": false,
+      "host_return_code": 0,
+      "unopened_transport_retries": 0,
+      "request_counts": {
+        "ENTER_PROGMODE": 1,
+        "GET_PARAMETER": 6,
+        "GET_SYNC": 3,
+        "LEAVE_PROGMODE": 1,
+        "LOAD_ADDRESS": 5,
+        "PROG_PAGE": 2,
+        "READ_PAGE": 3,
+        "READ_SIGN": 1,
+        "SET_DEVICE": 1,
+        "SET_DEVICE_EXT": 1
+      },
+      "write_packet_lengths": [
+        128,
+        128
+      ],
+      "get_parameter_ids": [
+        128,
+        129,
+        130,
+        152
+      ],
+      "trailing_request_bytes": 0,
+      "sha256": "62972341f2e54d966c8de72ea0f8d8044072e4adfa09fec442d20524f0b3f981",
+      "baud": 115200,
+      "software_only": true
+    },
+    {
+      "mcu": "atmega168p",
+      "mode": "padded_odd",
+      "upload_accepted": true,
+      "boot_unchanged": true,
+      "no_spm_on_boot_attempt": null,
+      "verified_by_avrdude": true,
+      "firmware_guard_rejected": false,
+      "host_process_timed_out": false,
+      "host_return_code": 0,
+      "unopened_transport_retries": 0,
+      "request_counts": {
+        "ENTER_PROGMODE": 1,
+        "GET_PARAMETER": 6,
+        "GET_SYNC": 3,
+        "LEAVE_PROGMODE": 1,
+        "LOAD_ADDRESS": 4,
+        "PROG_PAGE": 2,
+        "READ_PAGE": 2,
+        "READ_SIGN": 1,
+        "SET_DEVICE": 1,
+        "SET_DEVICE_EXT": 1
+      },
+      "write_packet_lengths": [
+        128,
+        128
+      ],
+      "get_parameter_ids": [
+        128,
+        129,
+        130,
+        152
+      ],
+      "trailing_request_bytes": 0,
+      "sha256": "62972341f2e54d966c8de72ea0f8d8044072e4adfa09fec442d20524f0b3f981",
+      "baud": 115200,
+      "software_only": true
+    },
+    {
+      "mcu": "atmega168p",
+      "mode": "boot",
+      "upload_accepted": false,
+      "boot_unchanged": true,
+      "no_spm_on_boot_attempt": true,
+      "verified_by_avrdude": false,
+      "firmware_guard_rejected": true,
+      "host_process_timed_out": true,
+      "host_return_code": null,
+      "unopened_transport_retries": 0,
+      "request_counts": {
+        "ENTER_PROGMODE": 1,
+        "GET_PARAMETER": 6,
+        "GET_SYNC": 3,
+        "LOAD_ADDRESS": 1,
+        "PROG_PAGE": 1,
+        "READ_SIGN": 1,
+        "SET_DEVICE": 1,
+        "SET_DEVICE_EXT": 1
+      },
+      "write_packet_lengths": [
+        128
+      ],
+      "get_parameter_ids": [
+        128,
+        129,
+        130,
+        152
+      ],
+      "trailing_request_bytes": 0,
+      "sha256": "62972341f2e54d966c8de72ea0f8d8044072e4adfa09fec442d20524f0b3f981",
+      "baud": 115200,
+      "software_only": true
+    },
+    {
+      "mcu": "atmega168",
+      "mode": "short_even",
+      "upload_accepted": true,
+      "boot_unchanged": true,
+      "no_spm_on_boot_attempt": null,
+      "verified_by_avrdude": true,
+      "firmware_guard_rejected": false,
+      "host_process_timed_out": false,
+      "host_return_code": 0,
+      "unopened_transport_retries": 0,
+      "request_counts": {
+        "ENTER_PROGMODE": 1,
+        "GET_PARAMETER": 6,
+        "GET_SYNC": 3,
+        "LEAVE_PROGMODE": 1,
+        "LOAD_ADDRESS": 5,
+        "PROG_PAGE": 2,
+        "READ_PAGE": 3,
+        "READ_SIGN": 1,
+        "SET_DEVICE": 1,
+        "SET_DEVICE_EXT": 1
+      },
+      "write_packet_lengths": [
+        128,
+        128
+      ],
+      "get_parameter_ids": [
+        128,
+        129,
+        130,
+        152
+      ],
+      "trailing_request_bytes": 0,
+      "sha256": "802efc9a8f84e201c3b5c3ebaf8558500487480f44be00c5ce6d0bf28432d7c2",
+      "baud": 115200,
+      "software_only": true
+    },
+    {
+      "mcu": "atmega168",
+      "mode": "short_odd",
+      "upload_accepted": true,
+      "boot_unchanged": true,
+      "no_spm_on_boot_attempt": null,
+      "verified_by_avrdude": true,
+      "firmware_guard_rejected": false,
+      "host_process_timed_out": false,
+      "host_return_code": 0,
+      "unopened_transport_retries": 0,
+      "request_counts": {
+        "ENTER_PROGMODE": 1,
+        "GET_PARAMETER": 6,
+        "GET_SYNC": 3,
+        "LEAVE_PROGMODE": 1,
+        "LOAD_ADDRESS": 5,
+        "PROG_PAGE": 2,
+        "READ_PAGE": 3,
+        "READ_SIGN": 1,
+        "SET_DEVICE": 1,
+        "SET_DEVICE_EXT": 1
+      },
+      "write_packet_lengths": [
+        128,
+        128
+      ],
+      "get_parameter_ids": [
+        128,
+        129,
+        130,
+        152
+      ],
+      "trailing_request_bytes": 0,
+      "sha256": "802efc9a8f84e201c3b5c3ebaf8558500487480f44be00c5ce6d0bf28432d7c2",
+      "baud": 115200,
+      "software_only": true
+    },
+    {
+      "mcu": "atmega168",
+      "mode": "padded_odd",
+      "upload_accepted": true,
+      "boot_unchanged": true,
+      "no_spm_on_boot_attempt": null,
+      "verified_by_avrdude": true,
+      "firmware_guard_rejected": false,
+      "host_process_timed_out": false,
+      "host_return_code": 0,
+      "unopened_transport_retries": 0,
+      "request_counts": {
+        "ENTER_PROGMODE": 1,
+        "GET_PARAMETER": 6,
+        "GET_SYNC": 3,
+        "LEAVE_PROGMODE": 1,
+        "LOAD_ADDRESS": 4,
+        "PROG_PAGE": 2,
+        "READ_PAGE": 2,
+        "READ_SIGN": 1,
+        "SET_DEVICE": 1,
+        "SET_DEVICE_EXT": 1
+      },
+      "write_packet_lengths": [
+        128,
+        128
+      ],
+      "get_parameter_ids": [
+        128,
+        129,
+        130,
+        152
+      ],
+      "trailing_request_bytes": 0,
+      "sha256": "802efc9a8f84e201c3b5c3ebaf8558500487480f44be00c5ce6d0bf28432d7c2",
+      "baud": 115200,
+      "software_only": true
+    },
+    {
+      "mcu": "atmega168",
+      "mode": "boot",
+      "upload_accepted": false,
+      "boot_unchanged": true,
+      "no_spm_on_boot_attempt": true,
+      "verified_by_avrdude": false,
+      "firmware_guard_rejected": true,
+      "host_process_timed_out": true,
+      "host_return_code": null,
+      "unopened_transport_retries": 0,
+      "request_counts": {
+        "ENTER_PROGMODE": 1,
+        "GET_PARAMETER": 6,
+        "GET_SYNC": 3,
+        "LOAD_ADDRESS": 1,
+        "PROG_PAGE": 1,
+        "READ_SIGN": 1,
+        "SET_DEVICE": 1,
+        "SET_DEVICE_EXT": 1
+      },
+      "write_packet_lengths": [
+        128
+      ],
+      "get_parameter_ids": [
+        128,
+        129,
+        130,
+        152
+      ],
+      "trailing_request_bytes": 0,
+      "sha256": "802efc9a8f84e201c3b5c3ebaf8558500487480f44be00c5ce6d0bf28432d7c2",
+      "baud": 115200,
+      "software_only": true
+    },
+    {
+      "mcu": "atmega88p",
+      "mode": "short_even",
+      "upload_accepted": true,
+      "boot_unchanged": true,
+      "no_spm_on_boot_attempt": null,
+      "verified_by_avrdude": true,
+      "firmware_guard_rejected": false,
+      "host_process_timed_out": false,
+      "host_return_code": 0,
+      "unopened_transport_retries": 0,
+      "request_counts": {
+        "ENTER_PROGMODE": 1,
+        "GET_PARAMETER": 6,
+        "GET_SYNC": 3,
+        "LEAVE_PROGMODE": 1,
+        "LOAD_ADDRESS": 5,
+        "PROG_PAGE": 2,
+        "READ_PAGE": 3,
+        "READ_SIGN": 1,
+        "SET_DEVICE": 1,
+        "SET_DEVICE_EXT": 1
+      },
+      "write_packet_lengths": [
+        64,
+        64
+      ],
+      "get_parameter_ids": [
+        128,
+        129,
+        130,
+        152
+      ],
+      "trailing_request_bytes": 0,
+      "sha256": "1145b7396182dddcb42a6107f97df2fcadbce3a994758ded09a562422e142e02",
+      "baud": 115200,
+      "software_only": true
+    },
+    {
+      "mcu": "atmega88p",
+      "mode": "short_odd",
+      "upload_accepted": true,
+      "boot_unchanged": true,
+      "no_spm_on_boot_attempt": null,
+      "verified_by_avrdude": true,
+      "firmware_guard_rejected": false,
+      "host_process_timed_out": false,
+      "host_return_code": 0,
+      "unopened_transport_retries": 0,
+      "request_counts": {
+        "ENTER_PROGMODE": 1,
+        "GET_PARAMETER": 6,
+        "GET_SYNC": 3,
+        "LEAVE_PROGMODE": 1,
+        "LOAD_ADDRESS": 5,
+        "PROG_PAGE": 2,
+        "READ_PAGE": 3,
+        "READ_SIGN": 1,
+        "SET_DEVICE": 1,
+        "SET_DEVICE_EXT": 1
+      },
+      "write_packet_lengths": [
+        64,
+        64
+      ],
+      "get_parameter_ids": [
+        128,
+        129,
+        130,
+        152
+      ],
+      "trailing_request_bytes": 0,
+      "sha256": "1145b7396182dddcb42a6107f97df2fcadbce3a994758ded09a562422e142e02",
+      "baud": 115200,
+      "software_only": true
+    },
+    {
+      "mcu": "atmega88p",
+      "mode": "padded_odd",
+      "upload_accepted": true,
+      "boot_unchanged": true,
+      "no_spm_on_boot_attempt": null,
+      "verified_by_avrdude": true,
+      "firmware_guard_rejected": false,
+      "host_process_timed_out": false,
+      "host_return_code": 0,
+      "unopened_transport_retries": 0,
+      "request_counts": {
+        "ENTER_PROGMODE": 1,
+        "GET_PARAMETER": 6,
+        "GET_SYNC": 3,
+        "LEAVE_PROGMODE": 1,
+        "LOAD_ADDRESS": 4,
+        "PROG_PAGE": 2,
+        "READ_PAGE": 2,
+        "READ_SIGN": 1,
+        "SET_DEVICE": 1,
+        "SET_DEVICE_EXT": 1
+      },
+      "write_packet_lengths": [
+        64,
+        64
+      ],
+      "get_parameter_ids": [
+        128,
+        129,
+        130,
+        152
+      ],
+      "trailing_request_bytes": 0,
+      "sha256": "1145b7396182dddcb42a6107f97df2fcadbce3a994758ded09a562422e142e02",
+      "baud": 115200,
+      "software_only": true
+    },
+    {
+      "mcu": "atmega88p",
+      "mode": "boot",
+      "upload_accepted": false,
+      "boot_unchanged": true,
+      "no_spm_on_boot_attempt": true,
+      "verified_by_avrdude": false,
+      "firmware_guard_rejected": true,
+      "host_process_timed_out": true,
+      "host_return_code": null,
+      "unopened_transport_retries": 0,
+      "request_counts": {
+        "ENTER_PROGMODE": 1,
+        "GET_PARAMETER": 6,
+        "GET_SYNC": 3,
+        "LOAD_ADDRESS": 1,
+        "PROG_PAGE": 1,
+        "READ_SIGN": 1,
+        "SET_DEVICE": 1,
+        "SET_DEVICE_EXT": 1
+      },
+      "write_packet_lengths": [
+        64
+      ],
+      "get_parameter_ids": [
+        128,
+        129,
+        130,
+        152
+      ],
+      "trailing_request_bytes": 0,
+      "sha256": "1145b7396182dddcb42a6107f97df2fcadbce3a994758ded09a562422e142e02",
+      "baud": 115200,
+      "software_only": true
+    },
+    {
+      "mcu": "atmega88",
+      "mode": "short_even",
+      "upload_accepted": true,
+      "boot_unchanged": true,
+      "no_spm_on_boot_attempt": null,
+      "verified_by_avrdude": true,
+      "firmware_guard_rejected": false,
+      "host_process_timed_out": false,
+      "host_return_code": 0,
+      "unopened_transport_retries": 0,
+      "request_counts": {
+        "ENTER_PROGMODE": 1,
+        "GET_PARAMETER": 6,
+        "GET_SYNC": 3,
+        "LEAVE_PROGMODE": 1,
+        "LOAD_ADDRESS": 5,
+        "PROG_PAGE": 2,
+        "READ_PAGE": 3,
+        "READ_SIGN": 1,
+        "SET_DEVICE": 1,
+        "SET_DEVICE_EXT": 1
+      },
+      "write_packet_lengths": [
+        64,
+        64
+      ],
+      "get_parameter_ids": [
+        128,
+        129,
+        130,
+        152
+      ],
+      "trailing_request_bytes": 0,
+      "sha256": "902647f9e25c23bca23980efce45b7062bc2543f4e92cfb3a41e35341b926659",
+      "baud": 115200,
+      "software_only": true
+    },
+    {
+      "mcu": "atmega88",
+      "mode": "short_odd",
+      "upload_accepted": true,
+      "boot_unchanged": true,
+      "no_spm_on_boot_attempt": null,
+      "verified_by_avrdude": true,
+      "firmware_guard_rejected": false,
+      "host_process_timed_out": false,
+      "host_return_code": 0,
+      "unopened_transport_retries": 0,
+      "request_counts": {
+        "ENTER_PROGMODE": 1,
+        "GET_PARAMETER": 6,
+        "GET_SYNC": 3,
+        "LEAVE_PROGMODE": 1,
+        "LOAD_ADDRESS": 5,
+        "PROG_PAGE": 2,
+        "READ_PAGE": 3,
+        "READ_SIGN": 1,
+        "SET_DEVICE": 1,
+        "SET_DEVICE_EXT": 1
+      },
+      "write_packet_lengths": [
+        64,
+        64
+      ],
+      "get_parameter_ids": [
+        128,
+        129,
+        130,
+        152
+      ],
+      "trailing_request_bytes": 0,
+      "sha256": "902647f9e25c23bca23980efce45b7062bc2543f4e92cfb3a41e35341b926659",
+      "baud": 115200,
+      "software_only": true
+    },
+    {
+      "mcu": "atmega88",
+      "mode": "padded_odd",
+      "upload_accepted": true,
+      "boot_unchanged": true,
+      "no_spm_on_boot_attempt": null,
+      "verified_by_avrdude": true,
+      "firmware_guard_rejected": false,
+      "host_process_timed_out": false,
+      "host_return_code": 0,
+      "unopened_transport_retries": 0,
+      "request_counts": {
+        "ENTER_PROGMODE": 1,
+        "GET_PARAMETER": 6,
+        "GET_SYNC": 3,
+        "LEAVE_PROGMODE": 1,
+        "LOAD_ADDRESS": 4,
+        "PROG_PAGE": 2,
+        "READ_PAGE": 2,
+        "READ_SIGN": 1,
+        "SET_DEVICE": 1,
+        "SET_DEVICE_EXT": 1
+      },
+      "write_packet_lengths": [
+        64,
+        64
+      ],
+      "get_parameter_ids": [
+        128,
+        129,
+        130,
+        152
+      ],
+      "trailing_request_bytes": 0,
+      "sha256": "902647f9e25c23bca23980efce45b7062bc2543f4e92cfb3a41e35341b926659",
+      "baud": 115200,
+      "software_only": true
+    },
+    {
+      "mcu": "atmega88",
+      "mode": "boot",
+      "upload_accepted": false,
+      "boot_unchanged": true,
+      "no_spm_on_boot_attempt": true,
+      "verified_by_avrdude": false,
+      "firmware_guard_rejected": true,
+      "host_process_timed_out": true,
+      "host_return_code": null,
+      "unopened_transport_retries": 0,
+      "request_counts": {
+        "ENTER_PROGMODE": 1,
+        "GET_PARAMETER": 6,
+        "GET_SYNC": 3,
+        "LOAD_ADDRESS": 1,
+        "PROG_PAGE": 1,
+        "READ_SIGN": 1,
+        "SET_DEVICE": 1,
+        "SET_DEVICE_EXT": 1
+      },
+      "write_packet_lengths": [
+        64
+      ],
+      "get_parameter_ids": [
+        128,
+        129,
+        130,
+        152
+      ],
+      "trailing_request_bytes": 0,
+      "sha256": "902647f9e25c23bca23980efce45b7062bc2543f4e92cfb3a41e35341b926659",
+      "baud": 115200,
+      "software_only": true
+    },
+    {
+      "mcu": "atmega164pa",
+      "mode": "short_even",
+      "upload_accepted": true,
+      "boot_unchanged": true,
+      "no_spm_on_boot_attempt": null,
+      "verified_by_avrdude": true,
+      "firmware_guard_rejected": false,
+      "host_process_timed_out": false,
+      "host_return_code": 0,
+      "unopened_transport_retries": 0,
+      "request_counts": {
+        "ENTER_PROGMODE": 1,
+        "GET_PARAMETER": 6,
+        "GET_SYNC": 3,
+        "LEAVE_PROGMODE": 1,
+        "LOAD_ADDRESS": 5,
+        "PROG_PAGE": 2,
+        "READ_PAGE": 3,
+        "READ_SIGN": 1,
+        "SET_DEVICE": 1,
+        "SET_DEVICE_EXT": 1
+      },
+      "write_packet_lengths": [
+        128,
+        128
+      ],
+      "get_parameter_ids": [
+        128,
+        129,
+        130,
+        152
+      ],
+      "trailing_request_bytes": 0,
+      "sha256": "29985cfd7d6377cd0b878933ea142248117f5af5d7ecdcf890f85fb2f735410c",
+      "baud": 115200,
+      "software_only": true
+    },
+    {
+      "mcu": "atmega164pa",
+      "mode": "short_odd",
+      "upload_accepted": true,
+      "boot_unchanged": true,
+      "no_spm_on_boot_attempt": null,
+      "verified_by_avrdude": true,
+      "firmware_guard_rejected": false,
+      "host_process_timed_out": false,
+      "host_return_code": 0,
+      "unopened_transport_retries": 0,
+      "request_counts": {
+        "ENTER_PROGMODE": 1,
+        "GET_PARAMETER": 6,
+        "GET_SYNC": 3,
+        "LEAVE_PROGMODE": 1,
+        "LOAD_ADDRESS": 5,
+        "PROG_PAGE": 2,
+        "READ_PAGE": 3,
+        "READ_SIGN": 1,
+        "SET_DEVICE": 1,
+        "SET_DEVICE_EXT": 1
+      },
+      "write_packet_lengths": [
+        128,
+        128
+      ],
+      "get_parameter_ids": [
+        128,
+        129,
+        130,
+        152
+      ],
+      "trailing_request_bytes": 0,
+      "sha256": "29985cfd7d6377cd0b878933ea142248117f5af5d7ecdcf890f85fb2f735410c",
+      "baud": 115200,
+      "software_only": true
+    },
+    {
+      "mcu": "atmega164pa",
+      "mode": "padded_odd",
+      "upload_accepted": true,
+      "boot_unchanged": true,
+      "no_spm_on_boot_attempt": null,
+      "verified_by_avrdude": true,
+      "firmware_guard_rejected": false,
+      "host_process_timed_out": false,
+      "host_return_code": 0,
+      "unopened_transport_retries": 0,
+      "request_counts": {
+        "ENTER_PROGMODE": 1,
+        "GET_PARAMETER": 6,
+        "GET_SYNC": 3,
+        "LEAVE_PROGMODE": 1,
+        "LOAD_ADDRESS": 4,
+        "PROG_PAGE": 2,
+        "READ_PAGE": 2,
+        "READ_SIGN": 1,
+        "SET_DEVICE": 1,
+        "SET_DEVICE_EXT": 1
+      },
+      "write_packet_lengths": [
+        128,
+        128
+      ],
+      "get_parameter_ids": [
+        128,
+        129,
+        130,
+        152
+      ],
+      "trailing_request_bytes": 0,
+      "sha256": "29985cfd7d6377cd0b878933ea142248117f5af5d7ecdcf890f85fb2f735410c",
+      "baud": 115200,
+      "software_only": true
+    },
+    {
+      "mcu": "atmega164pa",
+      "mode": "boot",
+      "upload_accepted": false,
+      "boot_unchanged": true,
+      "no_spm_on_boot_attempt": true,
+      "verified_by_avrdude": false,
+      "firmware_guard_rejected": true,
+      "host_process_timed_out": true,
+      "host_return_code": null,
+      "unopened_transport_retries": 0,
+      "request_counts": {
+        "ENTER_PROGMODE": 1,
+        "GET_PARAMETER": 6,
+        "GET_SYNC": 3,
+        "LOAD_ADDRESS": 1,
+        "PROG_PAGE": 1,
+        "READ_SIGN": 1,
+        "SET_DEVICE": 1,
+        "SET_DEVICE_EXT": 1
+      },
+      "write_packet_lengths": [
+        128
+      ],
+      "get_parameter_ids": [
+        128,
+        129,
+        130,
+        152
+      ],
+      "trailing_request_bytes": 0,
+      "sha256": "29985cfd7d6377cd0b878933ea142248117f5af5d7ecdcf890f85fb2f735410c",
+      "baud": 115200,
+      "software_only": true
+    },
+    {
+      "mcu": "atmega16",
+      "mode": "short_even",
+      "upload_accepted": true,
+      "boot_unchanged": true,
+      "no_spm_on_boot_attempt": null,
+      "verified_by_avrdude": true,
+      "firmware_guard_rejected": false,
+      "host_process_timed_out": false,
+      "host_return_code": 0,
+      "unopened_transport_retries": 0,
+      "request_counts": {
+        "ENTER_PROGMODE": 1,
+        "GET_PARAMETER": 6,
+        "GET_SYNC": 3,
+        "LEAVE_PROGMODE": 1,
+        "LOAD_ADDRESS": 5,
+        "PROG_PAGE": 2,
+        "READ_PAGE": 3,
+        "READ_SIGN": 1,
+        "SET_DEVICE": 1,
+        "SET_DEVICE_EXT": 1
+      },
+      "write_packet_lengths": [
+        128,
+        128
+      ],
+      "get_parameter_ids": [
+        128,
+        129,
+        130,
+        152
+      ],
+      "trailing_request_bytes": 0,
+      "sha256": "e6c72e8d97d35894a28c105f04d0d424730a30168fb278a91f2fcd29cb85b062",
+      "baud": 115200,
+      "software_only": true
+    },
+    {
+      "mcu": "atmega16",
+      "mode": "short_odd",
+      "upload_accepted": true,
+      "boot_unchanged": true,
+      "no_spm_on_boot_attempt": null,
+      "verified_by_avrdude": true,
+      "firmware_guard_rejected": false,
+      "host_process_timed_out": false,
+      "host_return_code": 0,
+      "unopened_transport_retries": 0,
+      "request_counts": {
+        "ENTER_PROGMODE": 1,
+        "GET_PARAMETER": 6,
+        "GET_SYNC": 3,
+        "LEAVE_PROGMODE": 1,
+        "LOAD_ADDRESS": 5,
+        "PROG_PAGE": 2,
+        "READ_PAGE": 3,
+        "READ_SIGN": 1,
+        "SET_DEVICE": 1,
+        "SET_DEVICE_EXT": 1
+      },
+      "write_packet_lengths": [
+        128,
+        128
+      ],
+      "get_parameter_ids": [
+        128,
+        129,
+        130,
+        152
+      ],
+      "trailing_request_bytes": 0,
+      "sha256": "e6c72e8d97d35894a28c105f04d0d424730a30168fb278a91f2fcd29cb85b062",
+      "baud": 115200,
+      "software_only": true
+    },
+    {
+      "mcu": "atmega16",
+      "mode": "padded_odd",
+      "upload_accepted": true,
+      "boot_unchanged": true,
+      "no_spm_on_boot_attempt": null,
+      "verified_by_avrdude": true,
+      "firmware_guard_rejected": false,
+      "host_process_timed_out": false,
+      "host_return_code": 0,
+      "unopened_transport_retries": 0,
+      "request_counts": {
+        "ENTER_PROGMODE": 1,
+        "GET_PARAMETER": 6,
+        "GET_SYNC": 3,
+        "LEAVE_PROGMODE": 1,
+        "LOAD_ADDRESS": 4,
+        "PROG_PAGE": 2,
+        "READ_PAGE": 2,
+        "READ_SIGN": 1,
+        "SET_DEVICE": 1,
+        "SET_DEVICE_EXT": 1
+      },
+      "write_packet_lengths": [
+        128,
+        128
+      ],
+      "get_parameter_ids": [
+        128,
+        129,
+        130,
+        152
+      ],
+      "trailing_request_bytes": 0,
+      "sha256": "e6c72e8d97d35894a28c105f04d0d424730a30168fb278a91f2fcd29cb85b062",
+      "baud": 115200,
+      "software_only": true
+    },
+    {
+      "mcu": "atmega16",
+      "mode": "boot",
+      "upload_accepted": false,
+      "boot_unchanged": true,
+      "no_spm_on_boot_attempt": true,
+      "verified_by_avrdude": false,
+      "firmware_guard_rejected": true,
+      "host_process_timed_out": true,
+      "host_return_code": null,
+      "unopened_transport_retries": 0,
+      "request_counts": {
+        "ENTER_PROGMODE": 1,
+        "GET_PARAMETER": 6,
+        "GET_SYNC": 3,
+        "LOAD_ADDRESS": 1,
+        "PROG_PAGE": 1,
+        "READ_SIGN": 1,
+        "SET_DEVICE": 1,
+        "SET_DEVICE_EXT": 1
+      },
+      "write_packet_lengths": [
+        128
+      ],
+      "get_parameter_ids": [
+        128,
+        129,
+        130,
+        152
+      ],
+      "trailing_request_bytes": 0,
+      "sha256": "e6c72e8d97d35894a28c105f04d0d424730a30168fb278a91f2fcd29cb85b062",
+      "baud": 115200,
+      "software_only": true
+    },
+    {
+      "mcu": "atmega8",
+      "mode": "short_even",
+      "upload_accepted": true,
+      "boot_unchanged": true,
+      "no_spm_on_boot_attempt": null,
+      "verified_by_avrdude": true,
+      "firmware_guard_rejected": false,
+      "host_process_timed_out": false,
+      "host_return_code": 0,
+      "unopened_transport_retries": 0,
+      "request_counts": {
+        "ENTER_PROGMODE": 1,
+        "GET_PARAMETER": 6,
+        "GET_SYNC": 3,
+        "LEAVE_PROGMODE": 1,
+        "LOAD_ADDRESS": 5,
+        "PROG_PAGE": 2,
+        "READ_PAGE": 3,
+        "READ_SIGN": 1,
+        "SET_DEVICE": 1,
+        "SET_DEVICE_EXT": 1
+      },
+      "write_packet_lengths": [
+        64,
+        64
+      ],
+      "get_parameter_ids": [
+        128,
+        129,
+        130,
+        152
+      ],
+      "trailing_request_bytes": 0,
+      "sha256": "5fd2954428676d230b508801b43900525bb3571996f08f5820e1ef9207358dfb",
+      "baud": 115200,
+      "software_only": true
+    },
+    {
+      "mcu": "atmega8",
+      "mode": "short_odd",
+      "upload_accepted": true,
+      "boot_unchanged": true,
+      "no_spm_on_boot_attempt": null,
+      "verified_by_avrdude": true,
+      "firmware_guard_rejected": false,
+      "host_process_timed_out": false,
+      "host_return_code": 0,
+      "unopened_transport_retries": 0,
+      "request_counts": {
+        "ENTER_PROGMODE": 1,
+        "GET_PARAMETER": 6,
+        "GET_SYNC": 3,
+        "LEAVE_PROGMODE": 1,
+        "LOAD_ADDRESS": 5,
+        "PROG_PAGE": 2,
+        "READ_PAGE": 3,
+        "READ_SIGN": 1,
+        "SET_DEVICE": 1,
+        "SET_DEVICE_EXT": 1
+      },
+      "write_packet_lengths": [
+        64,
+        64
+      ],
+      "get_parameter_ids": [
+        128,
+        129,
+        130,
+        152
+      ],
+      "trailing_request_bytes": 0,
+      "sha256": "5fd2954428676d230b508801b43900525bb3571996f08f5820e1ef9207358dfb",
+      "baud": 115200,
+      "software_only": true
+    },
+    {
+      "mcu": "atmega8",
+      "mode": "padded_odd",
+      "upload_accepted": true,
+      "boot_unchanged": true,
+      "no_spm_on_boot_attempt": null,
+      "verified_by_avrdude": true,
+      "firmware_guard_rejected": false,
+      "host_process_timed_out": false,
+      "host_return_code": 0,
+      "unopened_transport_retries": 0,
+      "request_counts": {
+        "ENTER_PROGMODE": 1,
+        "GET_PARAMETER": 6,
+        "GET_SYNC": 3,
+        "LEAVE_PROGMODE": 1,
+        "LOAD_ADDRESS": 4,
+        "PROG_PAGE": 2,
+        "READ_PAGE": 2,
+        "READ_SIGN": 1,
+        "SET_DEVICE": 1,
+        "SET_DEVICE_EXT": 1
+      },
+      "write_packet_lengths": [
+        64,
+        64
+      ],
+      "get_parameter_ids": [
+        128,
+        129,
+        130,
+        152
+      ],
+      "trailing_request_bytes": 0,
+      "sha256": "5fd2954428676d230b508801b43900525bb3571996f08f5820e1ef9207358dfb",
+      "baud": 115200,
+      "software_only": true
+    },
+    {
+      "mcu": "atmega8",
+      "mode": "boot",
+      "upload_accepted": false,
+      "boot_unchanged": true,
+      "no_spm_on_boot_attempt": true,
+      "verified_by_avrdude": false,
+      "firmware_guard_rejected": true,
+      "host_process_timed_out": true,
+      "host_return_code": null,
+      "unopened_transport_retries": 0,
+      "request_counts": {
+        "ENTER_PROGMODE": 1,
+        "GET_PARAMETER": 6,
+        "GET_SYNC": 3,
+        "LOAD_ADDRESS": 1,
+        "PROG_PAGE": 1,
+        "READ_SIGN": 1,
+        "SET_DEVICE": 1,
+        "SET_DEVICE_EXT": 1
+      },
+      "write_packet_lengths": [
+        64
+      ],
+      "get_parameter_ids": [
+        128,
+        129,
+        130,
+        152
+      ],
+      "trailing_request_bytes": 0,
+      "sha256": "5fd2954428676d230b508801b43900525bb3571996f08f5820e1ef9207358dfb",
+      "baud": 115200,
+      "software_only": true
+    },
+    {
+      "mcu": "atmega8a",
+      "mode": "short_even",
+      "upload_accepted": true,
+      "boot_unchanged": true,
+      "no_spm_on_boot_attempt": null,
+      "verified_by_avrdude": true,
+      "firmware_guard_rejected": false,
+      "host_process_timed_out": false,
+      "host_return_code": 0,
+      "unopened_transport_retries": 0,
+      "request_counts": {
+        "ENTER_PROGMODE": 1,
+        "GET_PARAMETER": 6,
+        "GET_SYNC": 3,
+        "LEAVE_PROGMODE": 1,
+        "LOAD_ADDRESS": 5,
+        "PROG_PAGE": 2,
+        "READ_PAGE": 3,
+        "READ_SIGN": 1,
+        "SET_DEVICE": 1,
+        "SET_DEVICE_EXT": 1
+      },
+      "write_packet_lengths": [
+        64,
+        64
+      ],
+      "get_parameter_ids": [
+        128,
+        129,
+        130,
+        152
+      ],
+      "trailing_request_bytes": 0,
+      "sha256": "5fd2954428676d230b508801b43900525bb3571996f08f5820e1ef9207358dfb",
+      "baud": 115200,
+      "software_only": true
+    },
+    {
+      "mcu": "atmega8a",
+      "mode": "short_odd",
+      "upload_accepted": true,
+      "boot_unchanged": true,
+      "no_spm_on_boot_attempt": null,
+      "verified_by_avrdude": true,
+      "firmware_guard_rejected": false,
+      "host_process_timed_out": false,
+      "host_return_code": 0,
+      "unopened_transport_retries": 0,
+      "request_counts": {
+        "ENTER_PROGMODE": 1,
+        "GET_PARAMETER": 6,
+        "GET_SYNC": 3,
+        "LEAVE_PROGMODE": 1,
+        "LOAD_ADDRESS": 5,
+        "PROG_PAGE": 2,
+        "READ_PAGE": 3,
+        "READ_SIGN": 1,
+        "SET_DEVICE": 1,
+        "SET_DEVICE_EXT": 1
+      },
+      "write_packet_lengths": [
+        64,
+        64
+      ],
+      "get_parameter_ids": [
+        128,
+        129,
+        130,
+        152
+      ],
+      "trailing_request_bytes": 0,
+      "sha256": "5fd2954428676d230b508801b43900525bb3571996f08f5820e1ef9207358dfb",
+      "baud": 115200,
+      "software_only": true
+    },
+    {
+      "mcu": "atmega8a",
+      "mode": "padded_odd",
+      "upload_accepted": true,
+      "boot_unchanged": true,
+      "no_spm_on_boot_attempt": null,
+      "verified_by_avrdude": true,
+      "firmware_guard_rejected": false,
+      "host_process_timed_out": false,
+      "host_return_code": 0,
+      "unopened_transport_retries": 0,
+      "request_counts": {
+        "ENTER_PROGMODE": 1,
+        "GET_PARAMETER": 6,
+        "GET_SYNC": 3,
+        "LEAVE_PROGMODE": 1,
+        "LOAD_ADDRESS": 4,
+        "PROG_PAGE": 2,
+        "READ_PAGE": 2,
+        "READ_SIGN": 1,
+        "SET_DEVICE": 1,
+        "SET_DEVICE_EXT": 1
+      },
+      "write_packet_lengths": [
+        64,
+        64
+      ],
+      "get_parameter_ids": [
+        128,
+        129,
+        130,
+        152
+      ],
+      "trailing_request_bytes": 0,
+      "sha256": "5fd2954428676d230b508801b43900525bb3571996f08f5820e1ef9207358dfb",
+      "baud": 115200,
+      "software_only": true
+    },
+    {
+      "mcu": "atmega8a",
+      "mode": "boot",
+      "upload_accepted": false,
+      "boot_unchanged": true,
+      "no_spm_on_boot_attempt": true,
+      "verified_by_avrdude": false,
+      "firmware_guard_rejected": true,
+      "host_process_timed_out": true,
+      "host_return_code": null,
+      "unopened_transport_retries": 0,
+      "request_counts": {
+        "ENTER_PROGMODE": 1,
+        "GET_PARAMETER": 6,
+        "GET_SYNC": 3,
+        "LOAD_ADDRESS": 1,
+        "PROG_PAGE": 1,
+        "READ_SIGN": 1,
+        "SET_DEVICE": 1,
+        "SET_DEVICE_EXT": 1
+      },
+      "write_packet_lengths": [
+        64
+      ],
+      "get_parameter_ids": [
+        128,
+        129,
+        130,
+        152
+      ],
+      "trailing_request_bytes": 0,
+      "sha256": "5fd2954428676d230b508801b43900525bb3571996f08f5820e1ef9207358dfb",
+      "baud": 115200,
+      "software_only": true
+    },
+    {
+      "mcu": "atmega8515",
+      "mode": "short_even",
+      "upload_accepted": true,
+      "boot_unchanged": true,
+      "no_spm_on_boot_attempt": null,
+      "verified_by_avrdude": true,
+      "firmware_guard_rejected": false,
+      "host_process_timed_out": false,
+      "host_return_code": 0,
+      "unopened_transport_retries": 0,
+      "request_counts": {
+        "ENTER_PROGMODE": 1,
+        "GET_PARAMETER": 6,
+        "GET_SYNC": 3,
+        "LEAVE_PROGMODE": 1,
+        "LOAD_ADDRESS": 5,
+        "PROG_PAGE": 2,
+        "READ_PAGE": 3,
+        "READ_SIGN": 1,
+        "SET_DEVICE": 1,
+        "SET_DEVICE_EXT": 1
+      },
+      "write_packet_lengths": [
+        64,
+        64
+      ],
+      "get_parameter_ids": [
+        128,
+        129,
+        130,
+        152
+      ],
+      "trailing_request_bytes": 0,
+      "sha256": "7409d5c66ad009d45cf4b43ffabdbdbfc9b225ec9b476651a335b2e8317dce8e",
+      "baud": 115200,
+      "software_only": true
+    },
+    {
+      "mcu": "atmega8515",
+      "mode": "short_odd",
+      "upload_accepted": true,
+      "boot_unchanged": true,
+      "no_spm_on_boot_attempt": null,
+      "verified_by_avrdude": true,
+      "firmware_guard_rejected": false,
+      "host_process_timed_out": false,
+      "host_return_code": 0,
+      "unopened_transport_retries": 0,
+      "request_counts": {
+        "ENTER_PROGMODE": 1,
+        "GET_PARAMETER": 6,
+        "GET_SYNC": 3,
+        "LEAVE_PROGMODE": 1,
+        "LOAD_ADDRESS": 5,
+        "PROG_PAGE": 2,
+        "READ_PAGE": 3,
+        "READ_SIGN": 1,
+        "SET_DEVICE": 1,
+        "SET_DEVICE_EXT": 1
+      },
+      "write_packet_lengths": [
+        64,
+        64
+      ],
+      "get_parameter_ids": [
+        128,
+        129,
+        130,
+        152
+      ],
+      "trailing_request_bytes": 0,
+      "sha256": "7409d5c66ad009d45cf4b43ffabdbdbfc9b225ec9b476651a335b2e8317dce8e",
+      "baud": 115200,
+      "software_only": true
+    },
+    {
+      "mcu": "atmega8515",
+      "mode": "padded_odd",
+      "upload_accepted": true,
+      "boot_unchanged": true,
+      "no_spm_on_boot_attempt": null,
+      "verified_by_avrdude": true,
+      "firmware_guard_rejected": false,
+      "host_process_timed_out": false,
+      "host_return_code": 0,
+      "unopened_transport_retries": 0,
+      "request_counts": {
+        "ENTER_PROGMODE": 1,
+        "GET_PARAMETER": 6,
+        "GET_SYNC": 3,
+        "LEAVE_PROGMODE": 1,
+        "LOAD_ADDRESS": 4,
+        "PROG_PAGE": 2,
+        "READ_PAGE": 2,
+        "READ_SIGN": 1,
+        "SET_DEVICE": 1,
+        "SET_DEVICE_EXT": 1
+      },
+      "write_packet_lengths": [
+        64,
+        64
+      ],
+      "get_parameter_ids": [
+        128,
+        129,
+        130,
+        152
+      ],
+      "trailing_request_bytes": 0,
+      "sha256": "7409d5c66ad009d45cf4b43ffabdbdbfc9b225ec9b476651a335b2e8317dce8e",
+      "baud": 115200,
+      "software_only": true
+    },
+    {
+      "mcu": "atmega8515",
+      "mode": "boot",
+      "upload_accepted": false,
+      "boot_unchanged": true,
+      "no_spm_on_boot_attempt": true,
+      "verified_by_avrdude": false,
+      "firmware_guard_rejected": true,
+      "host_process_timed_out": true,
+      "host_return_code": null,
+      "unopened_transport_retries": 0,
+      "request_counts": {
+        "ENTER_PROGMODE": 1,
+        "GET_PARAMETER": 6,
+        "GET_SYNC": 3,
+        "LOAD_ADDRESS": 1,
+        "PROG_PAGE": 1,
+        "READ_SIGN": 1,
+        "SET_DEVICE": 1,
+        "SET_DEVICE_EXT": 1
+      },
+      "write_packet_lengths": [
+        64
+      ],
+      "get_parameter_ids": [
+        128,
+        129,
+        130,
+        152
+      ],
+      "trailing_request_bytes": 0,
+      "sha256": "7409d5c66ad009d45cf4b43ffabdbdbfc9b225ec9b476651a335b2e8317dce8e",
+      "baud": 115200,
+      "software_only": true
+    },
+    {
+      "mcu": "atmega8535",
+      "mode": "short_even",
+      "upload_accepted": true,
+      "boot_unchanged": true,
+      "no_spm_on_boot_attempt": null,
+      "verified_by_avrdude": true,
+      "firmware_guard_rejected": false,
+      "host_process_timed_out": false,
+      "host_return_code": 0,
+      "unopened_transport_retries": 0,
+      "request_counts": {
+        "ENTER_PROGMODE": 1,
+        "GET_PARAMETER": 6,
+        "GET_SYNC": 3,
+        "LEAVE_PROGMODE": 1,
+        "LOAD_ADDRESS": 5,
+        "PROG_PAGE": 2,
+        "READ_PAGE": 3,
+        "READ_SIGN": 1,
+        "SET_DEVICE": 1,
+        "SET_DEVICE_EXT": 1
+      },
+      "write_packet_lengths": [
+        64,
+        64
+      ],
+      "get_parameter_ids": [
+        128,
+        129,
+        130,
+        152
+      ],
+      "trailing_request_bytes": 0,
+      "sha256": "04dffee6468ba54abcd6a1a82719f4334f31733ec9e1ee71f194510492429513",
+      "baud": 115200,
+      "software_only": true
+    },
+    {
+      "mcu": "atmega8535",
+      "mode": "short_odd",
+      "upload_accepted": true,
+      "boot_unchanged": true,
+      "no_spm_on_boot_attempt": null,
+      "verified_by_avrdude": true,
+      "firmware_guard_rejected": false,
+      "host_process_timed_out": false,
+      "host_return_code": 0,
+      "unopened_transport_retries": 0,
+      "request_counts": {
+        "ENTER_PROGMODE": 1,
+        "GET_PARAMETER": 6,
+        "GET_SYNC": 3,
+        "LEAVE_PROGMODE": 1,
+        "LOAD_ADDRESS": 5,
+        "PROG_PAGE": 2,
+        "READ_PAGE": 3,
+        "READ_SIGN": 1,
+        "SET_DEVICE": 1,
+        "SET_DEVICE_EXT": 1
+      },
+      "write_packet_lengths": [
+        64,
+        64
+      ],
+      "get_parameter_ids": [
+        128,
+        129,
+        130,
+        152
+      ],
+      "trailing_request_bytes": 0,
+      "sha256": "04dffee6468ba54abcd6a1a82719f4334f31733ec9e1ee71f194510492429513",
+      "baud": 115200,
+      "software_only": true
+    },
+    {
+      "mcu": "atmega8535",
+      "mode": "padded_odd",
+      "upload_accepted": true,
+      "boot_unchanged": true,
+      "no_spm_on_boot_attempt": null,
+      "verified_by_avrdude": true,
+      "firmware_guard_rejected": false,
+      "host_process_timed_out": false,
+      "host_return_code": 0,
+      "unopened_transport_retries": 0,
+      "request_counts": {
+        "ENTER_PROGMODE": 1,
+        "GET_PARAMETER": 6,
+        "GET_SYNC": 3,
+        "LEAVE_PROGMODE": 1,
+        "LOAD_ADDRESS": 4,
+        "PROG_PAGE": 2,
+        "READ_PAGE": 2,
+        "READ_SIGN": 1,
+        "SET_DEVICE": 1,
+        "SET_DEVICE_EXT": 1
+      },
+      "write_packet_lengths": [
+        64,
+        64
+      ],
+      "get_parameter_ids": [
+        128,
+        129,
+        130,
+        152
+      ],
+      "trailing_request_bytes": 0,
+      "sha256": "04dffee6468ba54abcd6a1a82719f4334f31733ec9e1ee71f194510492429513",
+      "baud": 115200,
+      "software_only": true
+    },
+    {
+      "mcu": "atmega8535",
+      "mode": "boot",
+      "upload_accepted": false,
+      "boot_unchanged": true,
+      "no_spm_on_boot_attempt": true,
+      "verified_by_avrdude": false,
+      "firmware_guard_rejected": true,
+      "host_process_timed_out": true,
+      "host_return_code": null,
+      "unopened_transport_retries": 0,
+      "request_counts": {
+        "ENTER_PROGMODE": 1,
+        "GET_PARAMETER": 6,
+        "GET_SYNC": 3,
+        "LOAD_ADDRESS": 1,
+        "PROG_PAGE": 1,
+        "READ_SIGN": 1,
+        "SET_DEVICE": 1,
+        "SET_DEVICE_EXT": 1
+      },
+      "write_packet_lengths": [
+        64
+      ],
+      "get_parameter_ids": [
+        128,
+        129,
+        130,
+        152
+      ],
+      "trailing_request_bytes": 0,
+      "sha256": "04dffee6468ba54abcd6a1a82719f4334f31733ec9e1ee71f194510492429513",
+      "baud": 115200,
+      "software_only": true
+    },
+    {
+      "mcu": "atmega162",
+      "mode": "short_even",
+      "upload_accepted": true,
+      "boot_unchanged": true,
+      "no_spm_on_boot_attempt": null,
+      "verified_by_avrdude": true,
+      "firmware_guard_rejected": false,
+      "host_process_timed_out": false,
+      "host_return_code": 0,
+      "unopened_transport_retries": 0,
+      "request_counts": {
+        "ENTER_PROGMODE": 1,
+        "GET_PARAMETER": 6,
+        "GET_SYNC": 3,
+        "LEAVE_PROGMODE": 1,
+        "LOAD_ADDRESS": 5,
+        "PROG_PAGE": 2,
+        "READ_PAGE": 3,
+        "READ_SIGN": 1,
+        "SET_DEVICE": 1,
+        "SET_DEVICE_EXT": 1
+      },
+      "write_packet_lengths": [
+        128,
+        128
+      ],
+      "get_parameter_ids": [
+        128,
+        129,
+        130,
+        152
+      ],
+      "trailing_request_bytes": 0,
+      "sha256": "d3a67e5b59e8acfc46bb158defecf91b34aac3a29d341e29ee58f4c7de401420",
+      "baud": 115200,
+      "software_only": true
+    },
+    {
+      "mcu": "atmega162",
+      "mode": "short_odd",
+      "upload_accepted": true,
+      "boot_unchanged": true,
+      "no_spm_on_boot_attempt": null,
+      "verified_by_avrdude": true,
+      "firmware_guard_rejected": false,
+      "host_process_timed_out": false,
+      "host_return_code": 0,
+      "unopened_transport_retries": 0,
+      "request_counts": {
+        "ENTER_PROGMODE": 1,
+        "GET_PARAMETER": 6,
+        "GET_SYNC": 3,
+        "LEAVE_PROGMODE": 1,
+        "LOAD_ADDRESS": 5,
+        "PROG_PAGE": 2,
+        "READ_PAGE": 3,
+        "READ_SIGN": 1,
+        "SET_DEVICE": 1,
+        "SET_DEVICE_EXT": 1
+      },
+      "write_packet_lengths": [
+        128,
+        128
+      ],
+      "get_parameter_ids": [
+        128,
+        129,
+        130,
+        152
+      ],
+      "trailing_request_bytes": 0,
+      "sha256": "d3a67e5b59e8acfc46bb158defecf91b34aac3a29d341e29ee58f4c7de401420",
+      "baud": 115200,
+      "software_only": true
+    },
+    {
+      "mcu": "atmega162",
+      "mode": "padded_odd",
+      "upload_accepted": true,
+      "boot_unchanged": true,
+      "no_spm_on_boot_attempt": null,
+      "verified_by_avrdude": true,
+      "firmware_guard_rejected": false,
+      "host_process_timed_out": false,
+      "host_return_code": 0,
+      "unopened_transport_retries": 0,
+      "request_counts": {
+        "ENTER_PROGMODE": 1,
+        "GET_PARAMETER": 6,
+        "GET_SYNC": 3,
+        "LEAVE_PROGMODE": 1,
+        "LOAD_ADDRESS": 4,
+        "PROG_PAGE": 2,
+        "READ_PAGE": 2,
+        "READ_SIGN": 1,
+        "SET_DEVICE": 1,
+        "SET_DEVICE_EXT": 1
+      },
+      "write_packet_lengths": [
+        128,
+        128
+      ],
+      "get_parameter_ids": [
+        128,
+        129,
+        130,
+        152
+      ],
+      "trailing_request_bytes": 0,
+      "sha256": "d3a67e5b59e8acfc46bb158defecf91b34aac3a29d341e29ee58f4c7de401420",
+      "baud": 115200,
+      "software_only": true
+    },
+    {
+      "mcu": "atmega162",
+      "mode": "boot",
+      "upload_accepted": false,
+      "boot_unchanged": true,
+      "no_spm_on_boot_attempt": true,
+      "verified_by_avrdude": false,
+      "firmware_guard_rejected": true,
+      "host_process_timed_out": true,
+      "host_return_code": null,
+      "unopened_transport_retries": 0,
+      "request_counts": {
+        "ENTER_PROGMODE": 1,
+        "GET_PARAMETER": 6,
+        "GET_SYNC": 3,
+        "LOAD_ADDRESS": 1,
+        "PROG_PAGE": 1,
+        "READ_SIGN": 1,
+        "SET_DEVICE": 1,
+        "SET_DEVICE_EXT": 1
+      },
+      "write_packet_lengths": [
+        128
+      ],
+      "get_parameter_ids": [
+        128,
+        129,
+        130,
+        152
+      ],
+      "trailing_request_bytes": 0,
+      "sha256": "d3a67e5b59e8acfc46bb158defecf91b34aac3a29d341e29ee58f4c7de401420",
+      "baud": 115200,
+      "software_only": true
+    },
+    {
+      "mcu": "atmega164p",
+      "mode": "short_even",
+      "upload_accepted": true,
+      "boot_unchanged": true,
+      "no_spm_on_boot_attempt": null,
+      "verified_by_avrdude": true,
+      "firmware_guard_rejected": false,
+      "host_process_timed_out": false,
+      "host_return_code": 0,
+      "unopened_transport_retries": 0,
+      "request_counts": {
+        "ENTER_PROGMODE": 1,
+        "GET_PARAMETER": 6,
+        "GET_SYNC": 3,
+        "LEAVE_PROGMODE": 1,
+        "LOAD_ADDRESS": 5,
+        "PROG_PAGE": 2,
+        "READ_PAGE": 3,
+        "READ_SIGN": 1,
+        "SET_DEVICE": 1,
+        "SET_DEVICE_EXT": 1
+      },
+      "write_packet_lengths": [
+        128,
+        128
+      ],
+      "get_parameter_ids": [
+        128,
+        129,
+        130,
+        152
+      ],
+      "trailing_request_bytes": 0,
+      "sha256": "29985cfd7d6377cd0b878933ea142248117f5af5d7ecdcf890f85fb2f735410c",
+      "baud": 115200,
+      "software_only": true
+    },
+    {
+      "mcu": "atmega164p",
+      "mode": "short_odd",
+      "upload_accepted": true,
+      "boot_unchanged": true,
+      "no_spm_on_boot_attempt": null,
+      "verified_by_avrdude": true,
+      "firmware_guard_rejected": false,
+      "host_process_timed_out": false,
+      "host_return_code": 0,
+      "unopened_transport_retries": 0,
+      "request_counts": {
+        "ENTER_PROGMODE": 1,
+        "GET_PARAMETER": 6,
+        "GET_SYNC": 3,
+        "LEAVE_PROGMODE": 1,
+        "LOAD_ADDRESS": 5,
+        "PROG_PAGE": 2,
+        "READ_PAGE": 3,
+        "READ_SIGN": 1,
+        "SET_DEVICE": 1,
+        "SET_DEVICE_EXT": 1
+      },
+      "write_packet_lengths": [
+        128,
+        128
+      ],
+      "get_parameter_ids": [
+        128,
+        129,
+        130,
+        152
+      ],
+      "trailing_request_bytes": 0,
+      "sha256": "29985cfd7d6377cd0b878933ea142248117f5af5d7ecdcf890f85fb2f735410c",
+      "baud": 115200,
+      "software_only": true
+    },
+    {
+      "mcu": "atmega164p",
+      "mode": "padded_odd",
+      "upload_accepted": true,
+      "boot_unchanged": true,
+      "no_spm_on_boot_attempt": null,
+      "verified_by_avrdude": true,
+      "firmware_guard_rejected": false,
+      "host_process_timed_out": false,
+      "host_return_code": 0,
+      "unopened_transport_retries": 0,
+      "request_counts": {
+        "ENTER_PROGMODE": 1,
+        "GET_PARAMETER": 6,
+        "GET_SYNC": 3,
+        "LEAVE_PROGMODE": 1,
+        "LOAD_ADDRESS": 4,
+        "PROG_PAGE": 2,
+        "READ_PAGE": 2,
+        "READ_SIGN": 1,
+        "SET_DEVICE": 1,
+        "SET_DEVICE_EXT": 1
+      },
+      "write_packet_lengths": [
+        128,
+        128
+      ],
+      "get_parameter_ids": [
+        128,
+        129,
+        130,
+        152
+      ],
+      "trailing_request_bytes": 0,
+      "sha256": "29985cfd7d6377cd0b878933ea142248117f5af5d7ecdcf890f85fb2f735410c",
+      "baud": 115200,
+      "software_only": true
+    },
+    {
+      "mcu": "atmega164p",
+      "mode": "boot",
+      "upload_accepted": false,
+      "boot_unchanged": true,
+      "no_spm_on_boot_attempt": true,
+      "verified_by_avrdude": false,
+      "firmware_guard_rejected": true,
+      "host_process_timed_out": true,
+      "host_return_code": null,
+      "unopened_transport_retries": 0,
+      "request_counts": {
+        "ENTER_PROGMODE": 1,
+        "GET_PARAMETER": 6,
+        "GET_SYNC": 3,
+        "LOAD_ADDRESS": 1,
+        "PROG_PAGE": 1,
+        "READ_SIGN": 1,
+        "SET_DEVICE": 1,
+        "SET_DEVICE_EXT": 1
+      },
+      "write_packet_lengths": [
+        128
+      ],
+      "get_parameter_ids": [
+        128,
+        129,
+        130,
+        152
+      ],
+      "trailing_request_bytes": 0,
+      "sha256": "29985cfd7d6377cd0b878933ea142248117f5af5d7ecdcf890f85fb2f735410c",
+      "baud": 115200,
+      "software_only": true
+    },
+    {
+      "mcu": "atmega164a",
+      "mode": "short_even",
+      "upload_accepted": true,
+      "boot_unchanged": true,
+      "no_spm_on_boot_attempt": null,
+      "verified_by_avrdude": true,
+      "firmware_guard_rejected": false,
+      "host_process_timed_out": false,
+      "host_return_code": 0,
+      "unopened_transport_retries": 0,
+      "request_counts": {
+        "ENTER_PROGMODE": 1,
+        "GET_PARAMETER": 6,
+        "GET_SYNC": 3,
+        "LEAVE_PROGMODE": 1,
+        "LOAD_ADDRESS": 5,
+        "PROG_PAGE": 2,
+        "READ_PAGE": 3,
+        "READ_SIGN": 1,
+        "SET_DEVICE": 1,
+        "SET_DEVICE_EXT": 1
+      },
+      "write_packet_lengths": [
+        128,
+        128
+      ],
+      "get_parameter_ids": [
+        128,
+        129,
+        130,
+        152
+      ],
+      "trailing_request_bytes": 0,
+      "sha256": "7f57995a47faedded487c57f0cf8439fa9d14ed6336ed7f6a70df8f1c0876a2e",
+      "baud": 115200,
+      "software_only": true
+    },
+    {
+      "mcu": "atmega164a",
+      "mode": "short_odd",
+      "upload_accepted": true,
+      "boot_unchanged": true,
+      "no_spm_on_boot_attempt": null,
+      "verified_by_avrdude": true,
+      "firmware_guard_rejected": false,
+      "host_process_timed_out": false,
+      "host_return_code": 0,
+      "unopened_transport_retries": 0,
+      "request_counts": {
+        "ENTER_PROGMODE": 1,
+        "GET_PARAMETER": 6,
+        "GET_SYNC": 3,
+        "LEAVE_PROGMODE": 1,
+        "LOAD_ADDRESS": 5,
+        "PROG_PAGE": 2,
+        "READ_PAGE": 3,
+        "READ_SIGN": 1,
+        "SET_DEVICE": 1,
+        "SET_DEVICE_EXT": 1
+      },
+      "write_packet_lengths": [
+        128,
+        128
+      ],
+      "get_parameter_ids": [
+        128,
+        129,
+        130,
+        152
+      ],
+      "trailing_request_bytes": 0,
+      "sha256": "7f57995a47faedded487c57f0cf8439fa9d14ed6336ed7f6a70df8f1c0876a2e",
+      "baud": 115200,
+      "software_only": true
+    },
+    {
+      "mcu": "atmega164a",
+      "mode": "padded_odd",
+      "upload_accepted": true,
+      "boot_unchanged": true,
+      "no_spm_on_boot_attempt": null,
+      "verified_by_avrdude": true,
+      "firmware_guard_rejected": false,
+      "host_process_timed_out": false,
+      "host_return_code": 0,
+      "unopened_transport_retries": 0,
+      "request_counts": {
+        "ENTER_PROGMODE": 1,
+        "GET_PARAMETER": 6,
+        "GET_SYNC": 3,
+        "LEAVE_PROGMODE": 1,
+        "LOAD_ADDRESS": 4,
+        "PROG_PAGE": 2,
+        "READ_PAGE": 2,
+        "READ_SIGN": 1,
+        "SET_DEVICE": 1,
+        "SET_DEVICE_EXT": 1
+      },
+      "write_packet_lengths": [
+        128,
+        128
+      ],
+      "get_parameter_ids": [
+        128,
+        129,
+        130,
+        152
+      ],
+      "trailing_request_bytes": 0,
+      "sha256": "7f57995a47faedded487c57f0cf8439fa9d14ed6336ed7f6a70df8f1c0876a2e",
+      "baud": 115200,
+      "software_only": true
+    },
+    {
+      "mcu": "atmega164a",
+      "mode": "boot",
+      "upload_accepted": false,
+      "boot_unchanged": true,
+      "no_spm_on_boot_attempt": true,
+      "verified_by_avrdude": false,
+      "firmware_guard_rejected": true,
+      "host_process_timed_out": true,
+      "host_return_code": null,
+      "unopened_transport_retries": 0,
+      "request_counts": {
+        "ENTER_PROGMODE": 1,
+        "GET_PARAMETER": 6,
+        "GET_SYNC": 3,
+        "LOAD_ADDRESS": 1,
+        "PROG_PAGE": 1,
+        "READ_SIGN": 1,
+        "SET_DEVICE": 1,
+        "SET_DEVICE_EXT": 1
+      },
+      "write_packet_lengths": [
+        128
+      ],
+      "get_parameter_ids": [
+        128,
+        129,
+        130,
+        152
+      ],
+      "trailing_request_bytes": 0,
+      "sha256": "7f57995a47faedded487c57f0cf8439fa9d14ed6336ed7f6a70df8f1c0876a2e",
+      "baud": 115200,
+      "software_only": true
+    }
+  ],
+  "stock_nano168_cases": [
+    {
+      "mcu": "atmega168",
+      "mode": "short_even",
+      "upload_accepted": true,
+      "boot_unchanged": true,
+      "no_spm_on_boot_attempt": null,
+      "verified_by_avrdude": true,
+      "firmware_guard_rejected": false,
+      "host_process_timed_out": false,
+      "host_return_code": 0,
+      "unopened_transport_retries": 0,
+      "request_counts": {
+        "ENTER_PROGMODE": 1,
+        "GET_PARAMETER": 6,
+        "GET_SYNC": 3,
+        "LEAVE_PROGMODE": 1,
+        "LOAD_ADDRESS": 5,
+        "PROG_PAGE": 2,
+        "READ_PAGE": 3,
+        "READ_SIGN": 1,
+        "SET_DEVICE": 1,
+        "SET_DEVICE_EXT": 1
+      },
+      "write_packet_lengths": [
+        128,
+        128
+      ],
+      "get_parameter_ids": [
+        128,
+        129,
+        130,
+        152
+      ],
+      "trailing_request_bytes": 0,
+      "sha256": "41d85d7963da808866127abbddab335c1102a58af7900da5a0c63d1edf327b55",
+      "baud": 19200,
+      "software_only": true
+    },
+    {
+      "mcu": "atmega168",
+      "mode": "short_odd",
+      "upload_accepted": true,
+      "boot_unchanged": true,
+      "no_spm_on_boot_attempt": null,
+      "verified_by_avrdude": true,
+      "firmware_guard_rejected": false,
+      "host_process_timed_out": false,
+      "host_return_code": 0,
+      "unopened_transport_retries": 0,
+      "request_counts": {
+        "ENTER_PROGMODE": 1,
+        "GET_PARAMETER": 6,
+        "GET_SYNC": 3,
+        "LEAVE_PROGMODE": 1,
+        "LOAD_ADDRESS": 5,
+        "PROG_PAGE": 2,
+        "READ_PAGE": 3,
+        "READ_SIGN": 1,
+        "SET_DEVICE": 1,
+        "SET_DEVICE_EXT": 1
+      },
+      "write_packet_lengths": [
+        128,
+        128
+      ],
+      "get_parameter_ids": [
+        128,
+        129,
+        130,
+        152
+      ],
+      "trailing_request_bytes": 0,
+      "sha256": "41d85d7963da808866127abbddab335c1102a58af7900da5a0c63d1edf327b55",
+      "baud": 19200,
+      "software_only": true
+    },
+    {
+      "mcu": "atmega168",
+      "mode": "padded_odd",
+      "upload_accepted": true,
+      "boot_unchanged": true,
+      "no_spm_on_boot_attempt": null,
+      "verified_by_avrdude": true,
+      "firmware_guard_rejected": false,
+      "host_process_timed_out": false,
+      "host_return_code": 0,
+      "unopened_transport_retries": 0,
+      "request_counts": {
+        "ENTER_PROGMODE": 1,
+        "GET_PARAMETER": 6,
+        "GET_SYNC": 3,
+        "LEAVE_PROGMODE": 1,
+        "LOAD_ADDRESS": 4,
+        "PROG_PAGE": 2,
+        "READ_PAGE": 2,
+        "READ_SIGN": 1,
+        "SET_DEVICE": 1,
+        "SET_DEVICE_EXT": 1
+      },
+      "write_packet_lengths": [
+        128,
+        128
+      ],
+      "get_parameter_ids": [
+        128,
+        129,
+        130,
+        152
+      ],
+      "trailing_request_bytes": 0,
+      "sha256": "41d85d7963da808866127abbddab335c1102a58af7900da5a0c63d1edf327b55",
+      "baud": 19200,
+      "software_only": true
+    },
+    {
+      "mcu": "atmega168",
+      "mode": "boot",
+      "upload_accepted": false,
+      "boot_unchanged": true,
+      "no_spm_on_boot_attempt": true,
+      "verified_by_avrdude": false,
+      "firmware_guard_rejected": true,
+      "host_process_timed_out": true,
+      "host_return_code": null,
+      "unopened_transport_retries": 0,
+      "request_counts": {
+        "ENTER_PROGMODE": 1,
+        "GET_PARAMETER": 6,
+        "GET_SYNC": 3,
+        "LOAD_ADDRESS": 1,
+        "PROG_PAGE": 1,
+        "READ_SIGN": 1,
+        "SET_DEVICE": 1,
+        "SET_DEVICE_EXT": 1
+      },
+      "write_packet_lengths": [
+        128
+      ],
+      "get_parameter_ids": [
+        128,
+        129,
+        130,
+        152
+      ],
+      "trailing_request_bytes": 0,
+      "sha256": "41d85d7963da808866127abbddab335c1102a58af7900da5a0c63d1edf327b55",
+      "baud": 19200,
+      "software_only": true
+    }
+  ],
+  "limitations": [
+    "No electrical UART, DTR or physical timing validation.",
+    "The target watchdog clock is not advanced; negative host waits are bounded explicitly.",
+    "Physical lock bits and fuses were neither read nor changed.",
+    "Only unopened localhost transports are retried; target input is never replayed.",
+    "Other Arduino protocols and AVRDUDE versions are outside this audit."
+  ]
+}

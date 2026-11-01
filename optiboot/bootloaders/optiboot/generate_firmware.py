@@ -267,8 +267,8 @@ def build_one(mcu: str, edition: str, hz: int, *, baud: str='auto',
     if device['virtual_boot']:
         warnings.append('Virtual Boot requires ISP seed and application vector patch; no hardware BOOTSZ protection.')
     if edition.startswith('flash'):
-        warnings.append('PROG_PAGE requires full Flash pages; prepare/pad the application HEX first.')
-        warnings.append('Use AVRDUDE -c arduino -D with padded full pages; verification remains enabled.')
+        warnings.append('PROG_PAGE requires full Flash pages; audited AVRDUDE 8.0-arduino.1 pads these automatically.')
+        warnings.append('Use AVRDUDE -c arduino -D with verification enabled; other hosts may need the optional HEX preparation tool.')
     if source == 'internal_rc':
         warnings.append('Internal RC frequency can drift; UART timing needs board-level calibration.')
     result = {

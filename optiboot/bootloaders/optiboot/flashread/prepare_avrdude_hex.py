@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """Prepare a full-page Intel HEX for the 256-byte Flash read/write edition.
 
-AVRDUDE sends the final STK_PROG_PAGE with a short length if the image ends
-inside a Flash page. The 256B firmware deliberately has no variable-length
-flash-write support. This tool fills each touched physical page with 0xFF.
+The 256B firmware requires complete STK_PROG_PAGE payloads. The audited
+AVRDUDE 8.0-arduino.1 Arduino upload path pads the final page automatically;
+this optional tool prepares full pages for hosts without that behavior.
+Each touched physical page is filled with 0xFF outside the supplied data.
 
 Flash readback remains available. Use `avrdude -c arduino -D`, with verify
 enabled. This program only prepares a file and never opens a serial port.

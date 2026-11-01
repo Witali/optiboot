@@ -89,8 +89,11 @@ uses word-addressed EEPROM in this protocol; another STK500 programmer setting
 can have different EEPROM address units.
 
 FlashRead256 accepts aligned, complete physical pages (64 or 128 bytes).
-Readback accepts lengths 1..PAGE from a page-aligned address. Pad each touched
-application page before upload, including the final page:
+Readback accepts lengths 1..PAGE from a page-aligned address. The audited
+Arduino AVR Boards 1.8.8 / AVRDUDE 8.0-arduino.1 upload path automatically
+transfers full pages even when the ordinary HEX ends inside a page. Manual
+padding is not required for that tested path. For another host that sends
+short write packets, the optional preparation tool pads each touched page:
 
 ```sh
 python3 flashread/prepare_avrdude_hex.py --mcu atmega8 --input app.hex --output app_full_pages.hex
@@ -99,7 +102,10 @@ avrdude -p m8 -c arduino -P PORT -b 115200 -D -U flash:w:app_full_pages.hex:i
 
 Replace `PORT`, the part and baud for the actual board. This command writes
 application Flash, not the bootloader. The preparation tool only creates a
-file; it does not open a serial port. The 256-byte edition supports sync,
+file; it does not open a serial port. Standard Nano ATmega168 board settings
+use 19200 baud; build with `--baud 19200` to match them, or use a board definition
+with the baud recorded in the firmware manifest. The default 16 MHz image uses
+115200. The 256-byte edition supports sync,
 parameter queries (constant value 3), SET_DEVICE/SET_DEVICE_EXT framing,
 enter/leave, LOAD_ADDRESS, READ_SIGN, Flash PROG_PAGE and READ_PAGE. It has no
 EEPROM protocol, UNIVERSAL, sign-on string, application SPM service or fuse
@@ -115,6 +121,14 @@ handling. It waits for an outstanding EEPROM write before every SPM command,
 including buffer fill. Erase/write occurs only after valid packet termination.
 Boot reads/writes, invalid lengths, alignment errors and address overflow are
 rejected. A malformed request normally stops replies until watchdog reset.
+
+The running 256-byte loader cannot install or replace itself over UART. Every
+page in its own Boot area is rejected before any SPM command, including buffer
+fill. Arduino's Burn Bootloader action is a separate programmer/fuse workflow;
+use ISP for initial installation or replacement of this image. No lock bits or
+fuses were inspected or modified in the software audit. See the
+[Arduino protocol audit](../../../docs/mini/ARDUINO_PROTOCOL_AUDIT_2026-11-01.md)
+for the observed host command sequence and self-write rejection tests.
 
 Compact and Full include EEPROM transfers (write blocks 1..16 bytes), Flash
 readback, bounds checks, READ_SIGN and UNIVERSAL signature queries. Full also
