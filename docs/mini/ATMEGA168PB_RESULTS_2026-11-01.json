@@ -1,0 +1,362 @@
+{
+  "date": "2026-11-01",
+  "mcu": "atmega168pb",
+  "signature": "1E9415",
+  "software_only": true,
+  "physical_board_access": false,
+  "audit_base_commit": "ef5057b16248f9aaa192036153cc45806ae1ee0b",
+  "tools": {
+    "clang_llvm": "18.1.3",
+    "avr_gcc": "7.3.0",
+    "avrdude": "8.0-arduino.1"
+  },
+  "native_compiler_mcu": "atmega168pb",
+  "source_sha256_lf_normalized": {
+    "devices.json": "814ca16d0752f5dc9fc1d6d9ebcfe9a4280c46a857ec48c081a965cc074b4aa6",
+    "devices/atmega168pb.inc": "6cdce851135310321128ab5ff21c8407a3acd6e23014c7b5647a1a1b98ecdc06",
+    "devices/select.inc": "9a16bea4e33d1a0e48a9b7386700cf3471bd5a8fdbaeb117a37c6f47eb27594c",
+    "gen_devices.py": "0f8ba589858e51d6305e4689d803c218e5afffdc685453e299e21ef910dab31e",
+    "generate_firmware.py": "3b9e8c5afa09307badb667bea22ea973ca3ca237fa5a5dd5387d174177760fb5",
+    "verify_editions.py": "e4953fe79e43bbca96b257421cc339a399667430d8c4b1e1822d5e7119f4183b",
+    "verify_toolchains.py": "00cfe163ea88f00a2b730cc47f569dd3e178d6ec077173d6c5e512aac4d4ada4",
+    "verify_avrdude.py": "9d04a6851a91c012b818af5de7e16b1690f7c80b30088002a4fbbb5b212330c3",
+    "generator_tests/test_generate_firmware.py": "8e0d01ee27eee2fa39ac53b9f6ffbec7d72ca3ba3d583fe347fa5a86120520da"
+  },
+  "totals": {
+    "devices": 39,
+    "edition_device_profiles": 79,
+    "supported_clock_cases": 441,
+    "new_clock_builds": 18,
+    "new_clock_images_executed": 18,
+    "new_full_memory_profiles": 3,
+    "new_clang_gcc_identical_profiles": 3,
+    "new_spm_header_compile_profiles": 2,
+    "new_real_avrdude_profiles": 3,
+    "new_arduino_upload_cases": 4,
+    "all_instruction_tests": 125,
+    "all_generator_tests": 17,
+    "all_hardware_spm_profiles": 57,
+    "all_paired_reset_cases": 1040,
+    "failures": 0
+  },
+  "previous_profile_inputs_unchanged": true,
+  "checked_unchanged_firmware_input_files": 49,
+  "nominal_images": {
+    "compact": {
+      "mcu": "atmega168pb",
+      "edition": "compact",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "boot_bytes": 512,
+      "boot_start": "0x3E00",
+      "bootsz1_0_bits": "10",
+      "payload_bytes": 510,
+      "free_bytes": 2,
+      "sha256": "7bf1db5a46b623774197b2e624075933c4796e60c8942c991935b6d625f1a2db",
+      "features": {
+        "flash_read": true,
+        "flash_write": true,
+        "eeprom_read": true,
+        "eeprom_write": true,
+        "get_sign_on": false,
+        "read_fuses_lock": false,
+        "app_spm_abi": true
+      },
+      "signature_source": "hardware"
+    },
+    "flashread256": {
+      "mcu": "atmega168pb",
+      "edition": "flashread256",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "boot_bytes": 256,
+      "boot_start": "0x3F00",
+      "bootsz1_0_bits": "11",
+      "payload_bytes": 253,
+      "free_bytes": 3,
+      "sha256": "a6b35b701046a29e44b020d9288480de2b7fba41609abdba35f4c6c12ed23387",
+      "features": {
+        "flash_read": true,
+        "flash_write": true,
+        "eeprom_read": false,
+        "eeprom_write": false,
+        "get_sign_on": false,
+        "read_fuses_lock": false,
+        "app_spm_abi": false
+      },
+      "signature_source": "constants"
+    },
+    "full": {
+      "mcu": "atmega168pb",
+      "edition": "full",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "boot_bytes": 1024,
+      "boot_start": "0x3C00",
+      "bootsz1_0_bits": "01",
+      "payload_bytes": 635,
+      "free_bytes": 389,
+      "sha256": "d91f8edf0be208f3c37260766c7d6818927f4b7a226bb6f840ade4b75fbd9ca0",
+      "features": {
+        "flash_read": true,
+        "flash_write": true,
+        "eeprom_read": true,
+        "eeprom_write": true,
+        "get_sign_on": true,
+        "read_fuses_lock": true,
+        "app_spm_abi": true
+      },
+      "signature_source": "hardware"
+    }
+  },
+  "memory_profiles": [
+    {
+      "mcu": "atmega168pb",
+      "edition": "compact",
+      "application_flash_bytes": 15872,
+      "eeprom_bytes": 512,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "atmega168pb",
+      "edition": "flashread256",
+      "application_flash_bytes": 16128,
+      "eeprom_bytes": 0,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "atmega168pb",
+      "edition": "full",
+      "application_flash_bytes": 15360,
+      "eeprom_bytes": 512,
+      "boot_unchanged": true
+    }
+  ],
+  "avrdude_profiles": [
+    {
+      "mcu": "atmega168pb",
+      "edition": "compact",
+      "application_bytes": 15872,
+      "eeprom_bytes": 512,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "padded_final_page": false,
+      "sha256": "7bf1db5a46b623774197b2e624075933c4796e60c8942c991935b6d625f1a2db",
+      "frequency_hz": 16000000,
+      "baud": 115200
+    },
+    {
+      "mcu": "atmega168pb",
+      "edition": "full",
+      "application_bytes": 15360,
+      "eeprom_bytes": 512,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "padded_final_page": false,
+      "sha256": "d91f8edf0be208f3c37260766c7d6818927f4b7a226bb6f840ade4b75fbd9ca0",
+      "frequency_hz": 16000000,
+      "baud": 115200
+    },
+    {
+      "mcu": "atmega168pb",
+      "edition": "flashread256",
+      "application_bytes": 16128,
+      "eeprom_bytes": 0,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "padded_final_page": false,
+      "sha256": "a6b35b701046a29e44b020d9288480de2b7fba41609abdba35f4c6c12ed23387",
+      "frequency_hz": 16000000,
+      "baud": 115200
+    }
+  ],
+  "toolchain_profiles": [
+    {
+      "mcu": "atmega168pb",
+      "edition": "compact",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": true,
+      "sha256": "7bf1db5a46b623774197b2e624075933c4796e60c8942c991935b6d625f1a2db"
+    },
+    {
+      "mcu": "atmega168pb",
+      "edition": "full",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": true,
+      "sha256": "d91f8edf0be208f3c37260766c7d6818927f4b7a226bb6f840ade4b75fbd9ca0"
+    },
+    {
+      "mcu": "atmega168pb",
+      "edition": "flashread256",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": false,
+      "sha256": "a6b35b701046a29e44b020d9288480de2b7fba41609abdba35f4c6c12ed23387"
+    }
+  ],
+  "arduino_cases": [
+    {
+      "mcu": "atmega168pb",
+      "mode": "short_even",
+      "upload_accepted": true,
+      "boot_unchanged": true,
+      "no_spm_on_boot_attempt": null,
+      "verified_by_avrdude": true,
+      "firmware_guard_rejected": false,
+      "host_process_timed_out": false,
+      "host_return_code": 0,
+      "unopened_transport_retries": 0,
+      "request_counts": {
+        "ENTER_PROGMODE": 1,
+        "GET_PARAMETER": 6,
+        "GET_SYNC": 3,
+        "LEAVE_PROGMODE": 1,
+        "LOAD_ADDRESS": 5,
+        "PROG_PAGE": 2,
+        "READ_PAGE": 3,
+        "READ_SIGN": 1,
+        "SET_DEVICE": 1,
+        "SET_DEVICE_EXT": 1
+      },
+      "write_packet_lengths": [
+        128,
+        128
+      ],
+      "get_parameter_ids": [
+        128,
+        129,
+        130,
+        152
+      ],
+      "trailing_request_bytes": 0,
+      "sha256": "a6b35b701046a29e44b020d9288480de2b7fba41609abdba35f4c6c12ed23387",
+      "baud": 115200,
+      "software_only": true
+    },
+    {
+      "mcu": "atmega168pb",
+      "mode": "short_odd",
+      "upload_accepted": true,
+      "boot_unchanged": true,
+      "no_spm_on_boot_attempt": null,
+      "verified_by_avrdude": true,
+      "firmware_guard_rejected": false,
+      "host_process_timed_out": false,
+      "host_return_code": 0,
+      "unopened_transport_retries": 0,
+      "request_counts": {
+        "ENTER_PROGMODE": 1,
+        "GET_PARAMETER": 6,
+        "GET_SYNC": 3,
+        "LEAVE_PROGMODE": 1,
+        "LOAD_ADDRESS": 5,
+        "PROG_PAGE": 2,
+        "READ_PAGE": 3,
+        "READ_SIGN": 1,
+        "SET_DEVICE": 1,
+        "SET_DEVICE_EXT": 1
+      },
+      "write_packet_lengths": [
+        128,
+        128
+      ],
+      "get_parameter_ids": [
+        128,
+        129,
+        130,
+        152
+      ],
+      "trailing_request_bytes": 0,
+      "sha256": "a6b35b701046a29e44b020d9288480de2b7fba41609abdba35f4c6c12ed23387",
+      "baud": 115200,
+      "software_only": true
+    },
+    {
+      "mcu": "atmega168pb",
+      "mode": "padded_odd",
+      "upload_accepted": true,
+      "boot_unchanged": true,
+      "no_spm_on_boot_attempt": null,
+      "verified_by_avrdude": true,
+      "firmware_guard_rejected": false,
+      "host_process_timed_out": false,
+      "host_return_code": 0,
+      "unopened_transport_retries": 0,
+      "request_counts": {
+        "ENTER_PROGMODE": 1,
+        "GET_PARAMETER": 6,
+        "GET_SYNC": 3,
+        "LEAVE_PROGMODE": 1,
+        "LOAD_ADDRESS": 4,
+        "PROG_PAGE": 2,
+        "READ_PAGE": 2,
+        "READ_SIGN": 1,
+        "SET_DEVICE": 1,
+        "SET_DEVICE_EXT": 1
+      },
+      "write_packet_lengths": [
+        128,
+        128
+      ],
+      "get_parameter_ids": [
+        128,
+        129,
+        130,
+        152
+      ],
+      "trailing_request_bytes": 0,
+      "sha256": "a6b35b701046a29e44b020d9288480de2b7fba41609abdba35f4c6c12ed23387",
+      "baud": 115200,
+      "software_only": true
+    },
+    {
+      "mcu": "atmega168pb",
+      "mode": "boot",
+      "upload_accepted": false,
+      "boot_unchanged": true,
+      "no_spm_on_boot_attempt": true,
+      "verified_by_avrdude": false,
+      "firmware_guard_rejected": true,
+      "host_process_timed_out": true,
+      "host_return_code": null,
+      "unopened_transport_retries": 0,
+      "request_counts": {
+        "ENTER_PROGMODE": 1,
+        "GET_PARAMETER": 6,
+        "GET_SYNC": 3,
+        "LOAD_ADDRESS": 1,
+        "PROG_PAGE": 1,
+        "READ_SIGN": 1,
+        "SET_DEVICE": 1,
+        "SET_DEVICE_EXT": 1
+      },
+      "write_packet_lengths": [
+        128
+      ],
+      "get_parameter_ids": [
+        128,
+        129,
+        130,
+        152
+      ],
+      "trailing_request_bytes": 0,
+      "sha256": "a6b35b701046a29e44b020d9288480de2b7fba41609abdba35f4c6c12ed23387",
+      "baud": 115200,
+      "software_only": true
+    }
+  ],
+  "limitations": [
+    "Software instruction models do not qualify a physical device.",
+    "No serial port, ISP programmer, fuse or lock byte was accessed.",
+    "The negative Boot host wait is bounded because the model has no running watchdog clock.",
+    "Voltage/temperature margins, physical clocks, DTR, UART and SPM timing remain unverified."
+  ]
+}

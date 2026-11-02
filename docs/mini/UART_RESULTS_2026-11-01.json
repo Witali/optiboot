@@ -1,0 +1,2387 @@
+{
+  "date": "2026-11-01",
+  "source_commit": "6449f85aa2fefade2f838f9a5c5feac3e7fb91b6",
+  "software_only": true,
+  "physical_boards_accessed": false,
+  "tools": {
+    "python": "3.12.3",
+    "clang_llvm": "18.1.3",
+    "avr_gcc": "7.3.0",
+    "avr_binutils": "2.26",
+    "make": "4.3",
+    "avrdude": "8.0-arduino.1"
+  },
+  "totals": {
+    "devices": 38,
+    "edition_device_profiles": 76,
+    "instruction_tests": 124,
+    "generator_tests": 16,
+    "clock_builds": 423,
+    "executed_clock_images": 423,
+    "software_uart_waveform_images": 24,
+    "full_memory_profiles": 76,
+    "real_avrdude_model_profiles": 68,
+    "real_avrdude_padded_profiles": 13,
+    "clang_gcc_identical_profiles": 76,
+    "spm_abi_profiles": 55,
+    "spm_header_compile_profiles": 55,
+    "compact_full_reset_flag_cases": 1008,
+    "failures": 0
+  },
+  "build_matrix": "UART_MATRIX_2026-11-01.csv",
+  "source_input_sha256": {
+    "optiboot/bootloaders/optiboot/optiboot_mini.S": "8af2f1d9b89f356f47fd64e854240a69af4dccec67aa71ccb0d6aed8baa71a5f",
+    "optiboot/bootloaders/optiboot/build_mini.py": "bec1bb5f2c9f78202eaa8067428d186525f001ab617e7d0d0a3b1d3b36e1a97d",
+    "optiboot/bootloaders/optiboot/build_flashread.py": "5679271a18698ee6fd36d4058c5976bda3add2d1b6b82b9239427ed6dc24508b",
+    "optiboot/bootloaders/optiboot/build_dual.py": "ca949aa53ec1ace62d68a7fbea83436a48eeaf7a1aa05d3a2912f81ab0bfcda0",
+    "optiboot/bootloaders/optiboot/build_mini_compat.py": "3fcdca7c0b86aa435107f1fce2fb4d2fe09ac5d3ad42c10e0a8eb6d3f87e891d",
+    "optiboot/bootloaders/optiboot/devices.json": "739ae8ab13b5350424c113de2c2a1fed06ccf8ed6e0a65d1c8b7a3fafc26d8d7",
+    "optiboot/bootloaders/optiboot/flashread/flashread.inc": "7587a2ec3bebc41fa8f57a93f5d3e28d4809e4f3adf1b9f24caeabad02e8cda8",
+    "optiboot/bootloaders/optiboot/devices/atmega1280.inc": "3ad58a65de8b884fa72635004ea26e6ec8b7abecb95ba7b603e35513a084cf06",
+    "optiboot/bootloaders/optiboot/devices/atmega1281.inc": "0899fa6296c526b4781278bf34d9400a2cee08dc314966893ba2249568143be4",
+    "optiboot/bootloaders/optiboot/devices/atmega1284.inc": "73dabc47ce60e39bd87d056ded9f72b1f9d5deae610f70256dabb7ff8f50204b",
+    "optiboot/bootloaders/optiboot/devices/atmega1284p.inc": "c8f0922695a417b91cbd806b6f8f1d1151f3b4692ab4c62b43f36aa2d88546d1",
+    "optiboot/bootloaders/optiboot/devices/atmega128a.inc": "cabe611a8367ad434adccc0415888b55a8d11570d5bd04e718cc54030f86f7c7",
+    "optiboot/bootloaders/optiboot/devices/atmega16.inc": "e3f9b4516fd88314a2972a840490d3cb0b22dad875704e944154d0b530e96cda",
+    "optiboot/bootloaders/optiboot/devices/atmega162.inc": "200b1f8e12c629ed413c548d2ea41bd12e57d12f3f65fc2c08b1b785fb407921",
+    "optiboot/bootloaders/optiboot/devices/atmega164a.inc": "72280616880412bcb23ed6ea36ee8a912bc64b5ffdaee859cd43a6c6bdcc6b36",
+    "optiboot/bootloaders/optiboot/devices/atmega164p.inc": "67faa3ed25543f887366c6566172d4fdb4fa84a3ab2b9d26949c818d071a8554",
+    "optiboot/bootloaders/optiboot/devices/atmega164pa.inc": "a2c086cefe15164a353c65596f38eaa1bcdae43b5da54f1a63fa9e6b900fd15e",
+    "optiboot/bootloaders/optiboot/devices/atmega168.inc": "798cee2fa03439a45235c2c5f7c97bd4d9ed165b55363b1f530305d42e4cf7e8",
+    "optiboot/bootloaders/optiboot/devices/atmega168p.inc": "74d84c0407561d4d91ea360c52f15f067faec90b8043e0ad8f7e2023a2fe5694",
+    "optiboot/bootloaders/optiboot/devices/atmega2560.inc": "3512c086a94236d7e38f5bc1b93fc29947bf56d58383ce41f9f19edef41d5c84",
+    "optiboot/bootloaders/optiboot/devices/atmega2561.inc": "9689d7e5beece1796383de77c0a2a3b2e5cf05a4293a37955f4c923b9844ae58",
+    "optiboot/bootloaders/optiboot/devices/atmega324a.inc": "ddbe834e9a15c79084d8231c712cc4b485d0cf4f15ef0303196d725c44c6860a",
+    "optiboot/bootloaders/optiboot/devices/atmega324p.inc": "26758ab499d3fcae5bd0cf211c19fee47015c8d9cc19d8e56d325cee6160aceb",
+    "optiboot/bootloaders/optiboot/devices/atmega324pa.inc": "964e39acf9ade5e46a3d34bab2cebce59726f4cef601c250604609aa4facdcd8",
+    "optiboot/bootloaders/optiboot/devices/atmega324pb.inc": "7f8265cd2ac6348c6e9043de355f2f6a5b619d47b083b97234004aa5ea5f15bd",
+    "optiboot/bootloaders/optiboot/devices/atmega328.inc": "22921ae6e13fc429558f0e65a960e29820653e41a7e43890cd0463d30f43743b",
+    "optiboot/bootloaders/optiboot/devices/atmega328p.inc": "064b4c3de8d7582b21d04aa6cee0efbe8fcec543af08779e143145478bd7784a",
+    "optiboot/bootloaders/optiboot/devices/atmega328pb.inc": "04c2140d62a3f0c9c4138591a053247b25c8bc576842e2776020392b8c4c7f5a",
+    "optiboot/bootloaders/optiboot/devices/atmega32a.inc": "db0da75212c633f7e698b0da8fdeaf1466233f9046e295c3f3b987b815bae8cd",
+    "optiboot/bootloaders/optiboot/devices/atmega640.inc": "7f210d54f354d7a58f513566ecb42db1c6f5ee0ecc46c9d2dafffa33b6ee6f29",
+    "optiboot/bootloaders/optiboot/devices/atmega644.inc": "baa50899af66dccd0d5034248f825c32cfc69bbf179e325ed5e4c412976cfb1e",
+    "optiboot/bootloaders/optiboot/devices/atmega644a.inc": "f2ef5af5187a39da29e3b28deed184665565fbed88a98f709867316dcc70df03",
+    "optiboot/bootloaders/optiboot/devices/atmega644p.inc": "a82392b8cd8386dcd6b8e4a33771f0a9c4e4614f16ec6816ef714ab6f881db94",
+    "optiboot/bootloaders/optiboot/devices/atmega644pa.inc": "5e3a11d51f41b32c575dafd47b299e4dfbb1b2ccee4e775a54a0c3d7b6285517",
+    "optiboot/bootloaders/optiboot/devices/atmega64a.inc": "c64ef0af0aab3c60699bf2bf15c9606eade752789637ceeea896e0622f03e862",
+    "optiboot/bootloaders/optiboot/devices/atmega8.inc": "d2d118d2668c1a1598024409e86f298fc1c5c9fdbbb4952f510899de97eb20e8",
+    "optiboot/bootloaders/optiboot/devices/atmega8515.inc": "b9fb27bbb5798d4d3ef1c1e473f94e0650e0f8ad5636a897e79787ae89c2c81b",
+    "optiboot/bootloaders/optiboot/devices/atmega8535.inc": "aa0a0c0a0b4580c727b4b21564e168081ef95c316707bf0ee31406f19942d4ad",
+    "optiboot/bootloaders/optiboot/devices/atmega88.inc": "c9f513a2d03215a3ed13601731f30e3727002e304765dc278fbec1daa5b611c8",
+    "optiboot/bootloaders/optiboot/devices/atmega88p.inc": "25fd323599a80ecca8474c7c4e152fdab0036b9119ccda9ef531433aa1d0e4ba",
+    "optiboot/bootloaders/optiboot/devices/atmega8a.inc": "d1d6104a0e5836a5534411212de9b95d0119fa9d9f9babd617b8aa29acbb9bdc",
+    "optiboot/bootloaders/optiboot/devices/attiny1634.inc": "bf1308b43396162051d90ab44e75bbe8bdf1b0b58064cb26e95ef47d5fcea0bb",
+    "optiboot/bootloaders/optiboot/devices/attiny84.inc": "625108cd2e817d81f11ab67bf1f0cdf939d9a086e968f47810bd7ac8008a8492",
+    "optiboot/bootloaders/optiboot/devices/attiny841.inc": "910338299c645e3cfa26063a56fa0b830c848f6f3096f8ce600d2445fb855027",
+    "optiboot/bootloaders/optiboot/devices/attiny85.inc": "679a90a3c29abe601b4a7f15dacc5d78627a719932592f6a15aae1b64a387111",
+    "optiboot/bootloaders/optiboot/devices/select.inc": "e01cb9ff57e4a0f5ddc841d816b2341f212bac3eff3ddd7c75a96a025413b705",
+    "optiboot/bootloaders/optiboot/uart/legacy.inc": "627c89528490754f946fad999aa4a5eac6164711a6b92ca49b0ac95ea3ef8306",
+    "optiboot/bootloaders/optiboot/uart/mega64.inc": "b3d4243f4d9bb58841109c2baffa368008aeb9920aa3a2e6c9947506d98a1162",
+    "optiboot/bootloaders/optiboot/uart/modern.inc": "31dc924502d9d57bd2df1f2d71ef86d551bc3581e6ae085a652315c920a30c62",
+    "optiboot/bootloaders/optiboot/uart/select.inc": "74b44c6ef17e755f19fe6bde7a71e05661d72a8f8726756f484cd8698d626551",
+    "optiboot/bootloaders/optiboot/uart/soft.inc": "b452a290f52eaefa25c670d115c647278e66c2ff1c382f830d96bf12fa3aba3a",
+    "optiboot/bootloaders/optiboot/uart/tiny1634.inc": "3ef2fba4ed0617fe35759525a839a65ffa51b2333025b4138842ddf2495fb46a",
+    "optiboot/bootloaders/optiboot/uart/tiny841.inc": "dc4d23f21298719db6289ecda77f4f89395051128dedb0d85f508395ffaf760b"
+  },
+  "memory_profiles": [
+    {
+      "mcu": "atmega1280",
+      "edition": "full",
+      "application_flash_bytes": 130048,
+      "eeprom_bytes": 4096,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "atmega1281",
+      "edition": "full",
+      "application_flash_bytes": 130048,
+      "eeprom_bytes": 4096,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "atmega1284",
+      "edition": "full",
+      "application_flash_bytes": 130048,
+      "eeprom_bytes": 4096,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "atmega1284p",
+      "edition": "full",
+      "application_flash_bytes": 130048,
+      "eeprom_bytes": 4096,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "atmega128a",
+      "edition": "full",
+      "application_flash_bytes": 130048,
+      "eeprom_bytes": 4096,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "atmega16",
+      "edition": "compact",
+      "application_flash_bytes": 15872,
+      "eeprom_bytes": 512,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "atmega16",
+      "edition": "flashread256",
+      "application_flash_bytes": 16128,
+      "eeprom_bytes": 0,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "atmega16",
+      "edition": "full",
+      "application_flash_bytes": 15360,
+      "eeprom_bytes": 512,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "atmega162",
+      "edition": "compact",
+      "application_flash_bytes": 15872,
+      "eeprom_bytes": 512,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "atmega162",
+      "edition": "flashread256",
+      "application_flash_bytes": 16128,
+      "eeprom_bytes": 0,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "atmega162",
+      "edition": "full",
+      "application_flash_bytes": 15360,
+      "eeprom_bytes": 512,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "atmega164a",
+      "edition": "compact",
+      "application_flash_bytes": 15872,
+      "eeprom_bytes": 512,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "atmega164a",
+      "edition": "flashread256",
+      "application_flash_bytes": 16128,
+      "eeprom_bytes": 0,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "atmega164a",
+      "edition": "full",
+      "application_flash_bytes": 15360,
+      "eeprom_bytes": 512,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "atmega164p",
+      "edition": "compact",
+      "application_flash_bytes": 15872,
+      "eeprom_bytes": 512,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "atmega164p",
+      "edition": "flashread256",
+      "application_flash_bytes": 16128,
+      "eeprom_bytes": 0,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "atmega164p",
+      "edition": "full",
+      "application_flash_bytes": 15360,
+      "eeprom_bytes": 512,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "atmega164pa",
+      "edition": "compact",
+      "application_flash_bytes": 15872,
+      "eeprom_bytes": 512,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "atmega164pa",
+      "edition": "flashread256",
+      "application_flash_bytes": 16128,
+      "eeprom_bytes": 0,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "atmega164pa",
+      "edition": "full",
+      "application_flash_bytes": 15360,
+      "eeprom_bytes": 512,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "atmega168",
+      "edition": "compact",
+      "application_flash_bytes": 15872,
+      "eeprom_bytes": 512,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "atmega168",
+      "edition": "flashread256",
+      "application_flash_bytes": 16128,
+      "eeprom_bytes": 0,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "atmega168",
+      "edition": "full",
+      "application_flash_bytes": 15360,
+      "eeprom_bytes": 512,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "atmega168p",
+      "edition": "compact",
+      "application_flash_bytes": 15872,
+      "eeprom_bytes": 512,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "atmega168p",
+      "edition": "flashread256",
+      "application_flash_bytes": 16128,
+      "eeprom_bytes": 0,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "atmega168p",
+      "edition": "full",
+      "application_flash_bytes": 15360,
+      "eeprom_bytes": 512,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "atmega2560",
+      "edition": "full",
+      "application_flash_bytes": 261120,
+      "eeprom_bytes": 4096,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "atmega2561",
+      "edition": "full",
+      "application_flash_bytes": 261120,
+      "eeprom_bytes": 4096,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "atmega324a",
+      "edition": "compact",
+      "application_flash_bytes": 32256,
+      "eeprom_bytes": 1024,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "atmega324a",
+      "edition": "full",
+      "application_flash_bytes": 31744,
+      "eeprom_bytes": 1024,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "atmega324p",
+      "edition": "compact",
+      "application_flash_bytes": 32256,
+      "eeprom_bytes": 1024,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "atmega324p",
+      "edition": "full",
+      "application_flash_bytes": 31744,
+      "eeprom_bytes": 1024,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "atmega324pa",
+      "edition": "compact",
+      "application_flash_bytes": 32256,
+      "eeprom_bytes": 1024,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "atmega324pa",
+      "edition": "full",
+      "application_flash_bytes": 31744,
+      "eeprom_bytes": 1024,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "atmega324pb",
+      "edition": "compact",
+      "application_flash_bytes": 32256,
+      "eeprom_bytes": 1024,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "atmega324pb",
+      "edition": "full",
+      "application_flash_bytes": 31744,
+      "eeprom_bytes": 1024,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "atmega328",
+      "edition": "compact",
+      "application_flash_bytes": 32256,
+      "eeprom_bytes": 1024,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "atmega328",
+      "edition": "full",
+      "application_flash_bytes": 31744,
+      "eeprom_bytes": 1024,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "atmega328p",
+      "edition": "compact",
+      "application_flash_bytes": 32256,
+      "eeprom_bytes": 1024,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "atmega328p",
+      "edition": "full",
+      "application_flash_bytes": 31744,
+      "eeprom_bytes": 1024,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "atmega328pb",
+      "edition": "compact",
+      "application_flash_bytes": 32256,
+      "eeprom_bytes": 1024,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "atmega328pb",
+      "edition": "full",
+      "application_flash_bytes": 31744,
+      "eeprom_bytes": 1024,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "atmega32a",
+      "edition": "compact",
+      "application_flash_bytes": 32256,
+      "eeprom_bytes": 1024,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "atmega32a",
+      "edition": "full",
+      "application_flash_bytes": 31744,
+      "eeprom_bytes": 1024,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "atmega640",
+      "edition": "full",
+      "application_flash_bytes": 64512,
+      "eeprom_bytes": 4096,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "atmega644",
+      "edition": "full",
+      "application_flash_bytes": 64512,
+      "eeprom_bytes": 2048,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "atmega644a",
+      "edition": "full",
+      "application_flash_bytes": 64512,
+      "eeprom_bytes": 2048,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "atmega644p",
+      "edition": "full",
+      "application_flash_bytes": 64512,
+      "eeprom_bytes": 2048,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "atmega644pa",
+      "edition": "full",
+      "application_flash_bytes": 64512,
+      "eeprom_bytes": 2048,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "atmega64a",
+      "edition": "full",
+      "application_flash_bytes": 64512,
+      "eeprom_bytes": 2048,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "atmega8",
+      "edition": "compact",
+      "application_flash_bytes": 7680,
+      "eeprom_bytes": 512,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "atmega8",
+      "edition": "flashread256",
+      "application_flash_bytes": 7936,
+      "eeprom_bytes": 0,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "atmega8",
+      "edition": "full",
+      "application_flash_bytes": 7168,
+      "eeprom_bytes": 512,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "atmega8515",
+      "edition": "compact",
+      "application_flash_bytes": 7680,
+      "eeprom_bytes": 512,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "atmega8515",
+      "edition": "flashread256",
+      "application_flash_bytes": 7936,
+      "eeprom_bytes": 0,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "atmega8515",
+      "edition": "full",
+      "application_flash_bytes": 7168,
+      "eeprom_bytes": 512,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "atmega8535",
+      "edition": "compact",
+      "application_flash_bytes": 7680,
+      "eeprom_bytes": 512,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "atmega8535",
+      "edition": "flashread256",
+      "application_flash_bytes": 7936,
+      "eeprom_bytes": 0,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "atmega8535",
+      "edition": "full",
+      "application_flash_bytes": 7168,
+      "eeprom_bytes": 512,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "atmega88",
+      "edition": "compact",
+      "application_flash_bytes": 7680,
+      "eeprom_bytes": 512,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "atmega88",
+      "edition": "flashread256",
+      "application_flash_bytes": 7936,
+      "eeprom_bytes": 0,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "atmega88",
+      "edition": "full",
+      "application_flash_bytes": 7168,
+      "eeprom_bytes": 512,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "atmega88p",
+      "edition": "compact",
+      "application_flash_bytes": 7680,
+      "eeprom_bytes": 512,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "atmega88p",
+      "edition": "flashread256",
+      "application_flash_bytes": 7936,
+      "eeprom_bytes": 0,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "atmega88p",
+      "edition": "full",
+      "application_flash_bytes": 7168,
+      "eeprom_bytes": 512,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "atmega8a",
+      "edition": "compact",
+      "application_flash_bytes": 7680,
+      "eeprom_bytes": 512,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "atmega8a",
+      "edition": "flashread256",
+      "application_flash_bytes": 7936,
+      "eeprom_bytes": 0,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "atmega8a",
+      "edition": "full",
+      "application_flash_bytes": 7168,
+      "eeprom_bytes": 512,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "attiny1634",
+      "edition": "compact",
+      "application_flash_bytes": 15360,
+      "eeprom_bytes": 256,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "attiny1634",
+      "edition": "full",
+      "application_flash_bytes": 15360,
+      "eeprom_bytes": 256,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "attiny84",
+      "edition": "compact",
+      "application_flash_bytes": 7168,
+      "eeprom_bytes": 512,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "attiny84",
+      "edition": "full",
+      "application_flash_bytes": 7168,
+      "eeprom_bytes": 512,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "attiny841",
+      "edition": "compact",
+      "application_flash_bytes": 7168,
+      "eeprom_bytes": 512,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "attiny841",
+      "edition": "full",
+      "application_flash_bytes": 7168,
+      "eeprom_bytes": 512,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "attiny85",
+      "edition": "compact",
+      "application_flash_bytes": 7168,
+      "eeprom_bytes": 512,
+      "boot_unchanged": true
+    },
+    {
+      "mcu": "attiny85",
+      "edition": "full",
+      "application_flash_bytes": 7168,
+      "eeprom_bytes": 512,
+      "boot_unchanged": true
+    }
+  ],
+  "avrdude_model_profiles": [
+    {
+      "mcu": "atmega328p",
+      "edition": "compact",
+      "application_bytes": 32256,
+      "eeprom_bytes": 1024,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "sha256": "156d3701c01e5a9f5008b371c08e4753b7d7200e1535b1c776755040723a99c1",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "padded_final_page": false
+    },
+    {
+      "mcu": "atmega328p",
+      "edition": "full",
+      "application_bytes": 31744,
+      "eeprom_bytes": 1024,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "sha256": "6a16bbe0776d704e4c9ab7651961bd35b02efe68809a7492090232014d5d82ef",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "padded_final_page": false
+    },
+    {
+      "mcu": "atmega328",
+      "edition": "compact",
+      "application_bytes": 32256,
+      "eeprom_bytes": 1024,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "sha256": "156d3701c01e5a9f5008b371c08e4753b7d7200e1535b1c776755040723a99c1",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "padded_final_page": false
+    },
+    {
+      "mcu": "atmega328",
+      "edition": "full",
+      "application_bytes": 31744,
+      "eeprom_bytes": 1024,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "sha256": "6a16bbe0776d704e4c9ab7651961bd35b02efe68809a7492090232014d5d82ef",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "padded_final_page": false
+    },
+    {
+      "mcu": "atmega328pb",
+      "edition": "compact",
+      "application_bytes": 32256,
+      "eeprom_bytes": 1024,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "sha256": "156d3701c01e5a9f5008b371c08e4753b7d7200e1535b1c776755040723a99c1",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "padded_final_page": false
+    },
+    {
+      "mcu": "atmega328pb",
+      "edition": "full",
+      "application_bytes": 31744,
+      "eeprom_bytes": 1024,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "sha256": "6a16bbe0776d704e4c9ab7651961bd35b02efe68809a7492090232014d5d82ef",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "padded_final_page": false
+    },
+    {
+      "mcu": "atmega168p",
+      "edition": "compact",
+      "application_bytes": 15872,
+      "eeprom_bytes": 512,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "sha256": "7bf1db5a46b623774197b2e624075933c4796e60c8942c991935b6d625f1a2db",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "padded_final_page": false
+    },
+    {
+      "mcu": "atmega168p",
+      "edition": "full",
+      "application_bytes": 15360,
+      "eeprom_bytes": 512,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "sha256": "d91f8edf0be208f3c37260766c7d6818927f4b7a226bb6f840ade4b75fbd9ca0",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "padded_final_page": false
+    },
+    {
+      "mcu": "atmega168p",
+      "edition": "flashread256",
+      "application_bytes": 16128,
+      "eeprom_bytes": 0,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "sha256": "62972341f2e54d966c8de72ea0f8d8044072e4adfa09fec442d20524f0b3f981",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "padded_final_page": false
+    },
+    {
+      "mcu": "atmega168",
+      "edition": "compact",
+      "application_bytes": 15872,
+      "eeprom_bytes": 512,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "sha256": "7bf1db5a46b623774197b2e624075933c4796e60c8942c991935b6d625f1a2db",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "padded_final_page": false
+    },
+    {
+      "mcu": "atmega168",
+      "edition": "full",
+      "application_bytes": 15360,
+      "eeprom_bytes": 512,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "sha256": "d91f8edf0be208f3c37260766c7d6818927f4b7a226bb6f840ade4b75fbd9ca0",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "padded_final_page": false
+    },
+    {
+      "mcu": "atmega168",
+      "edition": "flashread256",
+      "application_bytes": 16128,
+      "eeprom_bytes": 0,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "sha256": "802efc9a8f84e201c3b5c3ebaf8558500487480f44be00c5ce6d0bf28432d7c2",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "padded_final_page": false
+    },
+    {
+      "mcu": "atmega88p",
+      "edition": "compact",
+      "application_bytes": 7680,
+      "eeprom_bytes": 512,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "sha256": "8521175be0b87f74f95deb9f6af247408ea05455a73c6fcc3957fb85c23790e1",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "padded_final_page": false
+    },
+    {
+      "mcu": "atmega88p",
+      "edition": "full",
+      "application_bytes": 7168,
+      "eeprom_bytes": 512,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "sha256": "bbad9e39f11a68d1a431ff9a254d82e9f6788275788c1f345e133579b5e252cb",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "padded_final_page": false
+    },
+    {
+      "mcu": "atmega88p",
+      "edition": "flashread256",
+      "application_bytes": 7936,
+      "eeprom_bytes": 0,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "sha256": "1145b7396182dddcb42a6107f97df2fcadbce3a994758ded09a562422e142e02",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "padded_final_page": false
+    },
+    {
+      "mcu": "atmega88",
+      "edition": "compact",
+      "application_bytes": 7680,
+      "eeprom_bytes": 512,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "sha256": "8521175be0b87f74f95deb9f6af247408ea05455a73c6fcc3957fb85c23790e1",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "padded_final_page": false
+    },
+    {
+      "mcu": "atmega88",
+      "edition": "full",
+      "application_bytes": 7168,
+      "eeprom_bytes": 512,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "sha256": "bbad9e39f11a68d1a431ff9a254d82e9f6788275788c1f345e133579b5e252cb",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "padded_final_page": false
+    },
+    {
+      "mcu": "atmega88",
+      "edition": "flashread256",
+      "application_bytes": 7936,
+      "eeprom_bytes": 0,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "sha256": "902647f9e25c23bca23980efce45b7062bc2543f4e92cfb3a41e35341b926659",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "padded_final_page": false
+    },
+    {
+      "mcu": "atmega324pa",
+      "edition": "compact",
+      "application_bytes": 32256,
+      "eeprom_bytes": 1024,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "sha256": "156d3701c01e5a9f5008b371c08e4753b7d7200e1535b1c776755040723a99c1",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "padded_final_page": false
+    },
+    {
+      "mcu": "atmega324pa",
+      "edition": "full",
+      "application_bytes": 31744,
+      "eeprom_bytes": 1024,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "sha256": "6a16bbe0776d704e4c9ab7651961bd35b02efe68809a7492090232014d5d82ef",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "padded_final_page": false
+    },
+    {
+      "mcu": "atmega164pa",
+      "edition": "compact",
+      "application_bytes": 15872,
+      "eeprom_bytes": 512,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "sha256": "7bf1db5a46b623774197b2e624075933c4796e60c8942c991935b6d625f1a2db",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "padded_final_page": false
+    },
+    {
+      "mcu": "atmega164pa",
+      "edition": "full",
+      "application_bytes": 15360,
+      "eeprom_bytes": 512,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "sha256": "d91f8edf0be208f3c37260766c7d6818927f4b7a226bb6f840ade4b75fbd9ca0",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "padded_final_page": false
+    },
+    {
+      "mcu": "atmega164pa",
+      "edition": "flashread256",
+      "application_bytes": 16128,
+      "eeprom_bytes": 0,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "sha256": "29985cfd7d6377cd0b878933ea142248117f5af5d7ecdcf890f85fb2f735410c",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "padded_final_page": false
+    },
+    {
+      "mcu": "atmega16",
+      "edition": "compact",
+      "application_bytes": 15872,
+      "eeprom_bytes": 512,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "sha256": "ecde6f0cea16aa66e5595f8b0b7f650e52fa308ee52f263c5eccd59ac553c20a",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "padded_final_page": false
+    },
+    {
+      "mcu": "atmega16",
+      "edition": "full",
+      "application_bytes": 15360,
+      "eeprom_bytes": 512,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "sha256": "97b2dba49e34334fab49c99523f7a363bd175d9741f031c028e88975444edf81",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "padded_final_page": false
+    },
+    {
+      "mcu": "atmega16",
+      "edition": "flashread256",
+      "application_bytes": 16128,
+      "eeprom_bytes": 0,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "sha256": "e6c72e8d97d35894a28c105f04d0d424730a30168fb278a91f2fcd29cb85b062",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "padded_final_page": false
+    },
+    {
+      "mcu": "atmega32a",
+      "edition": "compact",
+      "application_bytes": 32256,
+      "eeprom_bytes": 1024,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "sha256": "a74e67e68abfec545c55cd158c3d52cb16420929a8b7cf7e5d551f11e5c13ff0",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "padded_final_page": false
+    },
+    {
+      "mcu": "atmega32a",
+      "edition": "full",
+      "application_bytes": 31744,
+      "eeprom_bytes": 1024,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "sha256": "ee10ce0a4a2ca31a07f8fda40fa3b7279ab9fe44a18f1ab29ab25d5c01df2897",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "padded_final_page": false
+    },
+    {
+      "mcu": "atmega64a",
+      "edition": "full",
+      "application_bytes": 64512,
+      "eeprom_bytes": 2048,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "sha256": "402e5da80007ae73e433949fe589176209ce68710d40b85ff526bbc70cc7c0e0",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "padded_final_page": false
+    },
+    {
+      "mcu": "atmega128a",
+      "edition": "full",
+      "application_bytes": 130048,
+      "eeprom_bytes": 4096,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "sha256": "fe4e8310b4bdc17585006d2483c03fbd6ad242245b204452ce6fbecf296200b1",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "padded_final_page": false
+    },
+    {
+      "mcu": "atmega1284",
+      "edition": "full",
+      "application_bytes": 130048,
+      "eeprom_bytes": 4096,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "sha256": "f4004bada5140bc6524f158e15a90d4579a7604e523215ec7076a4d473afc44e",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "padded_final_page": false
+    },
+    {
+      "mcu": "atmega1284p",
+      "edition": "full",
+      "application_bytes": 130048,
+      "eeprom_bytes": 4096,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "sha256": "f4004bada5140bc6524f158e15a90d4579a7604e523215ec7076a4d473afc44e",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "padded_final_page": false
+    },
+    {
+      "mcu": "atmega8",
+      "edition": "compact",
+      "application_bytes": 7680,
+      "eeprom_bytes": 512,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "sha256": "4f9cf026574043c9e5399a6e900f825c145eb808dc6f978b062e5be8ecffa3b8",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "padded_final_page": false
+    },
+    {
+      "mcu": "atmega8",
+      "edition": "full",
+      "application_bytes": 7168,
+      "eeprom_bytes": 512,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "sha256": "98c3ea26410017bae2707b195e0a75b73db88195adcc459536d0cf948e228cfe",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "padded_final_page": false
+    },
+    {
+      "mcu": "atmega8",
+      "edition": "flashread256",
+      "application_bytes": 7936,
+      "eeprom_bytes": 0,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "sha256": "5fd2954428676d230b508801b43900525bb3571996f08f5820e1ef9207358dfb",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "padded_final_page": false
+    },
+    {
+      "mcu": "atmega8a",
+      "edition": "compact",
+      "application_bytes": 7680,
+      "eeprom_bytes": 512,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "sha256": "4f9cf026574043c9e5399a6e900f825c145eb808dc6f978b062e5be8ecffa3b8",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "padded_final_page": false
+    },
+    {
+      "mcu": "atmega8a",
+      "edition": "full",
+      "application_bytes": 7168,
+      "eeprom_bytes": 512,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "sha256": "98c3ea26410017bae2707b195e0a75b73db88195adcc459536d0cf948e228cfe",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "padded_final_page": false
+    },
+    {
+      "mcu": "atmega8a",
+      "edition": "flashread256",
+      "application_bytes": 7936,
+      "eeprom_bytes": 0,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "sha256": "5fd2954428676d230b508801b43900525bb3571996f08f5820e1ef9207358dfb",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "padded_final_page": false
+    },
+    {
+      "mcu": "atmega8515",
+      "edition": "compact",
+      "application_bytes": 7680,
+      "eeprom_bytes": 512,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "sha256": "aa1edfd78e594122b571dca2695051b1db2957496c86612e015881cb3897bdbf",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "padded_final_page": false
+    },
+    {
+      "mcu": "atmega8515",
+      "edition": "full",
+      "application_bytes": 7168,
+      "eeprom_bytes": 512,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "sha256": "0348f1293705a7610d62911204e7ae927b71ff4ba4d5e794d8f1aeb4ecb83434",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "padded_final_page": false
+    },
+    {
+      "mcu": "atmega8515",
+      "edition": "flashread256",
+      "application_bytes": 7936,
+      "eeprom_bytes": 0,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "sha256": "7409d5c66ad009d45cf4b43ffabdbdbfc9b225ec9b476651a335b2e8317dce8e",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "padded_final_page": false
+    },
+    {
+      "mcu": "atmega8535",
+      "edition": "compact",
+      "application_bytes": 7680,
+      "eeprom_bytes": 512,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "sha256": "d251b3ea3590a70cea0cad9a791733caa7b306cb2e34a6ed5d6ddf40c0d11d78",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "padded_final_page": false
+    },
+    {
+      "mcu": "atmega8535",
+      "edition": "full",
+      "application_bytes": 7168,
+      "eeprom_bytes": 512,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "sha256": "2c8db9a5da0bf7a079276bded96b81a592787fc9b44703ec31559698ae2b3b96",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "padded_final_page": false
+    },
+    {
+      "mcu": "atmega8535",
+      "edition": "flashread256",
+      "application_bytes": 7936,
+      "eeprom_bytes": 0,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "sha256": "04dffee6468ba54abcd6a1a82719f4334f31733ec9e1ee71f194510492429513",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "padded_final_page": false
+    },
+    {
+      "mcu": "atmega162",
+      "edition": "compact",
+      "application_bytes": 15872,
+      "eeprom_bytes": 512,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "sha256": "5d375e414c55cf3697d2d23e02a64e02d8861dbb10151400823a1a2dd25252d6",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "padded_final_page": false
+    },
+    {
+      "mcu": "atmega162",
+      "edition": "full",
+      "application_bytes": 15360,
+      "eeprom_bytes": 512,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "sha256": "70e8d57648c153366e62c9d05d9c57e9c063a95aef305051e96b064a4a38f4b9",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "padded_final_page": false
+    },
+    {
+      "mcu": "atmega162",
+      "edition": "flashread256",
+      "application_bytes": 16128,
+      "eeprom_bytes": 0,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "sha256": "d3a67e5b59e8acfc46bb158defecf91b34aac3a29d341e29ee58f4c7de401420",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "padded_final_page": false
+    },
+    {
+      "mcu": "atmega164p",
+      "edition": "compact",
+      "application_bytes": 15872,
+      "eeprom_bytes": 512,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "sha256": "7bf1db5a46b623774197b2e624075933c4796e60c8942c991935b6d625f1a2db",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "padded_final_page": false
+    },
+    {
+      "mcu": "atmega164p",
+      "edition": "full",
+      "application_bytes": 15360,
+      "eeprom_bytes": 512,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "sha256": "d91f8edf0be208f3c37260766c7d6818927f4b7a226bb6f840ade4b75fbd9ca0",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "padded_final_page": false
+    },
+    {
+      "mcu": "atmega164p",
+      "edition": "flashread256",
+      "application_bytes": 16128,
+      "eeprom_bytes": 0,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "sha256": "29985cfd7d6377cd0b878933ea142248117f5af5d7ecdcf890f85fb2f735410c",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "padded_final_page": false
+    },
+    {
+      "mcu": "atmega164a",
+      "edition": "compact",
+      "application_bytes": 15872,
+      "eeprom_bytes": 512,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "sha256": "7bf1db5a46b623774197b2e624075933c4796e60c8942c991935b6d625f1a2db",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "padded_final_page": false
+    },
+    {
+      "mcu": "atmega164a",
+      "edition": "full",
+      "application_bytes": 15360,
+      "eeprom_bytes": 512,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "sha256": "d91f8edf0be208f3c37260766c7d6818927f4b7a226bb6f840ade4b75fbd9ca0",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "padded_final_page": false
+    },
+    {
+      "mcu": "atmega164a",
+      "edition": "flashread256",
+      "application_bytes": 16128,
+      "eeprom_bytes": 0,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "sha256": "7f57995a47faedded487c57f0cf8439fa9d14ed6336ed7f6a70df8f1c0876a2e",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "padded_final_page": false
+    },
+    {
+      "mcu": "atmega324p",
+      "edition": "compact",
+      "application_bytes": 32256,
+      "eeprom_bytes": 1024,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "sha256": "156d3701c01e5a9f5008b371c08e4753b7d7200e1535b1c776755040723a99c1",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "padded_final_page": false
+    },
+    {
+      "mcu": "atmega324p",
+      "edition": "full",
+      "application_bytes": 31744,
+      "eeprom_bytes": 1024,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "sha256": "6a16bbe0776d704e4c9ab7651961bd35b02efe68809a7492090232014d5d82ef",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "padded_final_page": false
+    },
+    {
+      "mcu": "atmega324a",
+      "edition": "compact",
+      "application_bytes": 32256,
+      "eeprom_bytes": 1024,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "sha256": "156d3701c01e5a9f5008b371c08e4753b7d7200e1535b1c776755040723a99c1",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "padded_final_page": false
+    },
+    {
+      "mcu": "atmega324a",
+      "edition": "full",
+      "application_bytes": 31744,
+      "eeprom_bytes": 1024,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "sha256": "6a16bbe0776d704e4c9ab7651961bd35b02efe68809a7492090232014d5d82ef",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "padded_final_page": false
+    },
+    {
+      "mcu": "atmega324pb",
+      "edition": "compact",
+      "application_bytes": 32256,
+      "eeprom_bytes": 1024,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "sha256": "3a82e38c94502cd5f00ab8df8183c57196a1d123e9fd4d113a465d20de5cb7a8",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "padded_final_page": false
+    },
+    {
+      "mcu": "atmega324pb",
+      "edition": "full",
+      "application_bytes": 31744,
+      "eeprom_bytes": 1024,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "sha256": "f3520b384ff42ef90eebb793972b9ef0aa8a61b1976531212b5343a79cc1b496",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "padded_final_page": false
+    },
+    {
+      "mcu": "atmega644",
+      "edition": "full",
+      "application_bytes": 64512,
+      "eeprom_bytes": 2048,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "sha256": "7112d7ba5ce90c16ef78428e1c19099e28dc9173be86ff5bb52aff96d7c96333",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "padded_final_page": false
+    },
+    {
+      "mcu": "atmega644p",
+      "edition": "full",
+      "application_bytes": 64512,
+      "eeprom_bytes": 2048,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "sha256": "7112d7ba5ce90c16ef78428e1c19099e28dc9173be86ff5bb52aff96d7c96333",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "padded_final_page": false
+    },
+    {
+      "mcu": "atmega644a",
+      "edition": "full",
+      "application_bytes": 64512,
+      "eeprom_bytes": 2048,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "sha256": "7112d7ba5ce90c16ef78428e1c19099e28dc9173be86ff5bb52aff96d7c96333",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "padded_final_page": false
+    },
+    {
+      "mcu": "atmega644pa",
+      "edition": "full",
+      "application_bytes": 64512,
+      "eeprom_bytes": 2048,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "sha256": "7112d7ba5ce90c16ef78428e1c19099e28dc9173be86ff5bb52aff96d7c96333",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "padded_final_page": false
+    },
+    {
+      "mcu": "atmega640",
+      "edition": "full",
+      "application_bytes": 64512,
+      "eeprom_bytes": 4096,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "sha256": "70e11880d086ea5c308a9b97a861307846c1d46fd4f93e3148d525b8ef704ca3",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "padded_final_page": false
+    },
+    {
+      "mcu": "atmega1280",
+      "edition": "full",
+      "application_bytes": 130048,
+      "eeprom_bytes": 4096,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "sha256": "f4004bada5140bc6524f158e15a90d4579a7604e523215ec7076a4d473afc44e",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "padded_final_page": false
+    },
+    {
+      "mcu": "atmega1281",
+      "edition": "full",
+      "application_bytes": 130048,
+      "eeprom_bytes": 4096,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "sha256": "f4004bada5140bc6524f158e15a90d4579a7604e523215ec7076a4d473afc44e",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "padded_final_page": false
+    },
+    {
+      "mcu": "atmega2560",
+      "edition": "full",
+      "application_bytes": 261120,
+      "eeprom_bytes": 4096,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "sha256": "881c0f1d70fb58ff6917181ab656779d96fc760e6214dcb3d3d6391e7a134560",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "padded_final_page": false
+    },
+    {
+      "mcu": "atmega2561",
+      "edition": "full",
+      "application_bytes": 261120,
+      "eeprom_bytes": 4096,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "sha256": "881c0f1d70fb58ff6917181ab656779d96fc760e6214dcb3d3d6391e7a134560",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200,
+      "padded_final_page": false
+    }
+  ],
+  "avrdude_padded_profiles": [
+    {
+      "mcu": "atmega168p",
+      "edition": "flashread256",
+      "application_bytes": 16128,
+      "eeprom_bytes": 0,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "padded_final_page": true,
+      "sha256": "62972341f2e54d966c8de72ea0f8d8044072e4adfa09fec442d20524f0b3f981",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200
+    },
+    {
+      "mcu": "atmega168",
+      "edition": "flashread256",
+      "application_bytes": 16128,
+      "eeprom_bytes": 0,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "padded_final_page": true,
+      "sha256": "802efc9a8f84e201c3b5c3ebaf8558500487480f44be00c5ce6d0bf28432d7c2",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200
+    },
+    {
+      "mcu": "atmega88p",
+      "edition": "flashread256",
+      "application_bytes": 7936,
+      "eeprom_bytes": 0,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "padded_final_page": true,
+      "sha256": "1145b7396182dddcb42a6107f97df2fcadbce3a994758ded09a562422e142e02",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200
+    },
+    {
+      "mcu": "atmega88",
+      "edition": "flashread256",
+      "application_bytes": 7936,
+      "eeprom_bytes": 0,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "padded_final_page": true,
+      "sha256": "902647f9e25c23bca23980efce45b7062bc2543f4e92cfb3a41e35341b926659",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200
+    },
+    {
+      "mcu": "atmega164pa",
+      "edition": "flashread256",
+      "application_bytes": 16128,
+      "eeprom_bytes": 0,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "padded_final_page": true,
+      "sha256": "29985cfd7d6377cd0b878933ea142248117f5af5d7ecdcf890f85fb2f735410c",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200
+    },
+    {
+      "mcu": "atmega16",
+      "edition": "flashread256",
+      "application_bytes": 16128,
+      "eeprom_bytes": 0,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "padded_final_page": true,
+      "sha256": "e6c72e8d97d35894a28c105f04d0d424730a30168fb278a91f2fcd29cb85b062",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200
+    },
+    {
+      "mcu": "atmega8",
+      "edition": "flashread256",
+      "application_bytes": 7936,
+      "eeprom_bytes": 0,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "padded_final_page": true,
+      "sha256": "5fd2954428676d230b508801b43900525bb3571996f08f5820e1ef9207358dfb",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200
+    },
+    {
+      "mcu": "atmega8a",
+      "edition": "flashread256",
+      "application_bytes": 7936,
+      "eeprom_bytes": 0,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "padded_final_page": true,
+      "sha256": "5fd2954428676d230b508801b43900525bb3571996f08f5820e1ef9207358dfb",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200
+    },
+    {
+      "mcu": "atmega8515",
+      "edition": "flashread256",
+      "application_bytes": 7936,
+      "eeprom_bytes": 0,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "padded_final_page": true,
+      "sha256": "7409d5c66ad009d45cf4b43ffabdbdbfc9b225ec9b476651a335b2e8317dce8e",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200
+    },
+    {
+      "mcu": "atmega8535",
+      "edition": "flashread256",
+      "application_bytes": 7936,
+      "eeprom_bytes": 0,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "padded_final_page": true,
+      "sha256": "04dffee6468ba54abcd6a1a82719f4334f31733ec9e1ee71f194510492429513",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200
+    },
+    {
+      "mcu": "atmega162",
+      "edition": "flashread256",
+      "application_bytes": 16128,
+      "eeprom_bytes": 0,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "padded_final_page": true,
+      "sha256": "d3a67e5b59e8acfc46bb158defecf91b34aac3a29d341e29ee58f4c7de401420",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200
+    },
+    {
+      "mcu": "atmega164p",
+      "edition": "flashread256",
+      "application_bytes": 16128,
+      "eeprom_bytes": 0,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "padded_final_page": true,
+      "sha256": "29985cfd7d6377cd0b878933ea142248117f5af5d7ecdcf890f85fb2f735410c",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200
+    },
+    {
+      "mcu": "atmega164a",
+      "edition": "flashread256",
+      "application_bytes": 16128,
+      "eeprom_bytes": 0,
+      "avrdude_verify": true,
+      "boot_unchanged": true,
+      "software_model": true,
+      "padded_final_page": true,
+      "sha256": "7f57995a47faedded487c57f0cf8439fa9d14ed6336ed7f6a70df8f1c0876a2e",
+      "frequency_hz": 16000000,
+      "clock_source": "external_crystal",
+      "baud": 115200
+    }
+  ],
+  "toolchain_profiles": [
+    {
+      "mcu": "atmega328p",
+      "edition": "compact",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": true,
+      "sha256": "156d3701c01e5a9f5008b371c08e4753b7d7200e1535b1c776755040723a99c1"
+    },
+    {
+      "mcu": "atmega328p",
+      "edition": "full",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": true,
+      "sha256": "6a16bbe0776d704e4c9ab7651961bd35b02efe68809a7492090232014d5d82ef"
+    },
+    {
+      "mcu": "atmega328",
+      "edition": "compact",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": true,
+      "sha256": "156d3701c01e5a9f5008b371c08e4753b7d7200e1535b1c776755040723a99c1"
+    },
+    {
+      "mcu": "atmega328",
+      "edition": "full",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": true,
+      "sha256": "6a16bbe0776d704e4c9ab7651961bd35b02efe68809a7492090232014d5d82ef"
+    },
+    {
+      "mcu": "atmega328pb",
+      "edition": "compact",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": true,
+      "sha256": "156d3701c01e5a9f5008b371c08e4753b7d7200e1535b1c776755040723a99c1"
+    },
+    {
+      "mcu": "atmega328pb",
+      "edition": "full",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": true,
+      "sha256": "6a16bbe0776d704e4c9ab7651961bd35b02efe68809a7492090232014d5d82ef"
+    },
+    {
+      "mcu": "atmega168p",
+      "edition": "compact",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": true,
+      "sha256": "7bf1db5a46b623774197b2e624075933c4796e60c8942c991935b6d625f1a2db"
+    },
+    {
+      "mcu": "atmega168p",
+      "edition": "full",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": true,
+      "sha256": "d91f8edf0be208f3c37260766c7d6818927f4b7a226bb6f840ade4b75fbd9ca0"
+    },
+    {
+      "mcu": "atmega168p",
+      "edition": "flashread256",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": false,
+      "sha256": "62972341f2e54d966c8de72ea0f8d8044072e4adfa09fec442d20524f0b3f981"
+    },
+    {
+      "mcu": "atmega168",
+      "edition": "compact",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": true,
+      "sha256": "7bf1db5a46b623774197b2e624075933c4796e60c8942c991935b6d625f1a2db"
+    },
+    {
+      "mcu": "atmega168",
+      "edition": "full",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": true,
+      "sha256": "d91f8edf0be208f3c37260766c7d6818927f4b7a226bb6f840ade4b75fbd9ca0"
+    },
+    {
+      "mcu": "atmega168",
+      "edition": "flashread256",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": false,
+      "sha256": "802efc9a8f84e201c3b5c3ebaf8558500487480f44be00c5ce6d0bf28432d7c2"
+    },
+    {
+      "mcu": "atmega88p",
+      "edition": "compact",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": true,
+      "sha256": "8521175be0b87f74f95deb9f6af247408ea05455a73c6fcc3957fb85c23790e1"
+    },
+    {
+      "mcu": "atmega88p",
+      "edition": "full",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": true,
+      "sha256": "bbad9e39f11a68d1a431ff9a254d82e9f6788275788c1f345e133579b5e252cb"
+    },
+    {
+      "mcu": "atmega88p",
+      "edition": "flashread256",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": false,
+      "sha256": "1145b7396182dddcb42a6107f97df2fcadbce3a994758ded09a562422e142e02"
+    },
+    {
+      "mcu": "atmega88",
+      "edition": "compact",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": true,
+      "sha256": "8521175be0b87f74f95deb9f6af247408ea05455a73c6fcc3957fb85c23790e1"
+    },
+    {
+      "mcu": "atmega88",
+      "edition": "full",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": true,
+      "sha256": "bbad9e39f11a68d1a431ff9a254d82e9f6788275788c1f345e133579b5e252cb"
+    },
+    {
+      "mcu": "atmega88",
+      "edition": "flashread256",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": false,
+      "sha256": "902647f9e25c23bca23980efce45b7062bc2543f4e92cfb3a41e35341b926659"
+    },
+    {
+      "mcu": "atmega324pa",
+      "edition": "compact",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": true,
+      "sha256": "156d3701c01e5a9f5008b371c08e4753b7d7200e1535b1c776755040723a99c1"
+    },
+    {
+      "mcu": "atmega324pa",
+      "edition": "full",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": true,
+      "sha256": "6a16bbe0776d704e4c9ab7651961bd35b02efe68809a7492090232014d5d82ef"
+    },
+    {
+      "mcu": "atmega164pa",
+      "edition": "compact",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": true,
+      "sha256": "7bf1db5a46b623774197b2e624075933c4796e60c8942c991935b6d625f1a2db"
+    },
+    {
+      "mcu": "atmega164pa",
+      "edition": "full",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": true,
+      "sha256": "d91f8edf0be208f3c37260766c7d6818927f4b7a226bb6f840ade4b75fbd9ca0"
+    },
+    {
+      "mcu": "atmega164pa",
+      "edition": "flashread256",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": false,
+      "sha256": "29985cfd7d6377cd0b878933ea142248117f5af5d7ecdcf890f85fb2f735410c"
+    },
+    {
+      "mcu": "atmega16",
+      "edition": "compact",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": true,
+      "sha256": "ecde6f0cea16aa66e5595f8b0b7f650e52fa308ee52f263c5eccd59ac553c20a"
+    },
+    {
+      "mcu": "atmega16",
+      "edition": "full",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": true,
+      "sha256": "97b2dba49e34334fab49c99523f7a363bd175d9741f031c028e88975444edf81"
+    },
+    {
+      "mcu": "atmega16",
+      "edition": "flashread256",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": false,
+      "sha256": "e6c72e8d97d35894a28c105f04d0d424730a30168fb278a91f2fcd29cb85b062"
+    },
+    {
+      "mcu": "atmega32a",
+      "edition": "compact",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": true,
+      "sha256": "a74e67e68abfec545c55cd158c3d52cb16420929a8b7cf7e5d551f11e5c13ff0"
+    },
+    {
+      "mcu": "atmega32a",
+      "edition": "full",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": true,
+      "sha256": "ee10ce0a4a2ca31a07f8fda40fa3b7279ab9fe44a18f1ab29ab25d5c01df2897"
+    },
+    {
+      "mcu": "atmega64a",
+      "edition": "full",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": true,
+      "sha256": "402e5da80007ae73e433949fe589176209ce68710d40b85ff526bbc70cc7c0e0"
+    },
+    {
+      "mcu": "atmega128a",
+      "edition": "full",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": true,
+      "sha256": "fe4e8310b4bdc17585006d2483c03fbd6ad242245b204452ce6fbecf296200b1"
+    },
+    {
+      "mcu": "atmega1284",
+      "edition": "full",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": true,
+      "sha256": "f4004bada5140bc6524f158e15a90d4579a7604e523215ec7076a4d473afc44e"
+    },
+    {
+      "mcu": "atmega1284p",
+      "edition": "full",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": true,
+      "sha256": "f4004bada5140bc6524f158e15a90d4579a7604e523215ec7076a4d473afc44e"
+    },
+    {
+      "mcu": "atmega8",
+      "edition": "compact",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": true,
+      "sha256": "4f9cf026574043c9e5399a6e900f825c145eb808dc6f978b062e5be8ecffa3b8"
+    },
+    {
+      "mcu": "atmega8",
+      "edition": "full",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": true,
+      "sha256": "98c3ea26410017bae2707b195e0a75b73db88195adcc459536d0cf948e228cfe"
+    },
+    {
+      "mcu": "atmega8",
+      "edition": "flashread256",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": false,
+      "sha256": "5fd2954428676d230b508801b43900525bb3571996f08f5820e1ef9207358dfb"
+    },
+    {
+      "mcu": "atmega8a",
+      "edition": "compact",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": true,
+      "sha256": "4f9cf026574043c9e5399a6e900f825c145eb808dc6f978b062e5be8ecffa3b8"
+    },
+    {
+      "mcu": "atmega8a",
+      "edition": "full",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": true,
+      "sha256": "98c3ea26410017bae2707b195e0a75b73db88195adcc459536d0cf948e228cfe"
+    },
+    {
+      "mcu": "atmega8a",
+      "edition": "flashread256",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": false,
+      "sha256": "5fd2954428676d230b508801b43900525bb3571996f08f5820e1ef9207358dfb"
+    },
+    {
+      "mcu": "atmega8515",
+      "edition": "compact",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": true,
+      "sha256": "aa1edfd78e594122b571dca2695051b1db2957496c86612e015881cb3897bdbf"
+    },
+    {
+      "mcu": "atmega8515",
+      "edition": "full",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": true,
+      "sha256": "0348f1293705a7610d62911204e7ae927b71ff4ba4d5e794d8f1aeb4ecb83434"
+    },
+    {
+      "mcu": "atmega8515",
+      "edition": "flashread256",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": false,
+      "sha256": "7409d5c66ad009d45cf4b43ffabdbdbfc9b225ec9b476651a335b2e8317dce8e"
+    },
+    {
+      "mcu": "atmega8535",
+      "edition": "compact",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": true,
+      "sha256": "d251b3ea3590a70cea0cad9a791733caa7b306cb2e34a6ed5d6ddf40c0d11d78"
+    },
+    {
+      "mcu": "atmega8535",
+      "edition": "full",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": true,
+      "sha256": "2c8db9a5da0bf7a079276bded96b81a592787fc9b44703ec31559698ae2b3b96"
+    },
+    {
+      "mcu": "atmega8535",
+      "edition": "flashread256",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": false,
+      "sha256": "04dffee6468ba54abcd6a1a82719f4334f31733ec9e1ee71f194510492429513"
+    },
+    {
+      "mcu": "atmega162",
+      "edition": "compact",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": true,
+      "sha256": "5d375e414c55cf3697d2d23e02a64e02d8861dbb10151400823a1a2dd25252d6"
+    },
+    {
+      "mcu": "atmega162",
+      "edition": "full",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": true,
+      "sha256": "70e8d57648c153366e62c9d05d9c57e9c063a95aef305051e96b064a4a38f4b9"
+    },
+    {
+      "mcu": "atmega162",
+      "edition": "flashread256",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": false,
+      "sha256": "d3a67e5b59e8acfc46bb158defecf91b34aac3a29d341e29ee58f4c7de401420"
+    },
+    {
+      "mcu": "atmega164p",
+      "edition": "compact",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": true,
+      "sha256": "7bf1db5a46b623774197b2e624075933c4796e60c8942c991935b6d625f1a2db"
+    },
+    {
+      "mcu": "atmega164p",
+      "edition": "full",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": true,
+      "sha256": "d91f8edf0be208f3c37260766c7d6818927f4b7a226bb6f840ade4b75fbd9ca0"
+    },
+    {
+      "mcu": "atmega164p",
+      "edition": "flashread256",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": false,
+      "sha256": "29985cfd7d6377cd0b878933ea142248117f5af5d7ecdcf890f85fb2f735410c"
+    },
+    {
+      "mcu": "atmega164a",
+      "edition": "compact",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": true,
+      "sha256": "7bf1db5a46b623774197b2e624075933c4796e60c8942c991935b6d625f1a2db"
+    },
+    {
+      "mcu": "atmega164a",
+      "edition": "full",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": true,
+      "sha256": "d91f8edf0be208f3c37260766c7d6818927f4b7a226bb6f840ade4b75fbd9ca0"
+    },
+    {
+      "mcu": "atmega164a",
+      "edition": "flashread256",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": false,
+      "sha256": "7f57995a47faedded487c57f0cf8439fa9d14ed6336ed7f6a70df8f1c0876a2e"
+    },
+    {
+      "mcu": "atmega324p",
+      "edition": "compact",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": true,
+      "sha256": "156d3701c01e5a9f5008b371c08e4753b7d7200e1535b1c776755040723a99c1"
+    },
+    {
+      "mcu": "atmega324p",
+      "edition": "full",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": true,
+      "sha256": "6a16bbe0776d704e4c9ab7651961bd35b02efe68809a7492090232014d5d82ef"
+    },
+    {
+      "mcu": "atmega324a",
+      "edition": "compact",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": true,
+      "sha256": "156d3701c01e5a9f5008b371c08e4753b7d7200e1535b1c776755040723a99c1"
+    },
+    {
+      "mcu": "atmega324a",
+      "edition": "full",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": true,
+      "sha256": "6a16bbe0776d704e4c9ab7651961bd35b02efe68809a7492090232014d5d82ef"
+    },
+    {
+      "mcu": "atmega324pb",
+      "edition": "compact",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": true,
+      "sha256": "3a82e38c94502cd5f00ab8df8183c57196a1d123e9fd4d113a465d20de5cb7a8"
+    },
+    {
+      "mcu": "atmega324pb",
+      "edition": "full",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": true,
+      "sha256": "f3520b384ff42ef90eebb793972b9ef0aa8a61b1976531212b5343a79cc1b496"
+    },
+    {
+      "mcu": "atmega644",
+      "edition": "full",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": true,
+      "sha256": "7112d7ba5ce90c16ef78428e1c19099e28dc9173be86ff5bb52aff96d7c96333"
+    },
+    {
+      "mcu": "atmega644p",
+      "edition": "full",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": true,
+      "sha256": "7112d7ba5ce90c16ef78428e1c19099e28dc9173be86ff5bb52aff96d7c96333"
+    },
+    {
+      "mcu": "atmega644a",
+      "edition": "full",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": true,
+      "sha256": "7112d7ba5ce90c16ef78428e1c19099e28dc9173be86ff5bb52aff96d7c96333"
+    },
+    {
+      "mcu": "atmega644pa",
+      "edition": "full",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": true,
+      "sha256": "7112d7ba5ce90c16ef78428e1c19099e28dc9173be86ff5bb52aff96d7c96333"
+    },
+    {
+      "mcu": "atmega640",
+      "edition": "full",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": true,
+      "sha256": "70e11880d086ea5c308a9b97a861307846c1d46fd4f93e3148d525b8ef704ca3"
+    },
+    {
+      "mcu": "atmega1280",
+      "edition": "full",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": true,
+      "sha256": "f4004bada5140bc6524f158e15a90d4579a7604e523215ec7076a4d473afc44e"
+    },
+    {
+      "mcu": "atmega1281",
+      "edition": "full",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": true,
+      "sha256": "f4004bada5140bc6524f158e15a90d4579a7604e523215ec7076a4d473afc44e"
+    },
+    {
+      "mcu": "atmega2560",
+      "edition": "full",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": true,
+      "sha256": "881c0f1d70fb58ff6917181ab656779d96fc760e6214dcb3d3d6391e7a134560"
+    },
+    {
+      "mcu": "atmega2561",
+      "edition": "full",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": true,
+      "sha256": "881c0f1d70fb58ff6917181ab656779d96fc760e6214dcb3d3d6391e7a134560"
+    },
+    {
+      "mcu": "attiny841",
+      "edition": "compact",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": false,
+      "sha256": "b4a37acf0d3d1b7d8431394abebb78d0901cc30643d953c2aba3935d7894df54"
+    },
+    {
+      "mcu": "attiny841",
+      "edition": "full",
+      "frequency_hz": 16000000,
+      "byte_identical": true,
+      "spm_header_compiled": false,
+      "sha256": "46faf25850fef29eb159cf3bee34b98514146590605726869a80e3f5df3ac619"
+    },
+    {
+      "mcu": "attiny1634",
+      "edition": "compact",
+      "frequency_hz": 12000000,
+      "byte_identical": true,
+      "spm_header_compiled": false,
+      "sha256": "f39dab268e8343a93394734f9a5ab13c1e82920c53ead502ffa1e0c2095b3c8c"
+    },
+    {
+      "mcu": "attiny1634",
+      "edition": "full",
+      "frequency_hz": 12000000,
+      "byte_identical": true,
+      "spm_header_compiled": false,
+      "sha256": "9d9abcdb5b6cf2bbc71027d8b7bfd4f54cb7125f5b30a71d41bc202f5a7512bb"
+    },
+    {
+      "mcu": "attiny85",
+      "edition": "compact",
+      "frequency_hz": 8000000,
+      "byte_identical": true,
+      "spm_header_compiled": false,
+      "sha256": "78bb8eada5d8b47096672326eafd7bc2b239e62d5cea0e249d755055803ef59c"
+    },
+    {
+      "mcu": "attiny85",
+      "edition": "full",
+      "frequency_hz": 8000000,
+      "byte_identical": true,
+      "spm_header_compiled": false,
+      "sha256": "5fa703191db07ee4b165519119831027bf448bfc1d08434482ad09e5daf55230"
+    },
+    {
+      "mcu": "attiny84",
+      "edition": "compact",
+      "frequency_hz": 8000000,
+      "byte_identical": true,
+      "spm_header_compiled": false,
+      "sha256": "4472db4eca547430e30dd39f87d600bedb7b37ddb6a5d77f0034694f43ec5153"
+    },
+    {
+      "mcu": "attiny84",
+      "edition": "full",
+      "frequency_hz": 8000000,
+      "byte_identical": true,
+      "spm_header_compiled": false,
+      "sha256": "bc6f6f2699b88bb78dc41212c16505b772724539c6ca5494d4fa07ebd7aa6fef"
+    }
+  ],
+  "reference_checks": {
+    "mini328_bin_sha256": "be531a3f0b7294c6e9f00f4d02a8c5e7ff28d8fb2b7c90cb6501d0294cfae00b",
+    "basic_328p_bin_sha256": "3d3b3ab48a72ee2439b531d2d079060a649626348eaba0d322f240eb82074c14",
+    "stock_c": {
+      "stock_c_build_byte_identical": true,
+      "hex_sha256": "73b0833cbac1550825c8cd67fcc24363cd0d2bdd38f6963f42feb29ee7b2ec96",
+      "compiler": "avr-gcc 7.3.0",
+      "upstream_commit": "e363ecbe2b6542b5db5b4209589f274c87d833a7"
+    }
+  },
+  "limitations": [
+    "Instruction models simplify peripheral completion timing and are not silicon validation.",
+    "Whole-memory software UART uses a byte adapter; separate checks execute GPIO waveforms.",
+    "Full memory is exercised in one selected clock image per edition/device profile.",
+    "The public clock matrix is a nominal sample, not every possible explicit clock or baud.",
+    "Old avr-libc PB header gaps use explicit reviewed Flash geometry in isolated C API probes.",
+    "No electrical timing, physical fuses/locks, silicon errata or power-loss recovery was qualified."
+  ]
+}

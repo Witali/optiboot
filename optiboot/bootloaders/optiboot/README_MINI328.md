@@ -18,7 +18,7 @@ Assemblers that emit local relocations also require `avr-ld` from binutils-avr.
 Linking preserves section offsets and instruction sizes; Intel HEX supplies the
 boot address. Unresolved relocations are rejected before extracting the binary.
 
-Only the ATmega328P with a 16 MHz clock and USART0 at 115200 baud is supported by this assembly build. It does not inherit all customization options from the original C implementation.
+Only the ATmega328P with a 16 MHz clock and USART0 at 115200 baud is supported by this frozen reference build. For the maintained multi-device target, use [README_MINI_MULTI.md](README_MINI_MULTI.md). It does not inherit all customization options from the original C implementation.
 
 ## Added features compared with the usual Arduino Uno firmware
 
@@ -40,9 +40,11 @@ For sample commands, wire formats, compatibility limitations, and details of the
 - There is no LED start-up animation or application-callable SPM entry.
 - The image has been checked with software emulation and byte-for-byte build comparisons, **not on physical hardware**.
 
+The separate multi-device target has [physical results for ATmega328PB](../../../docs/mini/HARDWARE_ATMEGA328PB_2026-10-30.md). That evidence does not qualify this frozen ATmega328P image on silicon.
+
 Do not replace the stock `optiboot_atmega328.hex` without making a separate backup. Verify BOOTSZ/BOOTRST, the clock source, and the actual target part before flashing through an external ISP programmer.
 
-This code is derived from Optiboot; see the assembly header and `COPYING` for licensing and attribution.
+This code is derived from Optiboot; see the assembly header and the repository-root [LICENSE](../../../LICENSE) for licensing and attribution.
 
 ## Maintenance and language policy
 

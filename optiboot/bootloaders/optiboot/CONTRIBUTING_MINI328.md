@@ -1,46 +1,72 @@
-# Contributing to Optiboot Mini 328P
+# Contributing to Optiboot Mini
 
-## Language and repository integration policy
+Keep Mini an optional assembly target alongside the stock C implementation.
+Preserve the existing repository layout and board targets. Write Mini code,
+comments, documentation, messages and test descriptions in English.
 
-**English is required for every project-facing artifact**, including:
+## Compatibility and regression checks
 
-- AVR assembly source files and inline comments;
-- Python, shell, and Makefile comments, messages, assertions and docstrings;
-- README files, hardware test plans, commit messages, pull-request descriptions and changelogs;
-- test descriptions, expected-failure explanations, release notes, and generated documentation;
-- file and directory names (do not introduce locale suffixes such as `_RU`).
+1. Preserve the hardware-UART ATmega `avrdude -c arduino` interface and documented
+   Flash page semantics. ATtiny Virtual Boot has a separate uploader and vector
+   contract; do not imply interchangeable host support.
+2. Retain each edition's documented features, watchdog handling, EEPROM/SPM
+   interlocks and address/boot-boundary checks. Mini must retain Flash
+   readback; do not restore the removed write-only edition. Middle includes
+   EEPROM and application SPM on hardware-Boot ATmega; Full adds sign-on,
+   SET_PARAMETER and read-only fuse/lock `UNIVERSAL` operations.
+3. Keep Middle ATmega328P within its 512-byte boot section at `0x7E00..0x7FFF`,
+   Full within 1024 bytes, and Mini within 256 physical bytes on every
+   eligible device. Respect each MCU's physical boot-section minimum.
+4. Review signature, register map, Flash/EEPROM geometry, reset behavior and
+   datasheet clock limits before adding a device profile. Regenerate the device
+   includes and device reference with `python3 gen_devices.py` after updating
+   the canonical `devices.json`. Keep register constants outside JSON. Run
+   `python3 gen_devices.py --check` to catch stale generated outputs; see the
+   [database guide](../../../docs/mini/DEVICE_DATABASE.md).
+5. Compare BIN/HEX addresses, size and SHA-256 after assembly changes. Explain
+   intentional changes to a reference image rather than silently replacing the
+   baseline hash. The fixed `mini328` target is a separate regression reference.
+6. Keep build, instruction-model and physical test evidence distinct. A passing
+   software model does not qualify UART timing, silicon errata or power loss.
 
-The original upstream Optiboot files should remain unchanged unless a separate, reviewed change is explicitly required. Keep the derivative as an optional `make mini328` target and avoid overwriting stock `optiboot.c` or `optiboot_atmega328.hex`.
+## Minimum checks
 
-## Compatibility and regression policy
-
-1. Preserve `avrdude -c arduino`, STK500v1 framing, and the established Optiboot Flash programming behavior.
-2. Preserve the added EEPROM read/write/verify operations, supported read-only fuse/lock `STK_UNIVERSAL` opcodes, and `GET_SIGN_ON`.
-3. Remain within the 512-byte boot section at `0x7E00–0x7FFF` for the specified ATmega328P at 16 MHz.
-4. Do not remove watchdog, EEPROM/SPM interlocks, Flash boot-boundary checks or address validation to save bytes.
-5. Rebuild the AVR BIN and HEX, check the new size and address map, and rerun the integration tests, English-only checker, and archived software regression tests.
-6. A changed binary needs a new SHA-256 reference and an explanation of the behavioral differences. Do not silently reuse the previous reference.
-7. Keep hardware validation claims separate from simulator results. Real-chip and real-AVRDUDE testing is still outstanding.
-
-## Minimum maintainer checks
+Run from `optiboot/bootloaders/optiboot/`, with the toolchain described in
+[README_MINI_MULTI.md](README_MINI_MULTI.md):
 
 ```sh
 make mini328_check
+python3 build_mini.py --verify-baseline
 make mini_test
-python3 /path/to/unpacked-package/scripts/verify_master_patch.py
-python3 /path/to/unpacked-package/scripts/verify_package.py
+make mini_matrix
 ```
 
-The historical QA suite lives in `qa/regression_suite_512.zip` in the integration package. Its scripts can be executed after extracting it with a tool that preserves executable permissions, for example Unix `unzip`:
+`mini_test` runs both `mini_tests/` and `generator_tests/`, building test images
+in temporary directories without an external handoff archive. The matrix runner
+builds all public edition/device/clock cases and exercises the exact binaries.
+`mini_tests/fixtures/` holds earlier images, symbol objects and expected hashes
+for response-equivalence and reference regressions. See the
+[current validation report](../../../docs/mini/UART_VALIDATION_2026-11-01.md)
+for the actual AVRDUDE loopback runner and software/hardware scope.
 
-```sh
-unzip regression_suite_512.zip -d qa-tests
-cd qa-tests
-./run_all_tests.sh
-```
+For changes to shared Makefile integration, also build the stock `atmega328`
+target and compare its output with an unmodified checkout using the same
+toolchain and options.
 
-Running the Python ZIP extractor may not preserve executable mode bits; in that case use `bash run_all_tests.sh` and set executable permissions on the nested shell scripts.
+## Hardware evidence and documentation
 
-## Documentation checklist for new capabilities
+The [ATmega328PB report](../../../docs/mini/HARDWARE_ATMEGA328PB_2026-10-30.md)
+records 42 successful physical checks on one Nano at 16 MHz / 115200 baud.
+The [reproduction guide](../../../scripts/hardware/nano_usb/README.md) provides
+the runner, probes, backups and restoration procedure for that exact build.
+That evidence applies only to the older image hash in the report. The new
+editions still need hardware validation. Keep board memory backups and raw
+captures local; they are not test fixtures for publication.
 
-When a new function is introduced, update `README_MINI328_AVRDUDE.md` with its STK500v1 opcode, packet/response format, an AVRDUDE command example (if applicable), hardware prerequisites, limitations, and whether the behavior was verified by simulation or on an actual board. Update the main `README_MINI328.md` only when the feature changes its concise feature summary.
+When changing a protocol operation, document its packet/response format,
+address units, host command, bounds and failure behavior. Update
+[README_MINI328_AVRDUDE.md](README_MINI328_AVRDUDE.md) for the fixed 328P
+reference, [README_MINI_MULTI.md](README_MINI_MULTI.md) for the current target,
+and the [feature comparison](../../../docs/mini/FEATURES.md) when claims change.
+Record exact clock, baud, boot layout, image hash and test method for new
+hardware evidence.

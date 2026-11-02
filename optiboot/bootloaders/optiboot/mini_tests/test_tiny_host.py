@@ -36,6 +36,17 @@ class HostTests(unittest.TestCase):
         self.assertEqual(port.mem[0x83],0x21)
         self.assertEqual(len([x for x in port.cmds if x[0]==0x64]),2)
         self.assertTrue(all(x[1:3]==bytes((0,128)) for x in port.cmds if x[0]==0x64))
+    def test_tiny841_safe_64_byte_groups(self):
+        port=Loopback();link=Stk500Mini(port)
+        cfg=TARGETS['attiny841'];words=cfg['flash']//2;boot=(cfg['flash']-cfg['boot'])//2
+        reset=rjmp(0,boot,words)
+        app={0:reset&255,1:reset>>8,2*cfg['vector']:0,2*cfg['vector']+1:0,0x57:0xAB}
+        self.assertEqual(upload(link,app,'attiny841'),(2,64))
+        self.assertEqual(port.mem[0x57],0xAB)
+        writes=[x for x in port.cmds if x[0]==0x64]
+        self.assertEqual(len(writes),2)
+        self.assertTrue(all(x[1:3]==bytes((0,64)) for x in writes))
+
     def test_isp_seed_has_boot_and_safe_initial_vectors(self):
         for name,t in TARGETS.items():
             with self.subTest(name=name):

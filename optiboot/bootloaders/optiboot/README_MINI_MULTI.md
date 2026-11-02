@@ -1,146 +1,187 @@
-# Optiboot Mini — multi-device AVR build
+# Optiboot Mini: editions and builds
 
-This is an **experimental multi-device port** of the existing Optiboot Mini assembly, not a replacement for upstream `optiboot.c`. The default is **ATmega328P / 16 MHz / external crystal / UART 115200, 8N1**, as on the Arduino Uno.
+Optiboot Mini is an experimental assembly alternative alongside the original
+Optiboot C implementation. The original directory layout, C sources, board
+targets and stock HEX files are preserved. The current public generator offers
+three editions from `optiboot_mini.S` and its device/UART includes.
 
-There are **38 profiles: 34 ATmega and four experimental Virtual Boot ATtiny**.
-ATmega2560/2561 support four Flash banks; ATtiny84/85 use software UART.
-See the [expanded import report](../../../docs/mini/EXPANDED_IMPORT_2026-10-30.md)
-for the handoff decisions and validation, and the
-[Virtual Boot guide](../../../docs/mini/VIRTUAL_BOOT.md) for ATtiny installation.
+| Edition | Reserved Boot area | Profiles | Flash read/write | EEPROM read/write | Fuse/lock reads, sign-on | Application SPM ABI |
+|---|---:|---:|---|---|---|---|
+| `mini` | 256 B | 14 ATmega | Yes; aligned full-page writes | No | No | No |
+| `middle` | 512 B on 22 ATmega; 1024 B Virtual Boot on four ATtiny | 26 | Yes | Yes | No | Yes on ATmega |
+| `full` | 1024 B | All 39 | Yes | Yes | Yes | Yes on 35 ATmega |
 
-The stock `make atmega328` target and standalone `make mini328` target remain available. `make mini` consumes `MINI_MCU`, `MCU` or an explicitly supplied `MCU_TARGET`. It uses `F_CPU` or the project's `AVR_FREQ`; otherwise it defaults to 16 MHz. ATtiny84/85 default to 8 MHz internal RC and 19200 baud even when the parent Makefile has unrelated board defaults. Set `F_CPU=12000000` for ATtiny1634. Device selection is automatic for anyone compiling `optiboot_mini.S` using `-mmcu=<chip>`: `devices/select.inc` reads compiler-defined `__AVR_ATmega...__` and `__AVR_ATtiny...__` macros.
+The canonical edition names are `mini`, `middle` and `full`. The previous
+`flashread256` and `compact` names (including their existing aliases) remain
+accepted for reproducible older commands. New output directories and edition
+metadata always use the canonical names. This rename does not change firmware
+bytes, Boot geometry or features. Dated validation records retain their names.
+See the [rename validation](../../../docs/mini/EDITION_NAMES_2026-11-02.md).
 
-## Examples
+The write-only 256-byte edition is removed. The former oversized readback
+prototype is replaced by a real 256-byte image. At 16 MHz / 115200 baud its
+code and three signature bytes occupy 249..255 bytes on all 14 supported
+parts; the remaining bytes are `0xFF` padding. ATmega328P/PB have a physical
+512-byte minimum and cannot use this edition.
+
+See the [feature comparison](../../../docs/mini/FEATURES.md),
+[software validation report](../../../docs/mini/UART_VALIDATION_2026-11-01.md)
+and [ATtiny workflow](../../../docs/mini/VIRTUAL_BOOT.md). The older
+[ATmega328PB hardware report](../../../docs/mini/HARDWARE_ATMEGA328PB_2026-10-30.md)
+applies to its recorded SHA-256 only, not these new editions.
+
+The [ATmega168PB addendum](../../../docs/mini/ATMEGA168PB_2026-11-01.md)
+extends the earlier 38-device results with the 39th device and its three editions.
+
+## Build and select an edition
+
+Run from `optiboot/bootloaders/optiboot/` with Python 3.10 or later,
+Clang/LLVM AVR support or AVR-GCC, `avr-objcopy`/`llvm-objcopy`, `readelf`,
+`llvm-objdump` and `avr-ld`. Assemblers that emit local relocations are linked
+at section address zero without relaxation; Intel HEX provides the physical
+Boot address. The tests were run in Ubuntu under WSL; a native Windows launcher
+`generate_firmware.cmd` forwards arguments to Python, but it does not install
+an AVR toolchain.
+
+Older GCC packages without ATmega324PB specs use the same-ISA 324PA assembler
+target while explicitly selecting the correct project 324PB register map and
+signature; the manifest records `assembler_mcu`. PB application C code still
+requires suitable device headers. The SPM header probes can supply reviewed
+Flash geometry explicitly when the installed old avr-libc lacks PB headers.
 
 ```sh
-make mini                                   # Uno default: atmega328p / 16 MHz
-make mini MINI_MCU=atmega328pb
-make mini MCU=atmega168p F_CPU=12000000
-make mini MCU_TARGET=atmega32a F_CPU=16000000
-make mini MCU=atmega328p F_CPU=8000000 CLOCK_SOURCE=internal_rc
-make mini MCU=atmega328p F_CPU=20000000 BAUD_RATE=115200
-make mini MCU=atmega328p F_CPU=24000000 MINI_ALLOW_OVERCLOCK=1
-make mini MCU=atmega128a F_CPU=16000000  # 1024-byte boot; extended Flash addressing
-make mini MCU=atmega1284p F_CPU=20000000 # 1024-byte boot; MCU rated up to 20 MHz
-make mini MCU=atmega8
-make mini MCU=atmega2560                 # 256 KiB Flash, 1024-byte boot section
-make mini MCU=attiny841                  # hardware UART, Virtual Boot
-make mini MCU=attiny1634 F_CPU=12000000   # 128-byte Flash transfer groups
-make mini MCU=attiny84                   # software UART, 8 MHz / 19200
-make mini MCU=attiny85
-make mini_list
+python3 generate_firmware.py --list
+python3 generate_firmware.py atmega8 mini 16MHz
+python3 generate_firmware.py atmega168p mini 8MHz
+python3 generate_firmware.py atmega168pb mini 16MHz
+python3 generate_firmware.py atmega168pb middle 16MHz
+python3 generate_firmware.py atmega168pb full 16MHz
+python3 generate_firmware.py atmega328pb middle 16MHz
+python3 generate_firmware.py atmega328pb full 16MHz
+python3 generate_firmware.py atmega2560 full 16MHz
+python3 generate_firmware.py attiny85 middle 8MHz
+python3 generate_firmware.py attiny1634 full 12MHz
+make mini_256 MINI_MCU=atmega16 F_CPU=16000000
+make mini_middle MINI_MCU=atmega328pb
+make mini_full MINI_MCU=atmega2560
+```
+
+The legacy `make mini` target still builds Basic. Use `mini_256`, `mini_middle`
+or `mini_full` for the three public editions; `mini_flashread256` and
+`mini_compact` remain Make target aliases.
+
+Supply the actual CPU frequency, including clock dividers. The generator checks
+part limits, clock-source constraints, nominal baud error, Boot geometry,
+BIN/HEX agreement and hash. It writes files below `generated/` in directories
+that identify the MCU, frequency, clock source, baud, signature mode and
+edition. `build_info.json` records the exact paths and settings. A build does
+not program a board or change fuses.
+
+Automatic baud selection depends on frequency and clock source. In particular,
+Mini uses 38400 at 8 MHz and 115200 at 16 MHz; an explicit `--baud`
+may select another valid divider. Software UART uses 19200 for the default
+8 MHz internal RC clock and faster nominal rates for external clocks.
+Internal RC accuracy still requires physical validation and calibration.
+
+## Device availability
+
+The [generated device reference](../../../docs/mini/DEVICES.md) lists every
+MCU, signature, memory geometry, clock rating, Boot minimum and available edition.
+It is generated from the shared `devices.json` database together with the
+assembly includes. See the [maintenance guide](../../../docs/mini/DEVICE_DATABASE.md)
+for validation and regeneration. Register constants remain outside JSON.
+
+This is 79 edition/device profiles. ATtiny1634 is limited to 12 MHz in these
+profiles; the others have individual ratings in `devices.json`. The generator
+refuses unsupported combinations instead of labelling a 1024-byte hardware
+Boot area as 256 or 512 bytes. ATmega2560/2561 use extended Flash banks;
+EEPROM addressing remains independent of the Flash bank latch.
+
+## Upload contract
+
+For hardware-Boot ATmega, use the exact AVRDUDE part, `-c arduino`, the build's
+baud, and `-D`. Keep normal verification enabled. The `arduino` programmer
+uses word-addressed EEPROM in this protocol; another STK500 programmer setting
+can have different EEPROM address units.
+
+Mini accepts aligned, complete physical pages (64 or 128 bytes).
+Readback accepts lengths 1..PAGE from a page-aligned address. The audited
+Arduino AVR Boards 1.8.8 / AVRDUDE 8.0-arduino.1 upload path automatically
+transfers full pages even when the ordinary HEX ends inside a page. Manual
+padding is not required for that tested path. For another host that sends
+short write packets, the optional preparation tool pads each touched page:
+
+```sh
+python3 flashread/prepare_avrdude_hex.py --mcu atmega8 --input app.hex --output app_full_pages.hex
+avrdude -p m8 -c arduino -P PORT -b 115200 -D -U flash:w:app_full_pages.hex:i
+```
+
+Replace `PORT`, the part and baud for the actual board. This command writes
+application Flash, not the bootloader. The preparation tool only creates a
+file; it does not open a serial port. Standard Nano ATmega168 board settings
+use 19200 baud; build with `--baud 19200` to match them, or use a board definition
+with the baud recorded in the firmware manifest. The default 16 MHz image uses
+115200. The 256-byte edition supports sync,
+parameter queries (constant value 3), SET_DEVICE/SET_DEVICE_EXT framing,
+enter/leave, LOAD_ADDRESS, READ_SIGN, Flash PROG_PAGE and READ_PAGE. It has no
+EEPROM protocol, UNIVERSAL, sign-on string, application SPM service or fuse
+writes. Chip Erase is acknowledged without erasing memory, as in an Optiboot
+upload with `-D`. Unsupported odd commands can request the short watchdog
+exit; they do not perform an ISP operation.
+
+Mini requires entry through hardware reset: it relies on reset UART
+format/divisor-high state and disabled interrupts. It immediately configures
+the watchdog, enters the application after watchdog reset, and uses the
+watchdog for inactivity/error exit. Its receive path retains framing-error
+handling. It waits for an outstanding EEPROM write before every SPM command,
+including buffer fill. Erase/write occurs only after valid packet termination.
+Boot reads/writes, invalid lengths, alignment errors and address overflow are
+rejected. A malformed request normally stops replies until watchdog reset.
+
+The running 256-byte loader cannot install or replace itself over UART. Every
+page in its own Boot area is rejected before any SPM command, including buffer
+fill. Arduino's Burn Bootloader action is a separate programmer/fuse workflow;
+use ISP for initial installation or replacement of this image. No lock bits or
+fuses were inspected or modified in the software audit. See the
+[Arduino protocol audit](../../../docs/mini/ARDUINO_PROTOCOL_AUDIT_2026-11-01.md)
+for the observed host command sequence and self-write rejection tests.
+
+Middle and Full include EEPROM transfers (write blocks 1..16 bytes), Flash
+readback, bounds checks, READ_SIGN and UNIVERSAL signature queries. Full also
+implements GET_SIGN_ON, SET_PARAMETER and four read-only UNIVERSAL fuse/lock
+queries. Partial Flash writes erase unspecified bytes in a transferred page;
+they are not read-modify-write updates. The ATtiny841/1634 require complete
+64/128-byte erase groups through their dedicated host tool.
+
+Middle/Full on hardware-Boot ATmega expose the application SPM entry at
+`BOOT_START + 2`, compatible with the supplied `optiboot_mini_app_spm.h`.
+Set its Boot-size macros to match the installed image. The middle entry
+requires the caller to manage interrupt and EEPROM-busy conditions as described
+in the header. The service rejects Boot-region fill/erase/write commands;
+actual lock-bit protection is also a board fuse/lock configuration matter.
+No Mini edition provides fuse writes or a true Chip Erase programmer service.
+
+## Regression and advanced targets
+
+```sh
 make mini_test
+make mini_matrix
+python3 verify_toolchains.py
+make mini328_check
+python3 build_mini.py --verify-baseline
 ```
 
-The equivalent standalone invocation is `python3 build_mini.py --mcu atmega324pa --f-cpu 12000000 --baud auto`.
+`mini_test` runs the self-contained instruction-model and generator suites.
+`mini_matrix` builds and exercises every supported device/edition at the
+report's nominal clock points, then transfers every application Flash byte and
+EEPROM byte in one selected image per profile. The separate `verify_avrdude.py`
+runner tests an actual AVRDUDE process against models over loopback TCP; it
+never opens physical serial ports. See the validation report for commands.
 
-The toolchain requires Clang/LLVM AVR support or AVR-GCC/avr-objcopy, plus `readelf` and `llvm-objdump`. Assemblers that emit local relocations also require `avr-ld` from binutils-avr. The build resolves those relocations at section address zero without linker relaxation; Intel HEX supplies the physical boot address. It generates `output/<mcu>/<mcu>.hex`, `.bin`, `.o`, optional `.elf` and `.json` (build manifest). A failed size or baud check produces an error instead of a misleading ready-to-flash HEX. Use `--verify-baseline` with the standalone builder to require the previous regression-tested Uno binary SHA-256.
-
-## Build support table
-
-| MCU | Flash | Flash page | EEPROM | Current boot section | Build verified | Hardware tested |
-|---|---:|---:|---:|---:|---|---|
-| ATmega328P | 32 KiB | 128 B | 1 KiB | 512 B | Yes (bit-identical baseline) | No |
-| ATmega328 / ATmega328PB | 32 KiB | 128 B | 1 KiB | 512 B | Yes | No |
-| ATmega168 / ATmega168P | 16 KiB | 128 B | 512 B | 512 B | Yes | No |
-| ATmega88 / ATmega88P | 8 KiB | 64 B | 512 B | 512 B | Yes | No |
-| ATmega324PA | 32 KiB | 128 B | 1 KiB | 512 B | Yes | No |
-| ATmega164PA | 16 KiB | 128 B | 512 B | 512 B | Yes | No |
-| ATmega16 | 16 KiB | 128 B | 512 B | **512 B** | Yes (emulator smoke-tested) | No |
-| ATmega32A | 32 KiB | 128 B | 1 KiB | **512 B** | Yes (emulator smoke-tested) | No |
-| ATmega64A | 64 KiB | 256 B | 2 KiB | 1024 B (minimum) | Yes | No |
-| **ATmega128A** | 128 KiB | 256 B | 4 KiB | **1024 B** (606 B code) | Yes (emulated) | No |
-| **ATmega1284 / 1284P** | 128 KiB | 256 B | 4 KiB | **1024 B** (592 B code) | Yes (emulated) | No |
-| ATmega8 / 8A / 8515 / 8535 | 8 KiB | 64 B | 512 B | 512 B | Yes | No |
-| ATmega162 | 16 KiB | 128 B | 512 B | 512 B | Yes | No |
-| ATmega164A / 164P | 16 KiB | 128 B | 512 B | 512 B | Yes | No |
-| ATmega324A / 324P / 324PB | 32 KiB | 128 B | 1 KiB | 512 B | Yes | No |
-| ATmega644 / 644A / 644P / 644PA | 64 KiB | 256 B | 2 KiB | 1024 B | Yes | No |
-| ATmega640 | 64 KiB | 256 B | 4 KiB | 1024 B | Yes | No |
-| ATmega1280 / 1281 | 128 KiB | 256 B | 4 KiB | 1024 B | Yes | No |
-| ATmega2560 / 2561 | 256 KiB | 256 B | 4 KiB | 1024 B | Yes | No |
-| ATtiny841 | 8 KiB | 16 B | 512 B | 1024 B, Virtual Boot | Yes | No |
-| ATtiny1634 | 16 KiB | 32 B, erase 4 pages | 256 B | 1024 B, Virtual Boot | Yes | No |
-| ATtiny84 / 85 | 8 KiB | 64 B | 512 B | 1024 B, Virtual Boot, software UART | Yes | No |
-
-The ATmega16/32A use `uart/legacy.inc`: `SBIS` polls RXC, FE and UDRE directly in the low I/O space without a temporary `IN` instruction. This preserves UART status checks and saves four bytes, allowing **512-byte** boot sections for both parts. ATmega16 boots at `0x3E00`, ATmega32A at `0x7E00` (when BOOTSZ/BOOTRST fuses are correctly configured). The ATmega64A requires 1024 bytes of boot Flash at minimum; it also has a different SPMCSR location and a 256-byte page. Its 256-byte `PROG_PAGE` form is handled with a distinct code path. The boot address is derived from device Flash size and the actual selected boot section, never from a hardcoded ATmega328P value.
-
-ATmega128A, ATmega1284, and ATmega1284P now have a 17-bit Flash address path. They use the full 1024-byte minimum boot section; the original 512-byte limit does **not** apply. ATmega128A uses the ATmega64A-style USART0 register map and SPMCSR at data address `0x68`; ATmega1284/1284P use modern USART0 and SPMCSR at data address `0x57`. These chips additionally require RAMPZ, ELPM and extended linear-address Intel HEX records. For a byte-for-byte explanation and fuse setup, read [the 128 KiB port guide](README_128K.md). There is no officially named ATmega1284A part: select ATmega1284 or ATmega1284P based on the actual chip/signature.
-
-Chip signatures, UART register maps, SPM location and EEPROM address registers live in `devices/*.inc`. New unrecognised devices are deliberately rejected by `select.inc` until their maps are reviewed.
-
-ATmega2560/2561 use `STK_UNIVERSAL 0x4D` to latch the extended word-address
-bank, with RAMPZ/ELPM/SPM and Intel HEX extended-linear-address records.
-ATtiny841/1634 use dedicated hardware UART modules. All four ATtiny profiles
-require ISP seed installation and application RESET/EE_RDY vector relocation.
-ATtiny1634 must receive complete 128-byte groups because one erase affects four
-32-byte pages. The dedicated [ATtiny uploader](tiny/flash_tiny.py) handles this.
-
-## Clock and baud-rate configuration
-
-`F_CPU` is the **actual CPU clock**, not merely the oscillator's nominal frequency: take CKDIV8/CLKPR into account. `CLOCK_SOURCE=external_crystal` is the hardware-UART default; ATtiny84/85 default to `internal_rc`. `external_clock` and `internal_rc` are supported as build settings, but **neither this tool nor the bootloader changes fuses or calibrates the oscillator**.
-
-When `BAUD_RATE=auto`, external clocks prefer 115200 if the calculated UART error is within 2.5%, otherwise 57600. Internal RC defaults to 9600 (1 MHz), 19200 (2 MHz), or 38400 (4/8 MHz), with a tighter 1.5% calculated-divider-error limit. The build searches normal (16x) and double-speed (8x) UART modes, selecting the lowest nominal error. Actual internal RC oscillator tolerance, voltage, and temperature drift are additional and **must be measured**.
-
-Software UART has a separate policy: 9600 baud up to 2 MHz, 19200 up to 8 MHz,
-38400 up to 16 MHz, and 57600 above that. Its delay loops require 100–750 CPU
-cycles per bit; unsupported combinations are rejected. ATtiny84 uses TX PA1 /
-RX PA2; ATtiny85 uses TX PB0 / RX PB1, 8N1, without timer interrupts.
-
-Supported build input frequencies include 10, 12, 16 and 20 MHz (subject to each device's datasheet limit). 24, 25 and 28 MHz are deliberate **out-of-spec overclocking experiments** on all listed parts and require `MINI_ALLOW_OVERCLOCK=1` or `--allow-overclock`. This switch is an acknowledgement, not a guarantee that the chip, clock source, or UART works. The datasheet operating-frequency and voltage limits still apply. For legacy ATmega16/32A, calibrated RC frequency selection and OSCCAL values require particular care: the ATmega32A datasheet documents factory calibration loading for its default 1 MHz RC mode. A build option does not select a fuse nor load OSCCAL automatically.
-
-## Protocol and compatibility
-
-The assembly retains the existing Optiboot Mini STK500v1-compatible subset: page write/read of Flash, 1–16-byte EEPROM writes, EEPROM reads, `GET_SIGN_ON`, signature, read-only fuse/lock `UNIVERSAL`, watchdog timeout, and the established classic Optiboot no-op Chip Erase acknowledgement. ATmega2560/2561 additionally support the `UNIVERSAL 0x4D` address-bank command. Read-modify-write of partially written Flash pages is *not* added. Real Chip Erase and fuse writes remain ISP-only. The EEPROM memory addressing assumes the **classic-AVR `avrdude -c arduino` word-address convention**; configure avrdude for the correct exact chip (`-p ...`). Virtual Boot ATtiny uploads require the dedicated uploader and patched application described in the linked guide.
-
-**Verification status:** the old ATmega328P 16 MHz image is bit-identical and its historical software-emulation results carry over to that configuration. ATmega16/32A and ATmega128A/1284/1284P additionally have AVR-opcode-level peripheral smoke tests (not hardware-accurate timing). All MCU ports remain **unverified with real avrdude or on silicon**. Treat all non-328P firmware images as *port candidates*, not production firmware.
-
-To avoid bricking a target, check fuse settings, BOOTRST, BOOTSZ, CKDIV8, oscillator, USART wiring, and ISP recovery availability. Consult the chip datasheet for the exact fuse encoding; do not reuse ATmega328P fuse values on legacy devices.
-
-## License and project conventions
-
-The source is derived from the Optiboot project and retains its GPLv2 licensing and attribution. Keep **all repository files, source comments, test output, changelogs and documentation in English**. Use standard avrdude without altering its protocol. Upstream files are preserved as-is.
-
-For ATmega64A, verify that the ATmega103 compatibility fuse is disabled when using the modern USART0 and memory map. This port has not been hardware-tested.
-
-## Legacy USART module
-
-`uart/legacy.inc` owns all ATmega16/32A initialization and RX/TX poll sequences.
-`uart/modern.inc` preserves the bit-identical ATmega328P reference image, and
-`uart/mega64.inc` uses the ATmega64A/ATmega128A extended USART0 register addresses. The main
-source uses `MINI_UART_INIT`, `MINI_UART_RX_POLL`, `MINI_UART_TX_POLL`,
-`MINI_UART_RECEIVE`, and `MINI_UART_TRANSMIT` assembler macros.
-
-The legacy `UCSRC` and `UBRRH` share I/O address `0x20`; writes use the
-`URSEL` bit explicitly (1 for 8N1 UCSRC, 0 for UBRRH). Every build configures
-RX/TX and UBRR explicitly, including when entering without hardware reset.
-No function or protocol command has been removed to achieve 512 bytes.
-
-### Verified results (simulation only)
-
-| MCU | Instructions | Footer | Boot area | Origin |
-|---|---:|---:|---:|---|
-| ATmega16 | 500 B | 12 B | 512 B | `0x3E00` |
-| ATmega32A | 500 B | 12 B | 512 B | `0x7E00` |
-| ATmega328P | 500 B | 12 B | 512 B | `0x7E00` |
-| ATmega64A | 568 B | 12 B | 1024 B (hardware minimum) | `0xFC00` |
-| ATmega128A | 606 B | 12 B | 1024 B (hardware minimum) | `0x1FC00` |
-| ATmega1284 | 592 B | 12 B | 1024 B (hardware minimum) | `0x1FC00` |
-| ATmega1284P | 592 B | 12 B | 1024 B (hardware minimum) | `0x1FC00` |
-
-The tests execute AVR instructions for sync, sign-on, signatures, fuse reads,
-Flash page programming and verification, EEPROM R/W, RX framing-error
-watchdog handling, and power-on application start. They also compare legacy
-512-byte UART answers to the prior 1024-byte builds and cover invalid EOP.
-This is not a silicon, voltage/timing, or real avrdude hardware test.
-
-## AVRDUDE EEPROM addressing modes (ATmega64A, ATmega128A only)
-
-Historically some AVRDUDE STK500v1 implementations used **byte** EEPROM addresses for ATmega64(A)/128(A), while newer releases unified the **word** address convention across parts. The two modes use the same wire format and cannot be autodetected safely. The default is **word** (recommended with modern AVRDUDE). For a known older host:
-
-```sh
-python3 build_mini.py --mcu atmega64a --legacy-eeprom-byte-address
-make mini MCU=atmega128a MINI_OLD_AVRDUDE_EEPROM=1
-```
-
-The old-host variant only changes EEPROM address interpretation; Flash always takes a word address. **Do not mix host conventions** for EEPROM read/write. The [original import report](../../../docs/mini/IMPORT_2026-10-30.md) records the earlier audit and validation scope.
+`make mini` / `build_mini.py` retain the earlier Basic configuration for
+regression and explicit feature experiments. It is distinct from the three
+public editions. `make mini328` remains the frozen ATmega328P reference.
+Do not infer edition features from the Basic target or from its older hardware
+test report. Advanced builder switches are not an additional tested public
+edition. Unsupported upstream C customization options still require the C
+target. Historical compatibility fixtures are kept only for regression tests.

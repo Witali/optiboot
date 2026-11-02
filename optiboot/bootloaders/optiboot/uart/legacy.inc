@@ -5,15 +5,30 @@
  * and r16/r18 are scratch registers. No SREG preservation guarantee.
  */
 .macro MINI_UART_INIT
+#if MINI_FLASH256_UART_RESET_OPT
+    /* On reset, U2X=0. Set it via SBI when the selected baud requires it. */
+#if MINI_U2X
+    sbi UART_A_IO,1
+#endif
+#else
     ldi r16, (MINI_U2X << 1)
     out UART_A_IO,r16
+#endif
     out UART_B_IO,r18
+#if !MINI_FLASH256_UART_RESET_OPT
     ldi r16,0x86
     out UART_C_IO,r16
+#endif
     ldi r16,(MINI_UBRR & 0xFF)
     out UART_L_IO,r16
 #if MINI_UBRR < 256
+#if MINI_FLASH256_UART_RESET_OPT
+    /* UBRRH reset value is zero, and it stays zero until boot UART init. */
+#elif MINI_FLASH_ONLY_256
+    out UART_H_IO,r1
+#else
     out UART_H_IO,r29
+#endif
 #else
     ldi r16,((MINI_UBRR >> 8) & 0x0F)
     out UART_H_IO,r16

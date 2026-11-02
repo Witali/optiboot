@@ -15,6 +15,7 @@ else
 MINI_SELECTED_MCU := atmega328p
 endif
 
+# Project minimum F_CPU = 8 MHz (validated in build_mini.py).
 # Explicit F_CPU wins. Tiny84/85 default to 8 MHz actual CPU clock even when
 # upstream Makefile defines an AVR_FREQ for unrelated Arduino boards.
 MINI_SOFT_CHIP := $(filter attiny84 attiny85,$(MINI_SELECTED_MCU))
@@ -25,19 +26,57 @@ MINI_SELECTED_BOOT := $(if $(MINI_BOOT_BYTES),$(MINI_BOOT_BYTES),auto)
 MINI_EXTRA_FLAGS := $(if $(filter 1 yes true,$(MINI_ALLOW_OVERCLOCK)),--allow-overclock,)
 MINI_EXTRA_FLAGS += $(if $(filter 1 yes true,$(MINI_ALLOW_BAUD_ERROR)),--allow-baud-error,)
 MINI_EXTRA_FLAGS += $(if $(filter 1 yes true,$(MINI_OLD_AVRDUDE_EEPROM)),--legacy-eeprom-byte-address,)
+MINI_EXTRA_FLAGS += $(if $(filter 1 yes true,$(MINI_UNIVERSAL_SIGNATURE)),--universal-signature,)
+MINI_EXTRA_FLAGS += $(if $(filter 1 yes true,$(MINI_COMPACT_SIGNATURE)),--compact-signature,)
+MINI_EXTRA_FLAGS += $(if $(filter 1 yes true,$(MINI_APP_SPM)),--app-spm,)
+MINI_EXTRA_FLAGS += $(if $(filter 1 yes true,$(MINI_MCUSR_PARITY)),--mcusr-parity,)
 MINI_PYTHON ?= python3
 
-HELPTEXT += "target mini - Auto-select classic AVR from MINI_MCU/MCU/explicit MCU_TARGET (default ATmega328P)\n"
+# Fail rather than silently ignoring official Optiboot options that this
+# size-optimized assembly does not implement.  Keep the official Optiboot
+# Makefile/optiboot.c targets available for those builds.
+MINI_UNSUPPORTED_UPSTREAM_OPTIONS := LED LED_START_FLASHES LED_DATA_FLASH LED_START_ON RS485 UART WDTTIME \
+    SINGLESPEED SOFT_UART NO_START_APP_ON_POR START_APP_ON_EXTR OSCCAL_VALUE \
+    APP_NOSPM NO_APP_SPM BIGBOOT VIRTUAL_BOOT_PARTITION CUSTOM_VERSION OPTIBOOT_CUSTOMVER
+MINI_UNSUPPORTED_REQUESTS = $(strip $(foreach opt,$(MINI_UNSUPPORTED_UPSTREAM_OPTIONS),$(if $(filter undefined,$(origin $(opt))),,$(opt))))
+ifneq ($(filter mini mini_spm mini_middle mini_compact mini_full mini_256 mini_flashread256 mini_check,$(MAKECMDGOALS)),)
+ifneq ($(MINI_UNSUPPORTED_REQUESTS),)
+$(error Optiboot Mini does not implement requested upstream option(s): $(MINI_UNSUPPORTED_REQUESTS). Use the official optiboot.c target for these capabilities.)
+endif
+endif
 
-.PHONY: mini mini_check mini_list mini_test
+HELPTEXT += "target mini - legacy Basic target; mini_256 / mini_middle / mini_full select editions\n"
+
+.PHONY: mini mini_spm mini_middle mini_compact mini_full mini_256 mini_flashread256 mini_check mini_list mini_test mini_matrix mini_devices mini_devices_check
 mini:
 	$(MINI_PYTHON) build_mini.py --mcu "$(MINI_SELECTED_MCU)" --f-cpu "$(MINI_SELECTED_FREQ)" --baud "$(MINI_SELECTED_BAUD)" --clock-source "$(MINI_SELECTED_CLOCK)" --boot-bytes "$(MINI_SELECTED_BOOT)" $(MINI_EXTRA_FLAGS)
 
-mini_check: mini
-	$(MINI_PYTHON) -m unittest discover -s mini_tests -v
+mini_spm:
+	$(MINI_PYTHON) build_mini.py --mcu "$(MINI_SELECTED_MCU)" --f-cpu "$(MINI_SELECTED_FREQ)" --baud "$(MINI_SELECTED_BAUD)" --clock-source "$(MINI_SELECTED_CLOCK)" --boot-bytes 1024 --universal-signature --app-spm --output-dir "output/spm/$(MINI_SELECTED_MCU)" $(MINI_EXTRA_FLAGS)
+
+mini_middle mini_compact:
+	$(MINI_PYTHON) generate_firmware.py "$(MINI_SELECTED_MCU)" middle "$(MINI_SELECTED_FREQ)" --baud "$(MINI_SELECTED_BAUD)" --clock "$(MINI_SELECTED_CLOCK)"
+
+mini_full:
+	$(MINI_PYTHON) generate_firmware.py "$(MINI_SELECTED_MCU)" full "$(MINI_SELECTED_FREQ)" --baud "$(MINI_SELECTED_BAUD)" --clock "$(MINI_SELECTED_CLOCK)"
+
+mini_256 mini_flashread256:
+	$(MINI_PYTHON) generate_firmware.py "$(MINI_SELECTED_MCU)" mini "$(MINI_SELECTED_FREQ)" --baud "$(MINI_SELECTED_BAUD)" --clock "$(MINI_SELECTED_CLOCK)"
+
+mini_check: mini mini_test
 
 mini_list:
-	$(MINI_PYTHON) build_mini.py --list-chips
+	$(MINI_PYTHON) generate_firmware.py --list
 
-mini_test:
+mini_devices:
+	$(MINI_PYTHON) gen_devices.py
+
+mini_devices_check:
+	$(MINI_PYTHON) gen_devices.py --check
+
+mini_test: mini_devices_check
 	$(MINI_PYTHON) -m unittest discover -s mini_tests -v
+	$(MINI_PYTHON) -m unittest discover -s generator_tests -v
+
+mini_matrix:
+	$(MINI_PYTHON) verify_editions.py --all-clocks --smoke --stress

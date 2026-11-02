@@ -12,7 +12,7 @@ ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT))
 import build_mini as build
 
-BASELINE='be531a3f0b7294c6e9f00f4d02a8c5e7ff28d8fb2b7c90cb6501d0294cfae00b'
+BASELINE='3d3b3ab48a72ee2439b531d2d079060a649626348eaba0d322f240eb82074c14'
 
 def cli(*args,expect=0):
     p=subprocess.run([sys.executable,str(ROOT/'build_mini.py'),*map(str,args)],capture_output=True,text=True)
@@ -34,8 +34,7 @@ class BuildTest(unittest.TestCase):
             for chip,dev in build.DEVICES.items():
                 with self.subTest(chip=chip):
                     folder=Path(t)/chip
-                    frequency = 8000000 if chip in ('attiny84','attiny85') else 12000000 if chip=='attiny1634' else 16000000
-                    cli('--mcu',chip,'--f-cpu',frequency,'--output-dir',folder)
+                    cli('--mcu',chip,'--f-cpu', 8000000 if chip in ('attiny84','attiny85') else 12000000 if chip=='attiny1634' else 16000000, '--output-dir',folder)
                     report=json.loads((folder/(chip+'.json')).read_text())
                     b=(folder/(chip+'.bin')).read_bytes()
                     self.assertEqual(report['flash_bytes'],dev['flash'])
@@ -70,13 +69,13 @@ class BuildTest(unittest.TestCase):
                 out=cli('--mcu',chip,'--output-dir',Path(d)/chip)
                 self.assertIn('512 bytes',out.stdout)
                 report=json.loads((Path(d)/chip/(chip+'.json')).read_text())
-                self.assertEqual(report['code_bytes'],500)
+                self.assertEqual(report['code_bytes'],498)
                 self.assertEqual(report['boot_bytes'],512)
             out=cli('--mcu','atmega64a','--output-dir',Path(d)/'mega64')
             self.assertIn('1024 bytes',out.stdout)
             cli('--mcu','atmega64a','--boot-bytes','512','--output-dir',Path(d)/'bad64',expect=1)
     def test_clock_matrix_and_uart_divisor(self):
-        freqs=(1,2,4,8,10,12,16,20,24,25,28)
+        freqs=(8,10,12,16,20,24,25,28)
         for mhz in freqs:
             with self.subTest(mhz=mhz):
                 f=mhz*1_000_000
@@ -89,6 +88,30 @@ class BuildTest(unittest.TestCase):
                     self.assertEqual(metadata['f_cpu_hz'],f)
                     self.assertLess(abs(metadata['baud_error_percent']),2.5)
                     self.assertEqual(metadata['overclock'],mhz>20)
+    def test_below_8mhz_rejected_for_all_uart_profiles(self):
+        # The minimum is a project policy, not a hardware inability.
+        for chip in ('atmega328p', 'atmega16', 'attiny85'):
+            for freq in (1_000_000, 2_000_000, 4_000_000, 7_999_999):
+                with self.subTest(mcu=chip, freq=freq):
+                    p=cli('--mcu', chip, '--f-cpu', freq, '--clock-source', 'external_clock', expect=1)
+                    self.assertIn('below 8 MHz are unsupported', p.stderr)
+        # Neither overclock nor baud-error override can bypass the floor.
+        cli('--mcu','atmega328p','--f-cpu',4_000_000,
+            '--allow-overclock','--allow-baud-error',expect=1)
+
+    def test_8mhz_auto_baud_prefers_low_divider_error(self):
+        with tempfile.TemporaryDirectory() as out:
+            cli('--mcu', 'atmega328p', '--f-cpu',8_000_000,
+                '--clock-source','external_crystal','--output-dir',out)
+            report=json.loads((Path(out)/'atmega328p.json').read_text())
+            self.assertEqual(report['baud_requested'],38400)
+            self.assertLess(abs(report['baud_error_percent']),0.2)
+        with tempfile.TemporaryDirectory() as out:
+            cli('--mcu','attiny85','--f-cpu',8_000_000,
+                '--clock-source','internal_rc','--output-dir',out)
+            report=json.loads((Path(out)/'attiny85.json').read_text())
+            self.assertEqual(report['baud_requested'],19200)
+
     def test_overclock_rejected_by_default(self):
         cli('--f-cpu',24_000_000,'--output-dir','/tmp/optiboot-invalid-test',expect=1)
         cli('--mcu','atmega16','--f-cpu',20_000_000,'--output-dir','/tmp/optiboot-invalid-test',expect=1)
@@ -113,6 +136,18 @@ class BuildTest(unittest.TestCase):
                 cli('--mcu',chip,'--boot-bytes',512,expect=1)
         cli('--mcu','atmega1284a',expect=1)
         cli('--mcu','atmega128',expect=1)
+    def test_115200_auto_preferred_when_reliable(self):
+        # External crystal/clock: prefer 115200 when divider error <= 2.5%.
+        for mhz in (10,12,16,20):
+            with self.subTest(mhz=mhz):
+                with tempfile.TemporaryDirectory() as out:
+                    cli('--mcu','atmega328p','--f-cpu',mhz*1_000_000,
+                        '--clock-source','external_crystal','--baud','auto',
+                        '--output-dir',out)
+                    report=json.loads((Path(out)/'atmega328p.json').read_text())
+                    self.assertEqual(report['baud_requested'],115200)
+                    self.assertLessEqual(abs(report['baud_error_percent']),2.5)
+
     def test_clock_conversion(self):
         for f,b in ((16_000_000,115200),(8_000_000,38400),(12_000_000,115200)):
             q=build.best_baud(f,b)

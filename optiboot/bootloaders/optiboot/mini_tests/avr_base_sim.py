@@ -19,6 +19,7 @@ class AVR:
         self.stack=[]
         self.pc=0x7e00
         self.zero=False
+        self.negative=False
         self.carry=False
         self.tflag=False
         self.rx=deque()
@@ -120,10 +121,17 @@ class AVR:
         elif op & 0xf000 == 0x3000: # cpi
             d=16+((op>>4)&0xf); k=(op&0xf)|((op>>4)&0xf0)
             self.carry=self.reg[d]<k;self.zero=self.reg[d]==k
+            self.negative=bool(((self.reg[d]-k)&255)&0x80)
         elif op & 0xf000 == 0x5000: # subi
             d=16+((op>>4)&0xf); k=(op&0xf)|((op>>4)&0xf0)
             v=self.reg[d];self.reg[d]=(v-k)&255
-            self.carry=v<k;self.zero=self.reg[d]==0
+            self.carry=v<k;self.zero=self.reg[d]==0;self.negative=bool(self.reg[d]&0x80)
+        elif op & 0xf000 == 0x4000: # SBCI Rd,K: subtract immediate and carry (AVR Z is chained)
+            d=16+((op>>4)&0xf);k=(op&0xf)|((op>>4)&0xf0)
+            v=self.reg[d]-k-int(self.carry)
+            self.carry=v<0
+            self.reg[d]=v&255
+            self.zero=self.zero and self.reg[d]==0
         elif op & 0xf000 == 0x7000: # andi
             d=16+((op>>4)&0xf); k=(op&0xf)|((op>>4)&0xf0)
             self.reg[d]&=k;self.zero=self.reg[d]==0
@@ -178,7 +186,7 @@ class AVR:
             self.zero=self.reg[rd]==0
         elif op&0xfe0f==0x940a: # dec
             self.reg[rd]=(self.reg[rd]-1)&255
-            self.zero=self.reg[rd]==0
+            self.zero=self.reg[rd]==0;self.negative=bool(self.reg[rd]&0x80)
         elif op&0xff00==0x9a00: # sbi
             addr=0x20+((op>>3)&0x1f); bit=op&7
             self.io_write(addr,self.io_read(addr)|(1<<bit))
@@ -222,6 +230,7 @@ class AVR:
             flag=op&7
             if flag==0:b=bool(self.carry)
             elif flag==1:b=bool(self.zero)
+            elif flag==2:b=bool(self.negative)
             elif flag==6:b=bool(self.tflag)
             else:raise RuntimeError('Non-emulated SREG flag '+str(flag))
             take=b if (op&0x400)==0 else not b

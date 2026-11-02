@@ -19,7 +19,7 @@
  * Full AVR061 is NOT implemented. Experimental 512-byte boot-section image, requires hardware testing.
  *
  * Based on Optiboot, Copyright (c) Peter Knight, Bill Westfield et al.
- * GPL-2.0-or-later; see COPYING. Hardware testing and ISP recovery required.
+ * GPL-2.0-or-later; see the repository LICENSE. Hardware testing and ISP recovery required.
  */
 
 .section .text
