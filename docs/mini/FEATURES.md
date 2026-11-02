@@ -9,6 +9,9 @@ available.
 The [edition naming update](EDITION_NAMES_2026-11-02.md) records the rename
 from FlashRead256/Compact to Mini/Middle, compatibility aliases and validation.
 
+The [improvement plan](ROADMAP.md) records the proposed next steps and their
+completion criteria.
+
 | Capability | Mini | Middle | Full | Practical benefit / limit |
 |---|---|---|---|---|
 | Reserved Boot area | 256 B | 512 B ATmega; 1024 B Virtual ATtiny | 1024 B | Respect each chip's physical Boot minimum |
