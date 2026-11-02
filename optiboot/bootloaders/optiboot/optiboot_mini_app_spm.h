@@ -1,6 +1,6 @@
 /* Optiboot Mini application SPM interface, compatible with Optiboot 8.x.
  *
- * Only include this with the matching Full (--app-spm, 1024B) or Compact
+ * Only include this with the matching Full (--app-spm, 1024B) or Middle
  * (--app-spm-512, 512B on 22 supported ATmega, plus
  * -DOPTIBOOT_MINI_SPM512=1) image. Set OPTIBOOT_MINI_BOOT_BYTES to the actual
  * fuse-selected boot size. Not compatible with Virtual Boot ATtiny.
@@ -24,7 +24,7 @@
  * finished, and restore its own SREG after the complete page operation.
  * The service rejects addresses in the configured Boot section, including
  * RWW / lock commands; pass address 0 for address-independent commands.
- * For example, Compact ATmega328P rejects byte addresses >= 0x7E00.
+ * For example, Middle ATmega328P rejects byte addresses >= 0x7E00.
  */
 #ifndef OPTIBOOT_MINI_APP_SPM_H
 #define OPTIBOOT_MINI_APP_SPM_H

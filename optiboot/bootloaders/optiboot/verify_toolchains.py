@@ -27,7 +27,7 @@ def verify(chip, edition, output):
     images = {}
     for toolchain in ('clang', 'gcc'):
         base = output / toolchain
-        if edition == 'flashread256':
+        if edition == 'mini':
             folder = base / edition / chip
             build_flashread.one(chip, folder, hz, toolchain=toolchain)
         else:
@@ -42,7 +42,7 @@ def verify(chip, edition, output):
         images[toolchain] = (folder / (chip+'.bin')).read_bytes()
     if images['clang'] != images['gcc']:
         raise RuntimeError('Clang and GCC produced different firmware bytes')
-    spm = edition != 'flashread256' and not dev['virtual_boot']
+    spm = edition != 'mini' and not dev['virtual_boot']
     if spm:
         probe = output / 'spm_probe.c'
         # This API needs only Flash geometry from avr/io.h. Older avr-libc
@@ -54,8 +54,8 @@ def verify(chip, edition, output):
                          'void probe(void) { optiboot_mini_do_spm(0, 1, 0x1234); }\n')
         target, flags = build_mini.assembler_target(chip, 'avr-gcc')
         command = ['avr-gcc', '-mmcu='+target, *flags, '-Os', '-I', str(ROOT),
-                   '-DOPTIBOOT_MINI_BOOT_BYTES='+str(512 if edition == 'compact' else 1024)]
-        if edition == 'compact':
+                   '-DOPTIBOOT_MINI_BOOT_BYTES='+str(512 if edition == 'middle' else 1024)]
+        if edition == 'middle':
             command.append('-DOPTIBOOT_MINI_SPM512=1')
         dest = output / 'header_objects'
         dest.mkdir(parents=True, exist_ok=True)

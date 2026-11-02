@@ -18,16 +18,16 @@ ISP recovery path are required before relying on them.
 ATtiny841/1634 erase four physical pages together. Their uploader stages and
 transfers a complete 64/128-byte group, then verifies it. Sending an isolated
 16/32-byte page can destroy neighboring data. ATtiny84/85 use 64-byte pages
-and leave 7168 bytes for the application. Both Compact and Full reserve
+and leave 7168 bytes for the application. Both Middle and Full reserve
 1024 bytes on all four Virtual Boot parts.
 
 Run the following commands from `optiboot/bootloaders/optiboot/`:
 
 ```sh
-python3 generate_firmware.py attiny841 compact 16MHz
+python3 generate_firmware.py attiny841 middle 16MHz
 python3 generate_firmware.py attiny1634 full 12MHz
-python3 generate_firmware.py attiny84 compact 8MHz --output output/vboot
-python3 generate_firmware.py attiny85 compact 8MHz --output output/vboot
+python3 generate_firmware.py attiny84 middle 8MHz --output output/vboot
+python3 generate_firmware.py attiny85 middle 8MHz --output output/vboot
 ```
 
 The generated manifest records the actual clock, baud, image hash, reserved

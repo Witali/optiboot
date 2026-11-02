@@ -1,4 +1,4 @@
-"""Build and execute every FlashRead256 device at both reference clocks."""
+"""Build and execute every Mini device at both reference clocks."""
 import hashlib
 import json
 from pathlib import Path

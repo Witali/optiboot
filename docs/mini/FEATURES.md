@@ -2,11 +2,14 @@
 
 Mini is an optional assembly implementation for classic AVR devices. Its
 current public generator offers three editions from one assembly source:
-FlashRead256 for 14 parts, Compact for 26, and Full for all 39. The original
+Mini for 14 parts, Middle for 26, and Full for all 39. The original
 Optiboot repository layout, C source, board targets and stock HEX files remain
 available.
 
-| Capability | FlashRead256 | Compact | Full | Practical benefit / limit |
+The [edition naming update](EDITION_NAMES_2026-11-02.md) records the rename
+from FlashRead256/Compact to Mini/Middle, compatibility aliases and validation.
+
+| Capability | Mini | Middle | Full | Practical benefit / limit |
 |---|---|---|---|---|
 | Reserved Boot area | 256 B | 512 B ATmega; 1024 B Virtual ATtiny | 1024 B | Respect each chip's physical Boot minimum |
 | Flash write and readback | Yes | Yes | Yes | Normal upload verification remains enabled |
@@ -26,7 +29,7 @@ writes, page-aligned reads, and hardware-reset entry. The audited Arduino
 AVRDUDE path supplies full write pages automatically for ordinary HEX files;
 see the [Arduino protocol audit](ARDUINO_PROTOCOL_AUDIT_2026-11-01.md).
 ATmega328P/PB cannot use
-256-byte Boot sections. Compact and Full retain EEPROM support; Full retains
+256-byte Boot sections. Middle and Full retain EEPROM support; Full retains
 the extra sign-on and fuse/lock query handlers.
 
 ## Comparison with the original C implementation
@@ -41,7 +44,7 @@ optional C build configurations can differ.
 | Area | Mini contribution | Evidence and scope |
 |---|---|---|
 | Smallest verified upload profile | Flash write plus readback in 256 bytes on 14 eligible parts | Size/layout checks and executed instructions for each part; no physical validation yet |
-| EEPROM support | Included in Compact/Full, rather than a default-disabled EEPROM option | Every EEPROM byte transferred in each supported profile's memory test |
+| EEPROM support | Included in Middle/Full, rather than a default-disabled EEPROM option | Every EEPROM byte transferred in each supported profile's memory test |
 | Real fuse/lock inspection | Full returns actual bytes for four read-only UNIVERSAL operations | Instruction-model tests; older Basic PB build also has separate physical evidence |
 | Defensive protocol checks | Explicit packet, memory-type, length, alignment, overflow and Boot-region checks | Negative-case regressions; no power-loss atomicity guarantee |
 | Large AVR addressing | Extended Flash support through 256 KiB, independent EEPROM addressing | Actual AVRDUDE tested against instruction models, including upper-bank Flash followed by EEPROM |
@@ -53,8 +56,8 @@ optional C build configurations can differ.
 From `optiboot/bootloaders/optiboot/`:
 
 ```sh
-python3 generate_firmware.py atmega8 flashread256 16MHz
-python3 generate_firmware.py atmega328pb compact 16MHz
+python3 generate_firmware.py atmega8 mini 16MHz
+python3 generate_firmware.py atmega328pb middle 16MHz
 python3 generate_firmware.py atmega328pb full 16MHz
 make mini_test
 make mini_matrix
@@ -62,7 +65,7 @@ make mini328_check
 ```
 
 The [build guide](../../optiboot/bootloaders/optiboot/README_MINI_MULTI.md)
-contains the complete part table, host contract and FlashRead256 page-padding
+contains the complete part table, host contract and Mini page-padding
 command. The [2026-11-01 report](UART_VALIDATION_2026-11-01.md) records the
 current software checks and exact image hashes. ATtiny uses the separate
 [Virtual Boot workflow](VIRTUAL_BOOT.md).
@@ -74,7 +77,7 @@ reports retain their original device counts and source revisions.
 The [2026-10-30 hardware report](HARDWARE_ATMEGA328PB_2026-10-30.md) records
 42 physical checks on one ATmega328PB Nano running the older Basic image with
 SHA-256 `149ebc0347815b42daaa20defce83342462306e9ddd3f15c63eeb59baafd70d1`.
-Those results do not qualify the new Compact, Full or FlashRead256 binaries.
+Those results do not qualify the new Middle, Full or Mini binaries.
 No boards were accessed in the current software-only test round.
 
 The new editions remain experimental. Software models do not establish silicon

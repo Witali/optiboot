@@ -1,5 +1,5 @@
 # Optional convenience targets for the single-source dual-edition builder.
-# Run: make -f Makefile.dual compact MCU=atmega328p
+# Run: make -f Makefile.dual middle MCU=atmega328p
 PYTHON ?= python3
 MCU ?= atmega328p
 SIGNATURE_SOURCE ?= auto
@@ -10,9 +10,9 @@ F_CPU ?=
 CLOCK_SOURCE ?=
 COMMON := --mcu $(MCU) --signature-source $(SIGNATURE_SOURCE) --baud $(BAUD) --output-dir $(OUTPUT)
 COMMON += $(if $(F_CPU),--f-cpu $(F_CPU),) $(if $(CLOCK_SOURCE),--clock-source $(CLOCK_SOURCE),)
-.PHONY: compact full both matrix dual_test
-compact:
-	$(PYTHON) build_dual.py --edition compact $(COMMON)
+.PHONY: middle compact full both matrix dual_test
+middle compact:
+	$(PYTHON) build_dual.py --edition middle $(COMMON)
 full:
 	$(PYTHON) build_dual.py --edition full $(COMMON)
 both:

@@ -1,5 +1,10 @@
 # Arduino upload protocol and FlashRead256 self-write audit
 
+Edition naming update (2026-11-02): `FlashRead256` / `flashread256` is now
+`Mini` / `mini`; `Compact` / `compact` is now `Middle` / `middle`.
+This dated report retains its original names and evidence. The old CLI
+names remain accepted as aliases.
+
 Date: 2026-11-01. This audit uses the installed Arduino AVR Boards 1.8.8 upload
 recipe and real AVRDUDE 8.0-arduino.1 against AVR instruction models. It does
 not open a serial port or ISP programmer, run the Arduino IDE, or qualify a

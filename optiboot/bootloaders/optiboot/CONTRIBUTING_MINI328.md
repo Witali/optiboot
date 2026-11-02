@@ -10,12 +10,12 @@ comments, documentation, messages and test descriptions in English.
    Flash page semantics. ATtiny Virtual Boot has a separate uploader and vector
    contract; do not imply interchangeable host support.
 2. Retain each edition's documented features, watchdog handling, EEPROM/SPM
-   interlocks and address/boot-boundary checks. FlashRead256 must retain Flash
-   readback; do not restore the removed write-only edition. Compact includes
+   interlocks and address/boot-boundary checks. Mini must retain Flash
+   readback; do not restore the removed write-only edition. Middle includes
    EEPROM and application SPM on hardware-Boot ATmega; Full adds sign-on,
    SET_PARAMETER and read-only fuse/lock `UNIVERSAL` operations.
-3. Keep Compact ATmega328P within its 512-byte boot section at `0x7E00..0x7FFF`,
-   Full within 1024 bytes, and FlashRead256 within 256 physical bytes on every
+3. Keep Middle ATmega328P within its 512-byte boot section at `0x7E00..0x7FFF`,
+   Full within 1024 bytes, and Mini within 256 physical bytes on every
    eligible device. Respect each MCU's physical boot-section minimum.
 4. Review signature, register map, Flash/EEPROM geometry, reset behavior and
    datasheet clock limits before adding a device profile. Regenerate the device

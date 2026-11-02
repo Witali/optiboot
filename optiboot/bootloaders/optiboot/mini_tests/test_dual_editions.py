@@ -76,8 +76,8 @@ class DualEditionTests(unittest.TestCase):
         for chip, dev in build_mini.DEVICES.items():
             if not dev['virtual_boot'] and dev['hardware_min_boot_bytes']==1024:
                 self.assertEqual(build_dual.available_editions(chip),('full',))
-                with self.assertRaisesRegex(ValueError, 'COMPACT'):
-                    build_dual.build_command(chip,'compact',None)
+                with self.assertRaisesRegex(ValueError, 'MIDDLE'):
+                    build_dual.build_command(chip,'middle',None)
 
     def test_matrix_sizes_features_and_artifact_hashes(self):
         self.assertEqual(self.entries['passed'], 65)
@@ -103,10 +103,10 @@ class DualEditionTests(unittest.TestCase):
     def test_no_regression_of_all_38_r10_compact_images(self):
         for chip, checksum in self.original.items():
             with self.subTest(chip=chip):
-                if 'compact' in build_dual.available_editions(chip):
-                    self.assertEqual(self.entries['firmware'][f'compact/{chip}']['sha256'],checksum)
+                if 'middle' in build_dual.available_editions(chip):
+                    self.assertEqual(self.entries['firmware'][f'middle/{chip}']['sha256'],checksum)
                 else:
-                    self.assertNotIn(f'compact/{chip}', self.entries['firmware'])
+                    self.assertNotIn(f'middle/{chip}', self.entries['firmware'])
 
     def test_stk_commands_and_real_eeprom_on_both_editions(self):
         chips=('atmega328p','atmega16','atmega644p','atmega64a','atmega1284p',
@@ -186,7 +186,7 @@ class DualEditionTests(unittest.TestCase):
                     self.assertEqual(c.erase_count,0)
                     self.assertEqual(bytes(c.flash[:512]),original_flash)
 
-    def test_application_spm_abi_compact_and_full(self):
+    def test_application_spm_abi_middle_and_full(self):
         for chip in ('atmega328p','atmega644p'):
             for edition in build_dual.available_editions(chip):
                 with self.subTest(chip=chip,edition=edition):

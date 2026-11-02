@@ -39,29 +39,29 @@ MINI_UNSUPPORTED_UPSTREAM_OPTIONS := LED LED_START_FLASHES LED_DATA_FLASH LED_ST
     SINGLESPEED SOFT_UART NO_START_APP_ON_POR START_APP_ON_EXTR OSCCAL_VALUE \
     APP_NOSPM NO_APP_SPM BIGBOOT VIRTUAL_BOOT_PARTITION CUSTOM_VERSION OPTIBOOT_CUSTOMVER
 MINI_UNSUPPORTED_REQUESTS = $(strip $(foreach opt,$(MINI_UNSUPPORTED_UPSTREAM_OPTIONS),$(if $(filter undefined,$(origin $(opt))),,$(opt))))
-ifneq ($(filter mini mini_spm mini_compact mini_full mini_flashread256 mini_check,$(MAKECMDGOALS)),)
+ifneq ($(filter mini mini_spm mini_middle mini_compact mini_full mini_256 mini_flashread256 mini_check,$(MAKECMDGOALS)),)
 ifneq ($(MINI_UNSUPPORTED_REQUESTS),)
 $(error Optiboot Mini does not implement requested upstream option(s): $(MINI_UNSUPPORTED_REQUESTS). Use the official optiboot.c target for these capabilities.)
 endif
 endif
 
-HELPTEXT += "target mini - Basic Mini target; mini_compact / mini_full / mini_flashread256 select editions\n"
+HELPTEXT += "target mini - legacy Basic target; mini_256 / mini_middle / mini_full select editions\n"
 
-.PHONY: mini mini_spm mini_compact mini_full mini_flashread256 mini_check mini_list mini_test mini_matrix
+.PHONY: mini mini_spm mini_middle mini_compact mini_full mini_256 mini_flashread256 mini_check mini_list mini_test mini_matrix
 mini:
 	$(MINI_PYTHON) build_mini.py --mcu "$(MINI_SELECTED_MCU)" --f-cpu "$(MINI_SELECTED_FREQ)" --baud "$(MINI_SELECTED_BAUD)" --clock-source "$(MINI_SELECTED_CLOCK)" --boot-bytes "$(MINI_SELECTED_BOOT)" $(MINI_EXTRA_FLAGS)
 
 mini_spm:
 	$(MINI_PYTHON) build_mini.py --mcu "$(MINI_SELECTED_MCU)" --f-cpu "$(MINI_SELECTED_FREQ)" --baud "$(MINI_SELECTED_BAUD)" --clock-source "$(MINI_SELECTED_CLOCK)" --boot-bytes 1024 --universal-signature --app-spm --output-dir "output/spm/$(MINI_SELECTED_MCU)" $(MINI_EXTRA_FLAGS)
 
-mini_compact:
-	$(MINI_PYTHON) generate_firmware.py "$(MINI_SELECTED_MCU)" compact "$(MINI_SELECTED_FREQ)" --baud "$(MINI_SELECTED_BAUD)" --clock "$(MINI_SELECTED_CLOCK)"
+mini_middle mini_compact:
+	$(MINI_PYTHON) generate_firmware.py "$(MINI_SELECTED_MCU)" middle "$(MINI_SELECTED_FREQ)" --baud "$(MINI_SELECTED_BAUD)" --clock "$(MINI_SELECTED_CLOCK)"
 
 mini_full:
 	$(MINI_PYTHON) generate_firmware.py "$(MINI_SELECTED_MCU)" full "$(MINI_SELECTED_FREQ)" --baud "$(MINI_SELECTED_BAUD)" --clock "$(MINI_SELECTED_CLOCK)"
 
-mini_flashread256:
-	$(MINI_PYTHON) generate_firmware.py "$(MINI_SELECTED_MCU)" flashread256 "$(MINI_SELECTED_FREQ)" --baud "$(MINI_SELECTED_BAUD)" --clock "$(MINI_SELECTED_CLOCK)"
+mini_256 mini_flashread256:
+	$(MINI_PYTHON) generate_firmware.py "$(MINI_SELECTED_MCU)" mini "$(MINI_SELECTED_FREQ)" --baud "$(MINI_SELECTED_BAUD)" --clock "$(MINI_SELECTED_CLOCK)"
 
 mini_check: mini mini_test
 

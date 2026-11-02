@@ -99,7 +99,7 @@ def verify(chip, edition, args):
     dev = build_mini.DEVICES[chip]
     info = generator.build_one(chip, edition, 16000000, out=args.output / 'images')
     folder = Path(info['files']['bin']).parent
-    cpu, boot, _ = (make_cpu(chip, folder) if edition == 'flashread256' else create(chip, folder))
+    cpu, boot, _ = (make_cpu(chip, folder) if edition == 'mini' else create(chip, folder))
     app = bytes((i*73+i//dev['page']*17+19) & 255 for i in range(cpu.boot_start))
     eeprom = bytes((i*29+7) & 255 for i in range(dev['eeprom']))
     case = args.output / chip / edition
@@ -125,7 +125,7 @@ def verify(chip, edition, args):
         if args.config:
             command += ['-C', native_path(args.config, windows)]
         command += ['-U', 'flash:w:' + native_path(image, windows) + ':i']
-        if edition != 'flashread256':
+        if edition != 'mini':
             command += ['-U', 'eeprom:w:' + native_path(ee, windows) + ':r']
         # AVRDUDE's normal verification is enabled: no -V and no signature override.
         if windows and os.name != 'nt':
@@ -150,10 +150,10 @@ def verify(chip, edition, args):
         raise RuntimeError(f'AVRDUDE returned {result.returncode}; see the local case log')
     assert bytes(cpu.flash[:cpu.boot_start]) == app
     assert bytes(cpu.flash[cpu.boot_start:]) == boot
-    if edition != 'flashread256':
+    if edition != 'mini':
         assert bytes(cpu.eeprom) == eeprom
     return dict(mcu=chip, edition=edition, application_bytes=len(app),
-                eeprom_bytes=0 if edition == 'flashread256' else len(eeprom),
+                eeprom_bytes=0 if edition == 'mini' else len(eeprom),
                 avrdude_verify=True, boot_unchanged=True, software_model=True,
                 padded_final_page=args.padded_application, sha256=info['sha256'],
                 frequency_hz=info['frequency_hz'], baud=info['baud'])
@@ -164,14 +164,16 @@ def main():
     parser.add_argument('--avrdude', type=Path, required=True)
     parser.add_argument('--config', type=Path)
     parser.add_argument('--mcu')
-    parser.add_argument('--edition', choices=('compact', 'full', 'flashread256'))
+    parser.add_argument('--edition', type=lambda v: generator.EDITION_ALIASES.get(v, v),
+                        choices=('mini', 'middle', 'full'),
+                        help='Edition; flashread256 and compact remain aliases')
     parser.add_argument('--output', type=Path, default=ROOT / 'output/avrdude-validation')
     parser.add_argument('--timeout', type=int, default=120)
     parser.add_argument('--padded-application', action='store_true',
-                        help='Check FlashRead256 with a final page padded by the supplied tool')
+                        help='Check Mini with a final page padded by the supplied tool')
     args = parser.parse_args()
-    if args.padded_application and args.edition != 'flashread256':
-        parser.error('--padded-application requires --edition flashread256')
+    if args.padded_application and args.edition != 'mini':
+        parser.error('--padded-application requires --edition mini')
     args.avrdude = args.avrdude.resolve()
     passed, failed = [], []
     for chip, dev in build_mini.DEVICES.items():

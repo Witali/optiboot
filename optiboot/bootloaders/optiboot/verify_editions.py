@@ -55,7 +55,7 @@ def address(cpu, value, flash=True):
 
 
 def stress(chip, edition, folder):
-    if edition == 'flashread256':
+    if edition == 'mini':
         from flashread_models import make_cpu
         cpu, image, dev = make_cpu(chip, folder)
     else:
@@ -76,7 +76,7 @@ def stress(chip, edition, folder):
             expected = payload[offset:offset+length]
             assert cpu.send(bytes((0x74, length >> 8, length & 255, 0x46, 0x20))) == b'\x14'+expected+b'\x10'
     assert bytes(cpu.flash[cpu.boot_start:]) == original_boot == image
-    if edition != 'flashread256':
+    if edition != 'mini':
         for start in range(0, dev['eeprom'], 16):
             data = bytes((i*29+start*3+11) & 255 for i in range(16))
             address(cpu, start, flash=False)
@@ -93,7 +93,7 @@ def stress(chip, edition, folder):
 def smoke(row, folder):
     """Exercise both application boundaries for this exact clock/edition image."""
     chip, edition = row['mcu'], row['edition']
-    if edition == 'flashread256':
+    if edition == 'mini':
         from flashread_models import make_cpu
         cpu, image, dev = make_cpu(chip, folder)
     else:
@@ -112,7 +112,7 @@ def smoke(row, folder):
             n = dev['page']
             assert cpu.send(bytes((0x74, n >> 8, n & 255, 0x46, 0x20))) == b'\x14'+payload[offset:offset+n]+b'\x10'
     assert bytes(cpu.flash[cpu.boot_start:]) == image
-    if edition != 'flashread256':
+    if edition != 'mini':
         for start in (0, dev['eeprom']-16):
             payload = bytes((i*43+3) & 255 for i in range(16))
             address(cpu, start, flash=False)

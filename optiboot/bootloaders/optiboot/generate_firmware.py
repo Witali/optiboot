@@ -2,8 +2,8 @@
 """One-command, validated Optiboot Mini firmware generator.
 
 Examples:
-  python generate_firmware.py atmega328p compact 16MHz
-  python generate_firmware.py --mcu atmega8 --type flashread256 --freq 8MHz
+  python generate_firmware.py atmega328p middle 16MHz
+  python generate_firmware.py --mcu atmega8 --type mini --freq 8MHz
   python generate_firmware.py atmega2560 full 16MHz --baud 115200
   python generate_firmware.py --list
 
@@ -29,10 +29,9 @@ import build_mini
 
 ROOT = Path(__file__).resolve().parent
 EDITION_ALIASES = {
-    'compact': 'compact', 'compact512': 'compact',
-    'full': 'full', 'full1024': 'full',
-    'flashread256': 'flashread256', 'flashread': 'flashread256',
-    'flash-read': 'flashread256', 'flash-read-256': 'flashread256',
+    **build_dual.EDITION_ALIASES,
+    'mini': 'mini', 'flashread256': 'mini', 'flashread': 'mini',
+    'flash-read': 'mini', 'flash-read-256': 'mini',
 }
 
 
@@ -69,7 +68,7 @@ def default_clock(mcu: str, hz: int) -> str:
 def valid_types(mcu: str) -> tuple[str, ...]:
     allowed = list(build_dual.available_editions(mcu))
     if mcu in build_flashread.TARGETS:
-        allowed.append('flashread256')
+        allowed.append('mini')
     return tuple(allowed)
 
 
@@ -130,6 +129,7 @@ def parse_ihex(path: Path) -> dict[int, int]:
 
 
 def verify_artifacts(mcu: str, edition: str, result_dir: Path) -> dict[str, Any]:
+    edition = EDITION_ALIASES.get(edition, edition)
     meta_file = result_dir / f'{mcu}.json'
     hex_file = result_dir / f'{mcu}.hex'
     bin_file = result_dir / f'{mcu}.bin'
@@ -156,13 +156,13 @@ def verify_artifacts(mcu: str, edition: str, result_dir: Path) -> dict[str, Any]
     claimed = meta.get('bin_sha256', meta.get('code_sha256'))
     if digest != claimed:
         raise RuntimeError('BIN SHA-256 differs from builder metadata')
-    if edition in ('compact', 'full'):
+    if edition in ('middle', 'full'):
         build_dual.verify_manifest(mcu, edition, meta)
         useful = int(meta['code_bytes']) + int(meta['footer_bytes'])
         if useful > boot_bytes:
             raise RuntimeError('Code/footer overflow')
     else:
-        if boot_bytes != 256 or meta['edition'] != 'flash_readback_256':
+        if boot_bytes != 256 or meta['edition'] not in ('mini', 'flash_readback_256'):
             raise RuntimeError('Flash read/write build edition/section mismatch')
         useful = int(meta['code_bytes']) + int(meta['footer_bytes'])
         if useful > boot_bytes:
@@ -182,7 +182,7 @@ def build_one(mcu: str, edition: str, hz: int, *, baud: str='auto',
     if mcu not in build_mini.DEVICES:
         raise ValueError(f'Unknown MCU {mcu!r}; run --list to see supported devices')
     if not edition:
-        raise ValueError('Unknown firmware type; choose compact, full or flashread256')
+        raise ValueError('Unknown firmware type; choose middle, full or mini')
     if edition not in valid_types(mcu):
         raise ValueError(f'{mcu}: {edition} unavailable; choose {", ".join(valid_types(mcu))}')
     device = build_mini.DEVICES[mcu]
@@ -199,9 +199,9 @@ def build_one(mcu: str, edition: str, hz: int, *, baud: str='auto',
         raise ValueError('Legacy EEPROM byte addressing applies only to ATmega64A/128A Full')
     if legacy_eeprom_byte_address and mcu == 'atmega64a':
         raise ValueError('ATmega64A Full legacy EEPROM address mode currently fails assembly (BRxx range); use standard addressing')
-    if edition.startswith('flash') and signature_source != 'auto':
-        raise ValueError('FlashRead256 uses constant signatures; omit --signature-source')
-    if edition in ('compact', 'full') and signature_source == 'hardware' and not device.get('sigrow_lpm_supported_by_datasheet'):
+    if edition == 'mini' and signature_source != 'auto':
+        raise ValueError('Mini uses constant signatures; omit --signature-source')
+    if edition in ('middle', 'full') and signature_source == 'hardware' and not device.get('sigrow_lpm_supported_by_datasheet'):
         raise ValueError(f'{mcu} is not audited for SIGRD+LPM; choose auto or constants')
     baud = str(baud).lower().strip()
     if baud != 'auto':
@@ -214,7 +214,7 @@ def build_one(mcu: str, edition: str, hz: int, *, baud: str='auto',
     variant = f'{hz}Hz_{source}_baud-{baud}_signature-{signature_source}_{addressing}'
     workspace = Path(out).expanduser().resolve() / mcu / variant
     result_dir = workspace / edition / mcu
-    if edition in ('compact', 'full'):
+    if edition in ('middle', 'full'):
         command = [sys.executable, str(ROOT/'build_dual.py'), '--mcu', mcu,
                    '--edition', edition, '--f-cpu', str(hz), '--clock-source', source,
                    '--baud', str(baud), '--signature-source', signature_source,
@@ -246,7 +246,7 @@ def build_one(mcu: str, edition: str, hz: int, *, baud: str='auto',
                            (proc.stderr or proc.stdout)[-2500:])
     check = verify_artifacts(mcu, edition, result_dir)
     meta = check['meta']
-    if edition in ('compact', 'full'):
+    if edition in ('middle', 'full'):
         actual_baud = meta['baud_requested']
         baud_error = meta['baud_error_percent']
         features = {
@@ -266,7 +266,7 @@ def build_one(mcu: str, edition: str, hz: int, *, baud: str='auto',
                 'CPU frequency and clock source must match device clock/fuse settings.']
     if device['virtual_boot']:
         warnings.append('Virtual Boot requires ISP seed and application vector patch; no hardware BOOTSZ protection.')
-    if edition.startswith('flash'):
+    if edition == 'mini':
         warnings.append('PROG_PAGE requires full Flash pages; audited AVRDUDE 8.0-arduino.1 pads these automatically.')
         warnings.append('Use AVRDUDE -c arduino -D with verification enabled; other hosts may need the optional HEX preparation tool.')
     if source == 'internal_rc':
@@ -309,10 +309,11 @@ def main(argv: list[str] | None=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__,
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('mcu_pos', nargs='?', help='MCU, e.g. atmega328p')
-    parser.add_argument('type_pos', nargs='?', help='compact, full or flashread256')
+    parser.add_argument('type_pos', nargs='?', help='middle, full or mini')
     parser.add_argument('freq_pos', nargs='?', help='16MHz, 8MHz, 16000000, etc.')
     parser.add_argument('--mcu', dest='mcu_opt')
-    parser.add_argument('--type', '--edition', dest='type_opt')
+    parser.add_argument('--type', '--edition', dest='type_opt',
+                        help='mini, middle or full; flashread256 and compact remain aliases')
     parser.add_argument('--freq', '--frequency', '--f-cpu', dest='freq_opt')
     parser.add_argument('--baud', default='auto', help='UART speed, auto by default')
     parser.add_argument('--clock', '--clock-source', default='auto', choices=('auto', *build_mini.SUPPORTED_CLOCKS))

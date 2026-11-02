@@ -1,4 +1,4 @@
-"""Full-page preparation is part of the verified FlashRead256 upload contract."""
+"""Full-page preparation is part of the verified Mini upload contract."""
 from pathlib import Path
 import subprocess
 import sys

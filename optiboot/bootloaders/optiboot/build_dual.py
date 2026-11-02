@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""Build paired Optiboot Mini COMPACT/FULL profiles from the ONE assembly source.
+"""Build paired Optiboot Mini MIDDLE/FULL profiles from the ONE assembly source.
 
-COMPACT: only ATmega with <=512-byte hardware Boot minimum, plus four
+MIDDLE: only ATmega with <=512-byte hardware Boot minimum, plus four
          experimental ATtiny Virtual-Boot profiles. Retains EEPROM, FLASH,
          STK500v1 signatures, watchdog, MCUSR and application SPM ABI where
-         available. No compact edition for 64KiB+ ATmega with 1024B BOOTSZ.
+         available. No middle edition for 64KiB+ ATmega with 1024B BOOTSZ.
 FULL:    1024-byte physical (or Virtual ATtiny) boot, EEPROM, FLASH,
          Optiboot application SPM ABI on hardware-Boot AVRs, real fuse/lock
          read, both signature commands, GET_SIGN_ON and SET_PARAMETER.
@@ -29,20 +29,22 @@ import build_mini
 import build_mini_compat
 
 ROOT = Path(__file__).resolve().parent
-EDITION_KEYS = ('compact', 'full')
+EDITION_KEYS = ('middle', 'full')
+EDITION_ALIASES = {'middle': 'middle', 'compact': 'middle', 'compact512': 'middle',
+                   'full': 'full', 'full1024': 'full'}
 
 
 def available_editions(chip: str) -> tuple[str, ...]:
-    """Public edition policy; no Compact on hardware with a 1024-byte minimum."""
+    """Public edition policy; no Middle on hardware with a 1024-byte minimum."""
     dev = build_mini.DEVICES[chip]
-    compact_allowed = bool(dev.get('dual_compact_enabled', True))
+    middle_allowed = bool(dev.get('dual_compact_enabled', True))
     if not dev['virtual_boot'] and dev.get('hardware_min_boot_bytes', 1024) >= 1024:
-        if compact_allowed:
-            raise ValueError(f'{chip}: invalid devices.json: 1024B hardware Boot forbids Compact')
+        if middle_allowed:
+            raise ValueError(f'{chip}: invalid devices.json: 1024B hardware Boot forbids Middle')
     if dev['virtual_boot']:
         if dev.get('hardware_min_boot_bytes') is not None:
             raise ValueError(f'{chip}: Virtual Boot must have null hardware minimum')
-    return EDITION_KEYS if compact_allowed else ('full',)
+    return EDITION_KEYS if middle_allowed else ('full',)
 
 
 def firmware_sources_digest() -> str:
@@ -68,14 +70,15 @@ def target_clock(chip: str, device: dict, opts) -> tuple[int, str]:
 
 def build_command(chip: str, edition: str, opts) -> list[str]:
     """Select *hardware capabilities*, not a second MCU-specific source."""
+    edition = EDITION_ALIASES.get(edition, edition)
     if edition not in EDITION_KEYS:
         raise ValueError(f'Unknown edition: {edition}')
     if edition not in available_editions(chip):
-        raise ValueError(f'{chip}: COMPACT is not offered (hardware Boot minimum 1024B); use FULL')
+        raise ValueError(f'{chip}: MIDDLE is not offered (hardware Boot minimum 1024B); use FULL')
     dev = build_mini.DEVICES[chip]
     cpu, src = target_clock(chip, dev, opts)
     dst = Path(opts.output_dir) / edition / chip
-    if edition == 'compact':
+    if edition == 'middle':
         # Reuse the already regression-tested R10 per-architecture selection.
         compatibility_args = SimpleNamespace(f_cpu=cpu, clock_source=src,
             baud=opts.baud, output_dir=str(Path(opts.output_dir) / edition),
@@ -102,9 +105,10 @@ def build_command(chip: str, edition: str, opts) -> list[str]:
 
 def verify_manifest(chip: str, edition: str, meta: dict) -> dict:
     """Fail closed if feature flags or boot size contradict the edition contract."""
+    edition = EDITION_ALIASES.get(edition, edition)
     dev = build_mini.DEVICES[chip]
     if edition not in available_editions(chip):
-        raise AssertionError(f'{chip}: obsolete/disabled Compact profile')
+        raise AssertionError(f'{chip}: obsolete/disabled Middle profile')
     footprint = meta['code_bytes'] + meta['footer_bytes']
     must = {
         'stk_read_sign_0x75': True,
@@ -120,10 +124,10 @@ def verify_manifest(chip: str, edition: str, meta: dict) -> dict:
             raise AssertionError(f'{chip}/{edition}: {key}={meta.get(key)!r}, expected {value!r}')
     if edition == 'full' and meta['boot_bytes'] != 1024:
         raise AssertionError(f'{chip}: FULL must use exactly 1024 bytes')
-    if edition == 'compact' and not dev['virtual_boot'] and meta['boot_bytes'] != 512:
-        raise AssertionError(f'{chip}: all active physical Compact profiles require 512B BOOTSZ')
-    if edition == 'compact' and not dev['virtual_boot'] and footprint > 512:
-        raise AssertionError(f'{chip}: COMPACT overflow ({footprint}/512)')
+    if edition == 'middle' and not dev['virtual_boot'] and meta['boot_bytes'] != 512:
+        raise AssertionError(f'{chip}: all active physical Middle profiles require 512B BOOTSZ')
+    if edition == 'middle' and not dev['virtual_boot'] and footprint > 512:
+        raise AssertionError(f'{chip}: MIDDLE overflow ({footprint}/512)')
     if footprint > meta['boot_bytes']:
         raise AssertionError(f'{chip}/{edition}: payload overflow')
     if meta['signature_source'] == 'hardware' and not dev.get('sigrow_lpm_supported_by_datasheet'):
@@ -159,6 +163,7 @@ def verify_manifest(chip: str, edition: str, meta: dict) -> dict:
 
 
 def run_one(chip: str, edition: str, opts) -> tuple[str, str, dict | None, str | None]:
+    edition = EDITION_ALIASES.get(edition, edition)
     try:
         cmd = build_command(chip, edition, opts)
         dest = Path(opts.output_dir) / edition / chip
@@ -187,17 +192,18 @@ def run_one(chip: str, edition: str, opts) -> tuple[str, str, dict | None, str |
 
 
 def build_matrix(opts) -> int:
+    opts.edition = EDITION_ALIASES.get(opts.edition, opts.edition)
     if opts.all and (opts.f_cpu is not None or opts.clock_source or opts.legacy_eeprom_byte_address):
         raise ValueError('--all uses default per-device clock and current EEPROM addressing; run --mcu for overrides')
     opts.edition_source_digest = firmware_sources_digest()
     chips = list(build_mini.DEVICES) if opts.all else [opts.mcu]
     editions = EDITION_KEYS if opts.edition == 'both' else (opts.edition,)
-    if not opts.all and opts.edition == 'compact' and 'compact' not in available_editions(chips[0]):
-        raise ValueError(f'{chips[0]}: COMPACT disabled; hardware Boot minimum is 1024B. Choose --edition full')
+    if not opts.all and opts.edition == 'middle' and 'middle' not in available_editions(chips[0]):
+        raise ValueError(f'{chips[0]}: MIDDLE disabled; hardware Boot minimum is 1024B. Choose --edition full')
     pairs = [(mcu, edition) for mcu in chips for edition in editions
              if edition in available_editions(mcu)]
-    excluded = [f'compact/{mcu}' for mcu in chips if 'compact' in editions
-                and 'compact' not in available_editions(mcu)]
+    excluded = [f'middle/{mcu}' for mcu in chips if 'middle' in editions
+                and 'middle' not in available_editions(mcu)]
     for entry in excluded:
         print(f'SKIP {entry}: hardware Boot minimum 1024B, Full only', flush=True)
     out = Path(opts.output_dir)
@@ -225,8 +231,8 @@ def build_matrix(opts) -> int:
         'excluded_profiles': excluded,
         'total': len(pairs), 'passed': len(rows), 'failed': len(errors),
         'silicon_tested': False, 'hardware_avrdude_tested': False,
-        'compact_payload_within_512': sum(x['payload_within_512'] for x in rows.values()
-                                          if x['edition'] == 'compact'),
+        'middle_payload_within_512': sum(x['payload_within_512'] for x in rows.values()
+                                          if x['edition'] == 'middle'),
         'firmware': dict(sorted(rows.items())), 'errors': dict(sorted(errors.items())),
     }
     (out / 'matrix_dual.json').write_text(json.dumps(summary, indent=2) + '\n')
@@ -240,13 +246,15 @@ def build_matrix(opts) -> int:
             writer.writerow({name: entry.get(name, key.split('/')[1] if name == 'mcu' else None)
                              for name in fields})
     print(f'RESULT: {len(rows)}/{len(pairs)} valid edition builds; '
-          f'{summary["compact_payload_within_512"]} compact images have payload <=512B.')
+          f'{summary["middle_payload_within_512"]} middle images have payload <=512B.')
     return 1 if errors else 0
 
 
 def main() -> int:
     p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument('--edition', choices=('compact', 'full', 'both'), default='both')
+    p.add_argument('--edition', type=lambda v: EDITION_ALIASES.get(v, v),
+                   choices=('middle', 'full', 'both'), default='both',
+                   help='Edition; compact remains an alias for middle')
     p.add_argument('--mcu', choices=list(build_mini.DEVICES), default='atmega328p')
     p.add_argument('--all', action='store_true')
     p.add_argument('--list', action='store_true', help='Print the CURRENT supported editions for every MCU')

@@ -18,7 +18,7 @@ Optiboot (an older version) is installed by default on the Arduino Uno and (as o
 ## Experimental Optiboot Mini
 
 An optional assembly implementation offers Flash read/write in 256 bytes on
-14 eligible ATmega parts, Compact 512-byte profiles with EEPROM support, and
+14 eligible ATmega parts, Middle 512-byte profiles with EEPROM support, and
 Full 1024-byte profiles with fuse/lock reads and sign-on. There are 39 classic
 AVR device profiles, including four experimental ATtiny Virtual Boot ports.
 See the [feature comparison](docs/mini/FEATURES.md),

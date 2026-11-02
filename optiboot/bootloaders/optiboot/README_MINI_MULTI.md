@@ -7,9 +7,16 @@ three editions from `optiboot_mini.S` and its device/UART includes.
 
 | Edition | Reserved Boot area | Profiles | Flash read/write | EEPROM read/write | Fuse/lock reads, sign-on | Application SPM ABI |
 |---|---:|---:|---|---|---|---|
-| `flashread256` | 256 B | 14 ATmega | Yes; aligned full-page writes | No | No | No |
-| `compact` | 512 B on 22 ATmega; 1024 B Virtual Boot on four ATtiny | 26 | Yes | Yes | No | Yes on ATmega |
+| `mini` | 256 B | 14 ATmega | Yes; aligned full-page writes | No | No | No |
+| `middle` | 512 B on 22 ATmega; 1024 B Virtual Boot on four ATtiny | 26 | Yes | Yes | No | Yes on ATmega |
 | `full` | 1024 B | All 39 | Yes | Yes | Yes | Yes on 35 ATmega |
+
+The canonical edition names are `mini`, `middle` and `full`. The previous
+`flashread256` and `compact` names (including their existing aliases) remain
+accepted for reproducible older commands. New output directories and edition
+metadata always use the canonical names. This rename does not change firmware
+bytes, Boot geometry or features. Dated validation records retain their names.
+See the [rename validation](../../../docs/mini/EDITION_NAMES_2026-11-02.md).
 
 The write-only 256-byte edition is removed. The former oversized readback
 prototype is replaced by a real 256-byte image. At 16 MHz / 115200 baud its
@@ -44,20 +51,24 @@ Flash geometry explicitly when the installed old avr-libc lacks PB headers.
 
 ```sh
 python3 generate_firmware.py --list
-python3 generate_firmware.py atmega8 flashread256 16MHz
-python3 generate_firmware.py atmega168p flashread256 8MHz
-python3 generate_firmware.py atmega168pb flashread256 16MHz
-python3 generate_firmware.py atmega168pb compact 16MHz
+python3 generate_firmware.py atmega8 mini 16MHz
+python3 generate_firmware.py atmega168p mini 8MHz
+python3 generate_firmware.py atmega168pb mini 16MHz
+python3 generate_firmware.py atmega168pb middle 16MHz
 python3 generate_firmware.py atmega168pb full 16MHz
-python3 generate_firmware.py atmega328pb compact 16MHz
+python3 generate_firmware.py atmega328pb middle 16MHz
 python3 generate_firmware.py atmega328pb full 16MHz
 python3 generate_firmware.py atmega2560 full 16MHz
-python3 generate_firmware.py attiny85 compact 8MHz
+python3 generate_firmware.py attiny85 middle 8MHz
 python3 generate_firmware.py attiny1634 full 12MHz
-make mini_flashread256 MINI_MCU=atmega16 F_CPU=16000000
-make mini_compact MINI_MCU=atmega328pb
+make mini_256 MINI_MCU=atmega16 F_CPU=16000000
+make mini_middle MINI_MCU=atmega328pb
 make mini_full MINI_MCU=atmega2560
 ```
+
+The legacy `make mini` target still builds Basic. Use `mini_256`, `mini_middle`
+or `mini_full` for the three public editions; `mini_flashread256` and
+`mini_compact` remain Make target aliases.
 
 Supply the actual CPU frequency, including clock dividers. The generator checks
 part limits, clock-source constraints, nominal baud error, Boot geometry,
@@ -67,14 +78,14 @@ edition. `build_info.json` records the exact paths and settings. A build does
 not program a board or change fuses.
 
 Automatic baud selection depends on frequency and clock source. In particular,
-FlashRead256 uses 38400 at 8 MHz and 115200 at 16 MHz; an explicit `--baud`
+Mini uses 38400 at 8 MHz and 115200 at 16 MHz; an explicit `--baud`
 may select another valid divider. Software UART uses 19200 for the default
 8 MHz internal RC clock and faster nominal rates for external clocks.
 Internal RC accuracy still requires physical validation and calibration.
 
 ## Device availability
 
-| MCU group | FlashRead256 | Compact | Full |
+| MCU group | Mini | Middle | Full |
 |---|---|---|---|
 | ATmega8, 8A, 8515, 8535, 16, 162, 164A/P/PA, 168/P/PB, 88/P | 256 B | 512 B | 1024 B |
 | ATmega328, 328P, 328PB, 32A, 324A/P/PA/PB | Unavailable | 512 B | 1024 B |
@@ -94,7 +105,7 @@ baud, and `-D`. Keep normal verification enabled. The `arduino` programmer
 uses word-addressed EEPROM in this protocol; another STK500 programmer setting
 can have different EEPROM address units.
 
-FlashRead256 accepts aligned, complete physical pages (64 or 128 bytes).
+Mini accepts aligned, complete physical pages (64 or 128 bytes).
 Readback accepts lengths 1..PAGE from a page-aligned address. The audited
 Arduino AVR Boards 1.8.8 / AVRDUDE 8.0-arduino.1 upload path automatically
 transfers full pages even when the ordinary HEX ends inside a page. Manual
@@ -119,7 +130,7 @@ writes. Chip Erase is acknowledged without erasing memory, as in an Optiboot
 upload with `-D`. Unsupported odd commands can request the short watchdog
 exit; they do not perform an ISP operation.
 
-FlashRead256 requires entry through hardware reset: it relies on reset UART
+Mini requires entry through hardware reset: it relies on reset UART
 format/divisor-high state and disabled interrupts. It immediately configures
 the watchdog, enters the application after watchdog reset, and uses the
 watchdog for inactivity/error exit. Its receive path retains framing-error
@@ -136,16 +147,16 @@ fuses were inspected or modified in the software audit. See the
 [Arduino protocol audit](../../../docs/mini/ARDUINO_PROTOCOL_AUDIT_2026-11-01.md)
 for the observed host command sequence and self-write rejection tests.
 
-Compact and Full include EEPROM transfers (write blocks 1..16 bytes), Flash
+Middle and Full include EEPROM transfers (write blocks 1..16 bytes), Flash
 readback, bounds checks, READ_SIGN and UNIVERSAL signature queries. Full also
 implements GET_SIGN_ON, SET_PARAMETER and four read-only UNIVERSAL fuse/lock
 queries. Partial Flash writes erase unspecified bytes in a transferred page;
 they are not read-modify-write updates. The ATtiny841/1634 require complete
 64/128-byte erase groups through their dedicated host tool.
 
-Compact/Full on hardware-Boot ATmega expose the application SPM entry at
+Middle/Full on hardware-Boot ATmega expose the application SPM entry at
 `BOOT_START + 2`, compatible with the supplied `optiboot_mini_app_spm.h`.
-Set its Boot-size macros to match the installed image. The compact entry
+Set its Boot-size macros to match the installed image. The middle entry
 requires the caller to manage interrupt and EEPROM-busy conditions as described
 in the header. The service rejects Boot-region fill/erase/write commands;
 actual lock-bit protection is also a board fuse/lock configuration matter.

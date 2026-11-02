@@ -1,4 +1,4 @@
-"""AVR instruction models for FlashRead256; not physical timing validation."""
+"""AVR instruction models for the Mini edition; not physical timing validation."""
 from pathlib import Path
 import sys
 

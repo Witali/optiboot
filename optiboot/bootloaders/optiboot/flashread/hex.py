@@ -1,4 +1,4 @@
-"""Offline HEX parsing and full-page preparation for FlashRead256."""
+"""Offline HEX parsing and full-page preparation for the Mini edition."""
 from build_flashread import TARGETS
 from build_mini import DEVICES
 
@@ -38,7 +38,7 @@ def parse_intel_hex(raw: str) -> dict[int,int]:
 
 
 def make_pages(hex_text: str, mcu: str) -> list[tuple[int,bytes]]:
-    if mcu not in TARGETS:raise ValueError('Not a supported FlashRead256 MCU')
+    if mcu not in TARGETS:raise ValueError('Not a supported Mini MCU')
     info=DEVICES[mcu];size=info['page'];boot=info['flash']-256
     raw=parse_intel_hex(hex_text)
     if not raw:raise ValueError('HEX contains no Flash data')

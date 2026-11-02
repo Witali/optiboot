@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the reset-entry Flash read/write STK500v1 subset in 256 boot bytes."""
+"""Build the Mini reset-entry Flash read/write STK500v1 subset in 256 boot bytes."""
 import argparse
 import hashlib
 import json
@@ -53,7 +53,7 @@ def one(mcu, dest, f_cpu=16000000, baud=115200, toolchain='auto'):
         raise RuntimeError('The reused parameter constant is not the expected SBRC opcode')
     start = dev['flash'] - 256
     (dest / (mcu + '.hex')).write_text(build_mini.make_hex(data, start))
-    result = dict(mcu=mcu, edition='flash_readback_256', boot_bytes=256,
+    result = dict(mcu=mcu, edition='mini', boot_bytes=256,
                   boot_start=f'0x{start:04X}', boot_word_address=f'0x{start//2:04X}',
                   bootsz1_0_bits='11', code_bytes=used, footer_bytes=3,
                   free_bytes=253-used, page_bytes=dev['page'], flash_bytes=dev['flash'],
@@ -75,7 +75,7 @@ def main():
     parser.add_argument('--f-cpu', type=int, default=16000000)
     parser.add_argument('--baud', type=int, default=115200)
     parser.add_argument('--toolchain', choices=('auto', 'clang', 'gcc'), default='auto')
-    parser.add_argument('--output-dir', type=Path, default=ROOT / 'output/flashread256')
+    parser.add_argument('--output-dir', type=Path, default=ROOT / 'output/mini')
     args = parser.parse_args()
     if args.list:
         print('\n'.join(TARGETS))

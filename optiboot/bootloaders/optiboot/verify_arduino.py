@@ -159,7 +159,7 @@ def main():
     args.output.mkdir(parents=True, exist_ok=True)
     rows, failed = [], []
     for chip in (args.mcu,) if args.mcu else build_flashread.TARGETS:
-        info = generate_firmware.build_one(chip, 'flashread256', 16000000, baud=args.baud,
+        info = generate_firmware.build_one(chip, 'mini', 16000000, baud=args.baud,
                                            out=args.output/'images')
         folder = Path(info['files']['bin']).parent
         for mode in ('short_even', 'short_odd', 'padded_odd', 'boot'):

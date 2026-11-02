@@ -1,5 +1,10 @@
 # UART editions: software validation, 2026-11-01
 
+Edition naming update (2026-11-02): `FlashRead256` / `flashread256` is now
+`Mini` / `mini`; `Compact` / `compact` is now `Middle` / `middle`.
+This dated report retains its original names and evidence. The old CLI
+names remain accepted as aliases.
+
 All results on this page are software results. No serial port, ISP programmer
 or physical board was accessed. The earlier 42-check Nano hardware report
 applies only to its recorded Basic image, not to these editions.
