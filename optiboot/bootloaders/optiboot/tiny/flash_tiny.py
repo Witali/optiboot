@@ -16,6 +16,7 @@ from pathlib import Path
 import sys
 
 from patch_vectors import TARGETS, read_hex, decode_rjmp
+from device_database import DEVICES
 
 SYNC=b'\x30\x20'
 
@@ -54,7 +55,7 @@ class Stk500Mini:
 def upload(link,image,mcu,verify=True):
     t=TARGETS[mcu]
     boot=t['flash']-t['boot']
-    group=128 if mcu=='attiny1634' else 64
+    group=DEVICES[mcu]['flash_erase_group_bytes']
     if not image:raise ValueError('Empty Intel HEX')
     if max(image)>=boot or min(image)<0:
         raise ValueError('Image enters reserved boot region')
@@ -93,15 +94,14 @@ def main():
     try:import serial
     except ImportError as e:raise RuntimeError('pyserial required: python3 -m pip install pyserial') from e
     import time
-    baud=args.baud if args.baud is not None else (19200 if args.mcu in ('attiny84','attiny85') else 115200)
+    baud=args.baud if args.baud is not None else (19200 if DEVICES[args.mcu]['profile'].startswith('soft') else 115200)
     with serial.Serial(args.port,baud,timeout=args.timeout,write_timeout=args.timeout) as ser:
         if args.reset_dtr:
             ser.dtr=False;time.sleep(0.05);ser.dtr=True;time.sleep(0.1);ser.dtr=False
         link=Stk500Mini(ser)
         link.sync()
         sig=link.signature()
-        expected=bytes({'attiny841':(0x1e,0x93,0x15),'attiny1634':(0x1e,0x94,0x12),
-                        'attiny84':(0x1e,0x93,0x0c),'attiny85':(0x1e,0x93,0x0b)}[args.mcu])
+        expected=bytes(DEVICES[args.mcu]['sig'])
         if sig!=expected:raise RuntimeError(f'Signature mismatch: read {sig.hex()}, expected {expected.hex()}')
         count,step=upload(link,image,args.mcu,verify=not args.no_verify)
         link.leave()

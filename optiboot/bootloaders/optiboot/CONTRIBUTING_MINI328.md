@@ -19,7 +19,10 @@ comments, documentation, messages and test descriptions in English.
    eligible device. Respect each MCU's physical boot-section minimum.
 4. Review signature, register map, Flash/EEPROM geometry, reset behavior and
    datasheet clock limits before adding a device profile. Regenerate the device
-   includes with `python3 gen_devices.py` when changing its profile inputs.
+   includes and device reference with `python3 gen_devices.py` after updating
+   the canonical `devices.json`. Keep register constants outside JSON. Run
+   `python3 gen_devices.py --check` to catch stale generated outputs; see the
+   [database guide](../../../docs/mini/DEVICE_DATABASE.md).
 5. Compare BIN/HEX addresses, size and SHA-256 after assembly changes. Explain
    intentional changes to a reference image rather than silently replacing the
    baseline hash. The fixed `mini328` target is a separate regression reference.

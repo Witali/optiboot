@@ -9,18 +9,18 @@ import subprocess
 import sys
 
 import build_mini
+import device_database
 
 ROOT = Path(__file__).resolve().parent
-TARGETS = tuple(m for m, d in build_mini.DEVICES.items()
-                if d.get('hardware_min_boot_bytes') == 256
-                and d['profile'] in ('modern', 'legacy')
-                and d['page'] in (64, 128) and d['flash'] <= 16384)
+TARGETS = tuple(m for m, d in device_database.DEVICES.items()
+                if device_database.supports_mini(d))
 
 
 def one(mcu, dest, f_cpu=16000000, baud=115200, toolchain='auto'):
     if mcu not in TARGETS:
         raise ValueError('256-byte Flash read/write is unavailable for ' + mcu)
     dev = build_mini.DEVICES[mcu]
+    device_database.check_generated_device(mcu)
     if not 8000000 <= f_cpu <= dev['max_mhz'] * 1000000:
         raise ValueError('F_CPU outside project limits or the device rating')
     uart = build_mini.best_baud(f_cpu, baud)

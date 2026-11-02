@@ -14,13 +14,12 @@ NOT hardware tested; preserve an ISP recovery path. GPL-2.0-or-later.
 import argparse
 from pathlib import Path
 import sys
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from device_database import DEVICES, application_vector
 
-TARGETS = {
-    'attiny841': {'flash':8192, 'boot':1024, 'vector':14},
-    'attiny1634': {'flash':16384, 'boot':1024, 'vector':26},
-    'attiny85': {'flash':8192, 'boot':1024, 'vector':6},
-    'attiny84': {'flash':8192, 'boot':1024, 'vector':14},
-}
+TARGETS = {name: {'flash': dev['flash'], 'boot': dev['default_boot'],
+                  'vector': application_vector(dev)}
+           for name, dev in DEVICES.items() if dev['virtual_boot']}
 
 
 def read_hex(path):

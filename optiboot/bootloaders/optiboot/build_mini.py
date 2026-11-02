@@ -11,9 +11,10 @@ import re
 import shutil
 import subprocess
 import sys
+import device_database
+from device_database import DEVICES
 
 ROOT = Path(__file__).resolve().parent
-DEVICES = json.loads((ROOT / 'devices.json').read_text())
 SOURCE = ROOT / 'optiboot_mini.S'  # The only active firmware assembly source.
 
 
@@ -38,11 +39,7 @@ def linked_object(obj: Path, mcu: str) -> Path:
     if not shutil.which('avr-ld'):
         raise RuntimeError('Local AVR relocations require avr-ld; do not flash an unlinked object')
     dev = DEVICES[mcu]
-    arch = ('avr25' if mcu in ('attiny84', 'attiny85', 'attiny841') else
-            'avr35' if dev['virtual_boot'] else
-            'avr6' if dev['flash'] > 131072 else
-            'avr51' if dev['flash'] > 65536 else
-            'avr4' if dev['flash'] <= 8192 else 'avr5')
+    arch = device_database.linker_architecture(dev)
     linked = obj.with_suffix('.elf')
     try:
         subprocess.run(['avr-ld', '-m', arch, '-Ttext=0', '-e', '_start',
@@ -120,6 +117,7 @@ def build(args):
     if mcu not in DEVICES:
         raise ValueError(f'Unsupported MCU {mcu!r}; use --list-chips')
     dev=DEVICES[mcu]
+    device_database.check_generated_device(mcu)
     if args.legacy_eeprom_byte_address and mcu not in ('atmega64a','atmega128a'):
         raise ValueError('Old AVRDUDE EEPROM byte addressing is only supported for ATmega64A/ATmega128A')
     f_cpu=int(args.f_cpu) if args.f_cpu is not None else int(os.environ.get('F_CPU', 8000000 if dev['profile'] in ('soft85','soft84') else 16000000))

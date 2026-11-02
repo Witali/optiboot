@@ -12,6 +12,9 @@ from FlashRead256/Compact to Mini/Middle, compatibility aliases and validation.
 The [improvement plan](ROADMAP.md) records the proposed next steps and their
 completion criteria.
 
+The [shared device database](DEVICE_DATABASE.md) supplies the builders and
+[generated device reference](DEVICES.md); register constants remain outside JSON.
+
 | Capability | Mini | Middle | Full | Practical benefit / limit |
 |---|---|---|---|---|
 | Reserved Boot area | 256 B | 512 B ATmega; 1024 B Virtual ATtiny | 1024 B | Respect each chip's physical Boot minimum |

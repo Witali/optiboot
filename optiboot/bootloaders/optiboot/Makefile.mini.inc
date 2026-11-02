@@ -47,7 +47,7 @@ endif
 
 HELPTEXT += "target mini - legacy Basic target; mini_256 / mini_middle / mini_full select editions\n"
 
-.PHONY: mini mini_spm mini_middle mini_compact mini_full mini_256 mini_flashread256 mini_check mini_list mini_test mini_matrix
+.PHONY: mini mini_spm mini_middle mini_compact mini_full mini_256 mini_flashread256 mini_check mini_list mini_test mini_matrix mini_devices mini_devices_check
 mini:
 	$(MINI_PYTHON) build_mini.py --mcu "$(MINI_SELECTED_MCU)" --f-cpu "$(MINI_SELECTED_FREQ)" --baud "$(MINI_SELECTED_BAUD)" --clock-source "$(MINI_SELECTED_CLOCK)" --boot-bytes "$(MINI_SELECTED_BOOT)" $(MINI_EXTRA_FLAGS)
 
@@ -68,7 +68,13 @@ mini_check: mini mini_test
 mini_list:
 	$(MINI_PYTHON) generate_firmware.py --list
 
-mini_test:
+mini_devices:
+	$(MINI_PYTHON) gen_devices.py
+
+mini_devices_check:
+	$(MINI_PYTHON) gen_devices.py --check
+
+mini_test: mini_devices_check
 	$(MINI_PYTHON) -m unittest discover -s mini_tests -v
 	$(MINI_PYTHON) -m unittest discover -s generator_tests -v
 

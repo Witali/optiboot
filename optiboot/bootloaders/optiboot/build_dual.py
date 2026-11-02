@@ -27,6 +27,7 @@ from types import SimpleNamespace
 
 import build_mini
 import build_mini_compat
+import device_database
 
 ROOT = Path(__file__).resolve().parent
 EDITION_KEYS = ('middle', 'full')
@@ -36,21 +37,14 @@ EDITION_ALIASES = {'middle': 'middle', 'compact': 'middle', 'compact512': 'middl
 
 def available_editions(chip: str) -> tuple[str, ...]:
     """Public edition policy; no Middle on hardware with a 1024-byte minimum."""
-    dev = build_mini.DEVICES[chip]
-    middle_allowed = bool(dev.get('dual_compact_enabled', True))
-    if not dev['virtual_boot'] and dev.get('hardware_min_boot_bytes', 1024) >= 1024:
-        if middle_allowed:
-            raise ValueError(f'{chip}: invalid devices.json: 1024B hardware Boot forbids Middle')
-    if dev['virtual_boot']:
-        if dev.get('hardware_min_boot_bytes') is not None:
-            raise ValueError(f'{chip}: Virtual Boot must have null hardware minimum')
-    return EDITION_KEYS if middle_allowed else ('full',)
+    return tuple(edition for edition in device_database.available_editions(build_mini.DEVICES[chip])
+                 if edition != 'mini')
 
 
 def firmware_sources_digest() -> str:
     """Include every firmware input in a resume key; never reuse stale builds."""
     paths = [ROOT / 'optiboot_mini.S', ROOT / 'build_mini.py',
-             ROOT / 'build_mini_compat.py', ROOT / 'devices.json']
+             ROOT / 'build_mini_compat.py', ROOT / 'devices.json', ROOT / 'device_database.py']
     paths += sorted((ROOT / 'devices').rglob('*.inc'))
     paths += sorted((ROOT / 'uart').rglob('*.inc'))
     h = hashlib.sha256()
@@ -61,8 +55,7 @@ def firmware_sources_digest() -> str:
 
 
 def target_clock(chip: str, device: dict, opts) -> tuple[int, str]:
-    cpu = (8_000_000 if device['profile'] in ('soft85', 'soft84') else
-           12_000_000 if chip == 'attiny1634' else 16_000_000) if opts.f_cpu is None else opts.f_cpu
+    cpu = device_database.nominal_frequency(device) if opts.f_cpu is None else opts.f_cpu
     src = opts.clock_source or ('internal_rc' if device['profile'] in ('soft85', 'soft84') and cpu == 8_000_000
                                 else 'external_crystal')
     return cpu, src

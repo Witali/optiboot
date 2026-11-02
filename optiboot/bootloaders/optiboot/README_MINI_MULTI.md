@@ -85,12 +85,11 @@ Internal RC accuracy still requires physical validation and calibration.
 
 ## Device availability
 
-| MCU group | Mini | Middle | Full |
-|---|---|---|---|
-| ATmega8, 8A, 8515, 8535, 16, 162, 164A/P/PA, 168/P/PB, 88/P | 256 B | 512 B | 1024 B |
-| ATmega328, 328P, 328PB, 32A, 324A/P/PA/PB | Unavailable | 512 B | 1024 B |
-| ATmega64A, 640, 644/A/P/PA, 128A, 1280, 1281, 1284/P, 2560, 2561 | Unavailable | Unavailable: hardware minimum 1024 B | 1024 B |
-| ATtiny84, 85, 841, 1634 | Unavailable | 1024 B Virtual Boot | 1024 B Virtual Boot |
+The [generated device reference](../../../docs/mini/DEVICES.md) lists every
+MCU, signature, memory geometry, clock rating, Boot minimum and available edition.
+It is generated from the shared `devices.json` database together with the
+assembly includes. See the [maintenance guide](../../../docs/mini/DEVICE_DATABASE.md)
+for validation and regeneration. Register constants remain outside JSON.
 
 This is 79 edition/device profiles. ATtiny1634 is limited to 12 MHz in these
 profiles; the others have individual ratings in `devices.json`. The generator

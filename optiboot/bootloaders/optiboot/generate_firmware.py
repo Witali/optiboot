@@ -24,8 +24,8 @@ import sys
 from typing import Any
 
 import build_dual
-import build_flashread
 import build_mini
+import device_database
 
 ROOT = Path(__file__).resolve().parent
 EDITION_ALIASES = {
@@ -66,10 +66,7 @@ def default_clock(mcu: str, hz: int) -> str:
 
 
 def valid_types(mcu: str) -> tuple[str, ...]:
-    allowed = list(build_dual.available_editions(mcu))
-    if mcu in build_flashread.TARGETS:
-        allowed.append('mini')
-    return tuple(allowed)
+    return device_database.available_editions(build_mini.DEVICES[mcu])
 
 
 def choose_flash_baud(hz: int, requested: str) -> int:

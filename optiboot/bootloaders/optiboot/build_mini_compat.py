@@ -16,14 +16,14 @@ import sys
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 import build_mini
+import device_database
 
 ROOT=Path(__file__).resolve().parent
 
 
 def build_command(chip, args):
     dev=build_mini.DEVICES[chip]
-    freq=(8_000_000 if dev['profile'] in ('soft85','soft84') else
-          12_000_000 if chip=='attiny1634' else 16_000_000) if args.f_cpu is None else args.f_cpu
+    freq=device_database.nominal_frequency(dev) if args.f_cpu is None else args.f_cpu
     source=args.clock_source or ('internal_rc' if dev['profile'] in ('soft85','soft84') and freq==8_000_000 else 'external_crystal')
     dest=Path(args.output_dir)/chip
     compact=build_mini.supports_spm512(dev)

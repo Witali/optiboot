@@ -7,7 +7,7 @@ editions are Mini (`mini`), Middle (`middle`) and Full (`full`).
 | Priority | Improvement | Benefit | Completion criteria | Status |
 |---|---|---|---|---|
 | 1 | Automated build and regression checks | Detect size overflow, protocol regressions and broken device profiles after every change | Pinned tools, all supported profiles, size/layout checks, instruction tests and reviewed build artifacts in CI | Planned |
-| 2 | One authoritative microcontroller database | Add or update a device without maintaining parallel geometry tables | Host tools and generated assembly includes use the same validated data; device documentation is generated; existing binaries remain identical | Selected for the current task |
+| 2 | One authoritative microcontroller database | Add or update a device without maintaining parallel geometry tables | Host tools and generated assembly includes use the same validated data; device documentation is generated; existing binaries remain identical | Completed 2026-11-02; see the [database guide](DEVICE_DATABASE.md) |
 | 3 | Fuse and lock configuration plans | Match the selected Boot area and protection to the exact MCU | Datasheet-backed masks, signature checks, current-value inspection and a reviewable plan that preserves unrelated bits | Planned |
 | 4 | Arduino IDE board profiles | Select the correct edition, upload speed and application size | Board definitions match the generated HEX, Boot geometry and upload protocol; representative IDE/CLI uploads pass | Planned |
 | 5 | Interrupted-upload and recovery testing | Establish behavior after truncated packets, delays, reconnects and resets | Reproducible fault sequences exercise every packet boundary and relevant erase/write phase; documented recovery limits | Planned |
