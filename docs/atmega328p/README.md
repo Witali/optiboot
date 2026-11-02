@@ -1,6 +1,6 @@
-# Experimental ATmega328P firmware
+# Historical ATmega328P firmware
 
-This branch imports the Optiboot ATmega328P research handoff dated 2026-10-28.
+This directory preserves the Optiboot ATmega328P research handoff dated 2026-10-28.
 The AVR assembly firmware was optimized with the assistance of artificial
 intelligence. The research combines size optimization with additional EEPROM
 and diagnostic functions while retaining a 512-byte boot section.
@@ -92,8 +92,10 @@ provides the tools listed above.
 The build writes `.o`, `.bin`, and `.hex` into
 `optiboot/bootloaders/optiboot_328p/build/`, which Git ignores. Tests select the
 rebuilt binary automatically with `--build`; `--firmware PATH` selects a specific
-512-byte binary. The committed active source, images and object are maintained
-together; historical artifacts are retained in the snapshot directories.
+512-byte binary. The committed source and reference images are retained together.
+Intermediate objects are rebuilt in the ignored output directory. The
+[2026-11-02 cleanup](../mini/CLEANUP_2026-11-02.md) removed 27 verified
+reproducible objects while preserving source, firmware references and directories.
 
 ## Repository layout and provenance
 
@@ -107,11 +109,12 @@ together; historical artifacts are retained in the snapshot directories.
 | `docs/atmega328p/archives/` | English editions of all seven stage ZIPs, refreshed internal checksums, and a manifest recording original/current hashes. |
 | `docs/atmega328p/manifests/` | Original archive-wide inventories and checksum lists, unchanged. |
 
-All 266 files from the handoff are accounted for by
+All 266 files from the original handoff were accounted for by
 [`IMPORT_MANIFEST.json`](IMPORT_MANIFEST.json). It records each original path,
-its repository destination, and original/current SHA256 values. Historical
-assembly, firmware, objects, references and licenses retain their input bytes;
-the active firmware and tools evolve on this branch. Research documentation
+its import destination and SHA256 values at the recorded revision. It is a
+historical import inventory, not the current checkout inventory; see the cleanup
+record for the removed reproducible objects. Retained historical assembly,
+firmware, references and licenses preserve their input bytes. Research documentation
 has been translated into English, including copies inside stage ZIPs; filenames,
 references and internal archive checksums have been updated. The exact original
 handoff documents and ZIPs remain available in the initial import commit

@@ -1,7 +1,11 @@
-# Ignore task worktrees
-/.worktree/
-
 # Ignore compiled output files
+*.o
+# Intentional symbol fixtures and historical objects without a verified rebuild.
+!/optiboot/bootloaders/optiboot/mini_tests/fixtures/atmega16.o
+!/optiboot/bootloaders/optiboot/mini_tests/fixtures/atmega32a.o
+!/optiboot/bootloaders/optiboot_328p/history/02b_all_machine_code_prototypes/upstream_reference.o
+!/optiboot/bootloaders/optiboot_328p/history/06_508_eeprom_universal/optiboot_328_eeprom_rw.o
+!/optiboot/bootloaders/optiboot_328p/history/06_508_eeprom_universal/out.o
 /optiboot/bootloaders/optiboot/*.elf # exclude .elf files
 /optiboot/bootloaders/optiboot/*.hex # exclude .hex files
 /optiboot/bootloaders/optiboot/*.lst # exclude .lst files
