@@ -209,7 +209,24 @@ function Read-AvailableText($Connection,$ReadCalls = $null) {
     if ($actual-lt 0 -or $actual-gt $requested) { throw 'Serial reader returned an invalid byte count.' }
     return [Text.Encoding]::ASCII.GetString($buffer,0,$actual)
 }
+function Drain-StartupInput($Connection,[ValidateRange(1,1000)][int]$Milliseconds = 250) {
+    $timer=[Diagnostics.Stopwatch]::StartNew()
+    $readCalls=0
+    $discardedBytes=0
+    while($timer.ElapsedMilliseconds-lt $Milliseconds) {
+        $chunk=Read-AvailableText $Connection ([ref]$readCalls)
+        $discardedBytes+=$chunk.Length
+        Start-Sleep -Milliseconds 20
+    }
+    return [ordered]@{requested_ms=$Milliseconds;elapsed_ms=$timer.Elapsed.TotalMilliseconds;
+        discarded_bytes=$discardedBytes;read_calls=$readCalls;maximum_read_bytes=4096}
+}
 function Capture-Output([int]$Milliseconds,[string]$EvidenceName = '') {
+    if($EvidenceName-in @('runtime-diagnostics','final-runtime-diagnostics')) {
+        # Explicit startup-only exclusion; validation sees every measured byte.
+        $startup=Drain-StartupInput $script:serialPort 250
+        $startup | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $taskDir ($EvidenceName+'.startup.json')) -Encoding utf8
+    }
     $text=[Text.StringBuilder]::new()
     $timer=[Diagnostics.Stopwatch]::StartNew()
     $readCalls=0

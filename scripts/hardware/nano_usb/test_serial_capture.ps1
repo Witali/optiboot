@@ -5,7 +5,7 @@ $ErrorActionPreference='Stop'
 $tokens=$null; $errors=$null
 $ast=[Management.Automation.Language.Parser]::ParseFile((Join-Path $PSScriptRoot 'test_nano_usb.ps1'),[ref]$tokens,[ref]$errors)
 if($errors.Count-ne 0){throw 'Runner syntax failure.'}
-foreach($name in @('Read-AvailableText','Capture-Output','Crc16','Assert-DiagnosticFrames')) {
+foreach($name in @('Read-AvailableText','Drain-StartupInput','Capture-Output','Crc16','Assert-DiagnosticFrames')) {
     $definitions=@($ast.FindAll({param($node)
         $node-is [Management.Automation.Language.FunctionDefinitionAst] -and $node.Name-eq $name
     },$true))
@@ -82,6 +82,22 @@ foreach($invalidCount in @(-1,4)) {
 }
 $fake=[SyntheticSerialCapturePort]::new([byte[]]@(65,0,66))
 Check ([Convert]::ToHexString([Text.Encoding]::ASCII.GetBytes((Read-AvailableText $fake)))) '410042' 'Real NUL bytes remain observable'
+
+$startupBytes=[byte[]]::new(4100); [Array]::Fill[byte]($startupBytes,88)
+$startupBytes[4000]=0
+$fake=[SyntheticSerialCapturePort]::new($startupBytes)
+$startup=Drain-StartupInput $fake
+Check $startup.discarded_bytes 4100 'Startup drain counts every byte including NUL'
+Check $startup.read_calls 2 'Startup drain counts both bounded reads'
+Check ($fake.Requests -join ',') '4096,4' 'Startup drain preserves the chunk limit'
+Check $fake.Position 4100 'Startup drain consumes the entire startup prefix'
+Check ($startup.elapsed_ms-ge 250) $true 'Startup drain records its separate bounded window'
+Check $startup.requested_ms 250 'Startup drain default duration'
+$fake=[SyntheticSerialCapturePort]::new([byte[]]::new(0))
+$startup=Drain-StartupInput $fake 40
+Check $startup.discarded_bytes 0 'Empty startup drain discards zero bytes'
+Check $startup.read_calls 0 'Empty startup drain avoids reads'
+Check $fake.Requests.Count 0 'Empty startup drain never calls the port'
 
 $script:serialPort=[SyntheticSerialCapturePort]::new([Text.Encoding]::ASCII.GetBytes('ABC'))
 $script:serialPort.MaximumRead=1

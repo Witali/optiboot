@@ -128,12 +128,18 @@ Use `-AvrdudeConfig <absolute-path>` to override it. Omit
 
 Text capture uses byte reads of at most 4096 bytes and decodes only the count
 actually returned by each read. Opening a serial connection discards pending
-input before the controlled test/query. Each diagnostic capture saves a private
+input before the controlled test/query. Only the named initial/final diagnostic
+captures then perform an explicit 250 ms startup drain before measurement.
+Each saves a private `*.startup.json` recording separately discarded bytes,
+read calls, elapsed time and the 4096-byte read limit. This preparation does not
+apply to negative-packet recovery or watchdog-probe observations.
+Each measured diagnostic capture saves a private
 `*.capture.json` with actual bytes, elapsed time, read calls and observed byte rate;
-115200 baud with 8N1 permits 11520 wire bytes per second. The corresponding raw
+115200 baud with 8N1 nominally permits 11520 wire bytes per second. The corresponding raw
 text remains available for inspection. NULs, nested banners, duplicate fields,
-incorrect configuration or fewer than three valid reports fail validation;
-the runner does not discard malformed reports to obtain a pass.
+incorrect configuration or fewer than three valid reports fail validation.
+After the documented startup window, every measured byte remains subject to
+these checks; the runner does not filter malformed reports inside the capture.
 
 Each invocation creates a **new** output directory under the checkout's
 ignored `.worktree/` directory. `-OutputDirectory` can select a new directory
@@ -180,7 +186,8 @@ Run `test_cold_evidence.ps1` to check edition geometry/configuration and cold-st
 evidence acceptance/rejection without any hardware. It extracts only the pure helpers through the PowerShell AST and does
 not execute the hardware runner.
 Run `test_serial_capture.ps1` for hardware-free partial-read, zero/no-data,
-4096-byte chunk, capture-accounting and strict diagnostic-frame checks.
+4096-byte chunk, separately counted startup drain, capture-accounting and
+strict diagnostic-frame checks.
 
 Run `test_process_runner.ps1` for hardware-free child-process checks, including
 merged-output pipelines, complete stream capture, console writes on the calling
