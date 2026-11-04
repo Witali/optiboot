@@ -1,0 +1,2 @@
+# MiniCore 3.1.3 package-local upload override: Flash only, normal verification.
+tools.avrdude.upload.pattern="{cmd.path}" "-C{config.path}" {upload.verbose} -p{build.mcu} -c{upload.protocol} -P{serial.port} -b{upload.speed} -D "-Uflash:w:{build.path}/{build.project_name}.hex:i"

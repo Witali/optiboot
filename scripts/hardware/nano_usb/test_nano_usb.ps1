@@ -7,9 +7,12 @@ param(
     [string]$AvrdudePath = 'avrdude',
     [string]$AvrdudeConfig = '',
     [string]$OutputDirectory = '',
+    [ValidateSet('basic','middle')][string]$Edition = 'basic',
+    [string]$IspBackupDirectory = '',
     [switch]$UseWslToolchain,
     [string]$RestoreFromDirectory = '',
     [switch]$ColdStart,
+    [switch]$ColdStartOnly,
     [switch]$Run
 )
 
@@ -18,7 +21,14 @@ $ErrorActionPreference = 'Stop'
 $sourceDir = $PSScriptRoot
 $repoRoot = [IO.Path]::GetFullPath((Join-Path $sourceDir '../../..'))
 $Baud = 115200
+$middle = $Edition -eq 'middle'
+$expectedBootHash = if ($middle) { '156d3701c01e5a9f5008b371c08e4753b7d7200e1535b1c776755040723a99c1' }
+                    else { '149ebc0347815b42daaa20defce83342462306e9ddd3f15c63eeb59baafd70d1' }
+$firmwareSourceCommit = if ($middle) { '30651a823368ee0d4e692d6450530bbd8c70c39c' }
+                        else { 'ccfc7f9470d9823b945092fb2e2905c193c75ec8' }
 $restoreOnly = -not [string]::IsNullOrWhiteSpace($RestoreFromDirectory)
+if ($ColdStartOnly -and $restoreOnly) { throw '-ColdStartOnly cannot be combined with -RestoreFromDirectory.' }
+if ($ColdStartOnly) { $ColdStart = $true }
 if ($restoreOnly) { $taskDir = [IO.Path]::GetFullPath($RestoreFromDirectory) }
 else {
     if ([string]::IsNullOrWhiteSpace($OutputDirectory)) {
@@ -66,6 +76,46 @@ function Assert-Files([string]$Actual, [string]$Expected) {
 function Invoke-Avr([string[]]$NativeArgs) {
     $code = [AvrProcessRunner]::Run($avrExe, $taskDir, [string[]]($baseArgs + $NativeArgs))
     if ($code -ne 0) { throw "AVRDUDE exited with code $code." }
+}
+function Identity-VerifyArgs {
+    $arguments = @('-U','signature:v:before-signature.bin:r')
+    if (-not $middle) {
+        foreach ($memory in @('lfuse','hfuse','efuse','lock')) {
+            $arguments += @('-U',($memory+':v:before-'+$memory+'.bin:r'))
+        }
+    }
+    return $arguments
+}
+function Assert-IspEvidence {
+    if ([string]::IsNullOrWhiteSpace($IspBackupDirectory)) {
+        if ($restoreOnly -and (Test-Path -LiteralPath 'isp-backup-directory.txt')) {
+            $script:IspBackupDirectory = [IO.File]::ReadAllText((Join-Path $taskDir 'isp-backup-directory.txt')).Trim()
+        } else { throw 'Middle requires -IspBackupDirectory with verified post-installation ISP readouts.' }
+    }
+    $script:IspBackupDirectory = [IO.Path]::GetFullPath($IspBackupDirectory)
+    $result = Get-Content -LiteralPath (Join-Path $IspBackupDirectory 'isp-result.json') -Raw | ConvertFrom-Json
+    if ($result.isp_programming -ne 'PASS' -or $result.complete_flash_readback -ne 'PASS' -or
+        $result.eeprom_readback -ne 'PASS' -or $result.boot_sha256 -ne $expectedBootHash) {
+        throw 'Middle requires a verified ISP installation of the pinned image.'
+    }
+    foreach ($entry in @(@('signature','1E9516'),@('lfuse','FF'),@('hfuse','DE'),@('efuse','FD'),@('lock','CF'))) {
+        $value = [Convert]::ToHexString([IO.File]::ReadAllBytes((Join-Path $IspBackupDirectory ('after-'+$entry[0]+'.bin'))))
+        if ($value -ne $entry[1]) { throw ('Unexpected ISP '+$entry[0]+'.') }
+    }
+    $ispFlash = [IO.File]::ReadAllBytes((Join-Path $IspBackupDirectory 'after-flash.bin'))
+    $ispEeprom = [IO.File]::ReadAllBytes((Join-Path $IspBackupDirectory 'after-eeprom.bin'))
+    if ($ispFlash.Length -ne 32768 -or $ispEeprom.Length -ne 1024) { throw 'Unexpected ISP memory snapshot size.' }
+    $ispBoot = [byte[]]::new(512); [Array]::Copy($ispFlash,0x7E00,$ispBoot,0,512)
+    if ([Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($ispBoot)).ToLowerInvariant() -ne $expectedBootHash) {
+        throw 'ISP Flash snapshot does not contain the pinned Middle bootloader.'
+    }
+    if (-not $restoreOnly) {
+        [IO.File]::WriteAllText((Join-Path $taskDir 'isp-backup-directory.txt'),$IspBackupDirectory)
+        Copy-Item -LiteralPath (Join-Path $IspBackupDirectory 'isp-result.json') -Destination 'verified-isp-result.json'
+        foreach ($memory in @('lfuse','hfuse','efuse','lock')) {
+            Copy-Item -LiteralPath (Join-Path $IspBackupDirectory ('after-'+$memory+'.bin')) -Destination ('before-'+$memory+'.bin')
+        }
+    }
 }
 function Open-Serial {
     $script:serialPort = [IO.Ports.SerialPort]::new($Port,$Baud,[IO.Ports.Parity]::None,8,[IO.Ports.StopBits]::One)
@@ -172,8 +222,40 @@ function Probe-Ready([int]$TimeoutMs=1500,[switch]$AfterArmed) {
     throw 'The watchdog probe did not report a complete application startup.'
 }
 function Assert-Probe($Ready,[int]$ReasonMask) {
-    if(($Ready.reason-band $ReasonMask)-eq 0-or $Ready.r1-ne 0-or $Ready.mcusr-ne 0-or ($Ready.wdt-band 0x48)-ne 0){
+    $expectedMcusr = if ($middle) { $Ready.reason -band $(if ($Ready.reason-band 2) {0xF7} else {0xFF}) } else {0}
+    if(($Ready.reason-band $ReasonMask)-eq 0-or $Ready.r1-ne 0-or $Ready.mcusr-ne $expectedMcusr-or ($Ready.wdt-band 0x48)-ne 0){
         throw ('Unexpected boot state: reason={0:X2}, r1={1:X2}, MCUSR={2:X2}, WDTCSR={3:X2}.' -f $Ready.reason,$Ready.r1,$Ready.mcusr,$Ready.wdt)
+    }
+}
+function Get-ColdStartProof([byte[]]$Record,[int]$Ticks,[ValidateSet('basic','middle')][string]$EvidenceEdition) {
+    if ($Record.Length -ne 8 -or [Text.Encoding]::ASCII.GetString($Record,0,4) -ne 'STAR') {
+        throw 'Missing autonomous-start evidence tag.'
+    }
+    $cause = [int]$Record[4]
+    $expectedMcusr = if ($EvidenceEdition -eq 'middle') { $cause -band $(if ($cause-band 2) {0xF7} else {0xFF}) } else {0}
+    if ($Ticks-lt 0 -or $Ticks-gt 65535 -or ($cause-band 0x0F)-eq 0 -or
+        $Record[5]-ne 0 -or $Record[6]-ne $expectedMcusr -or ($Record[7]-band 0x48)-ne 0) {
+        throw 'Autonomous-start evidence has an invalid handoff state.'
+    }
+    if ($Ticks-ge 3) { return 'autonomous_uptime_at_least_1500ms' }
+    if ($EvidenceEdition-eq 'middle' -and $Ticks-ge 1 -and
+        ($cause-band 0x01)-ne 0 -and ($cause-band 0x0A)-eq 0) {
+        return 'power_on_entry_and_at_least_500ms_execution'
+    }
+    throw 'Application execution before the host connection was not confirmed.'
+}
+function Assert-DiagnosticFrames([string]$Capture) {
+    $frames=[regex]::Matches($Capture,'BOOT_ACCESS_DIAGNOSTICS_V1\r?\n(.*?)END_BOOT_ACCESS_DIAGNOSTICS',[Text.RegularExpressions.RegexOptions]::Singleline)
+    if($frames.Count-lt 3){throw 'Fewer than three runtime diagnostic frames received.'}
+    $zeroCrc=Crc16 ([byte[]]::new(512))
+    foreach($frame in $frames){
+        $fields=@{}; foreach($line in ($frame.Groups[1].Value -split '\r?\n')){if($line.Contains('=')){$pair=$line.Split('=',2);$fields[$pair[0]]=$pair[1]}}
+        foreach($entry in @(@('signature','1E9516'),@('lfuse','FF'),@('hfuse','DE'),@('efuse','FD'),@('lock_raw','CF'),
+            @('lock_implemented','0F'),@('repeated_reads','STABLE'),@('boot_size_hex','0200'),@('boot_start_hex','7E00'),
+            @('reset_target','BOOT'),@('app_lpm_boot','BLOCKED_BY_LOCK_BITS'),@('boot_spm_boot','BLOCKED_BY_LOCK_BITS'),
+            @('boot_lpm_app','ALLOWED_BY_LOCK_BITS'),@('boot_spm_app','ALLOWED_BY_LOCK_BITS'),@('app_read_boot_crc16',$zeroCrc))){
+            if($fields[$entry[0]]-ne $entry[1]){throw ('Runtime diagnostic mismatch: '+$entry[0])}
+        }
     }
 }
 function Wait-PortState([bool]$Present) {
@@ -199,6 +281,7 @@ function Invoke-BuildTool([string]$Name,[string[]]$ToolArgs) {
     else { & $Name @ToolArgs }
     if ($LASTEXITCODE -ne 0) { throw "$Name failed." }
 }
+if ($middle) { Assert-IspEvidence }
 if (-not $restoreOnly) {
     foreach ($probe in @('diagnostics','watchdog_probe')) {
         $source = Tool-Path (Join-Path $sourceDir ($probe+'.c'))
@@ -212,12 +295,28 @@ if (-not $restoreOnly) {
             throw 'A diagnostic probe contains an SPM instruction.'
         }
     }
-    Invoke-Avr @('-n','-D','-A','-U','signature:r:before-signature.bin:r',
-        '-U','lfuse:r:before-lfuse.bin:r','-U','hfuse:r:before-hfuse.bin:r','-U','efuse:r:before-efuse.bin:r',
-        '-U','lock:r:before-lock.bin:r','-U','flash:r:before-flash.bin:r','-U','eeprom:r:before-eeprom.bin:r')
-    Invoke-Avr @('-n','-D','-A','-U','flash:v:before-flash.bin:r','-U','eeprom:v:before-eeprom.bin:r',
-        '-U','signature:v:before-signature.bin:r','-U','lfuse:v:before-lfuse.bin:r','-U','hfuse:v:before-hfuse.bin:r',
-        '-U','efuse:v:before-efuse.bin:r','-U','lock:v:before-lock.bin:r')
+    if ($middle -and -not $ColdStartOnly) {
+        $source = Tool-Path (Join-Path $sourceDir 'app_spm_probe.c')
+        $include = Tool-Path (Join-Path $repoRoot 'optiboot/bootloaders/optiboot')
+        $elf = Tool-Path (Join-Path $taskDir 'app_spm_probe.elf')
+        $bin = Tool-Path (Join-Path $taskDir 'app_spm_probe.bin')
+        Invoke-BuildTool 'avr-gcc' @('-mmcu=atmega328p','-DF_CPU=16000000UL','-I',$include,
+            '-Os','-std=gnu11','-ffunction-sections','-fdata-sections',$source,'-Wl,--gc-sections','-o',$elf)
+        Invoke-BuildTool 'avr-objcopy' @('-O','binary','-R','.eeprom',$elf,$bin)
+        Invoke-BuildTool 'avr-objdump' @('-d',$elf) | Set-Content -LiteralPath 'app_spm_probe.disassembly.txt' -Encoding utf8
+    }
+    $readArgs = @('-n','-D','-A','-U','signature:r:before-signature.bin:r',
+                  '-U','flash:r:before-flash.bin:r','-U','eeprom:r:before-eeprom.bin:r')
+    if (-not $middle) {
+        foreach ($memory in @('lfuse','hfuse','efuse','lock')) { $readArgs += @('-U',($memory+':r:before-'+$memory+'.bin:r')) }
+    }
+    Invoke-Avr $readArgs
+    Invoke-Avr (@('-n','-D','-A','-U','flash:v:before-flash.bin:r','-U','eeprom:v:before-eeprom.bin:r') + (Identity-VerifyArgs))
+    if ($middle) {
+        Assert-Files 'before-flash.bin' (Join-Path $IspBackupDirectory 'after-flash.bin')
+        Assert-Files 'before-eeprom.bin' (Join-Path $IspBackupDirectory 'after-eeprom.bin')
+        Assert-Files 'before-signature.bin' (Join-Path $IspBackupDirectory 'after-signature.bin')
+    }
     Set-Content -LiteralPath 'backup-verified.txt' -Value 'Complete current-board backups independently verified before any write.' -Encoding utf8
 }
 if (-not (Test-Path -LiteralPath 'backup-verified.txt')) { throw 'Verified current-board backups are required.' }
@@ -231,7 +330,7 @@ foreach($entry in @(@('signature','1E9516'),@('lfuse','FF'),@('hfuse','DE'),@('e
 }
 $boot=[byte[]]::new(512); [Array]::Copy($beforeFlash,0x7E00,$boot,0,512)
 $bootHash=[Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($boot)).ToLowerInvariant()
-if($bootHash-ne '149ebc0347815b42daaa20defce83342462306e9ddd3f15c63eeb59baafd70d1'){throw 'Installed bootloader differs from the verified build.'}
+if($bootHash-ne $expectedBootHash){throw 'Installed bootloader differs from the pinned edition build.'}
 if([regex]::IsMatch([IO.File]::ReadAllText((Join-Path $taskDir 'diagnostics.disassembly.txt')),'(?m)^\s*[0-9a-f]+:.*\bspm\b')){throw 'Diagnostic contains an SPM instruction.'}
 $restoreApp=[byte[]]::new(0x7E00); [Array]::Copy($beforeFlash,0,$restoreApp,0,$restoreApp.Length)
 [IO.File]::WriteAllBytes((Join-Path $taskDir 'restore-application.bin'),$restoreApp)
@@ -244,11 +343,20 @@ $testFlash=[byte[]]$beforeFlash.Clone();[Array]::Copy($testApp,0,$testFlash,0,$t
 $testEeprom=[byte[]]::new(1024)
 for($i=0;$i-lt 1024;$i++){$testEeprom[$i]=(($i*37)-bxor($i-shr 8)-bxor 0x5A)-band 0xFF}
 [IO.File]::WriteAllBytes((Join-Path $taskDir 'test-eeprom.bin'),$testEeprom)
-[ordered]@{port=$Port;baud=$Baud;signature='1E9516';boot_sha256=$bootHash;application_test_bytes=32256;eeprom_test_bytes=1024;diagnostic_bytes=$diagnostic.Length;restore_in_finally=$true;private_output=$taskDir;restore_only=$restoreOnly}|ConvertTo-Json|Write-Output
+[ordered]@{port=$Port;baud=$Baud;edition=$Edition;signature='1E9516';boot_sha256=$bootHash;application_test_bytes=$(if($ColdStartOnly){0}else{32256});eeprom_test_bytes=$(if($ColdStartOnly){0}else{1024});diagnostic_bytes=$diagnostic.Length;restore_in_finally=$true;private_output=$taskDir;restore_only=$restoreOnly;cold_start_only=[bool]$ColdStartOnly}|ConvertTo-Json|Write-Output
 if(-not $Run){return}
 if ($restoreOnly) {
-    Invoke-Avr @('-n','-D','-A','-U','signature:v:before-signature.bin:r','-U','lfuse:v:before-lfuse.bin:r',
-        '-U','hfuse:v:before-hfuse.bin:r','-U','efuse:v:before-efuse.bin:r','-U','lock:v:before-lock.bin:r')
+    Invoke-Avr (@('-n','-D','-A') + (Identity-VerifyArgs))
+    if ($middle) {
+        Invoke-Avr @('-n','-D','-A','-U','flash:r:pre-restore-flash.bin:r')
+        $currentFlash = [IO.File]::ReadAllBytes((Join-Path $taskDir 'pre-restore-flash.bin'))
+        $currentBoot = [byte[]]::new(512)
+        if ($currentFlash.Length -ne 32768) { throw 'Unexpected pre-restoration Flash size.' }
+        [Array]::Copy($currentFlash,0x7E00,$currentBoot,0,512)
+        if ([Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($currentBoot)).ToLowerInvariant() -ne $expectedBootHash) {
+            throw 'Current bootloader differs from the pinned Middle build; refusing restoration.'
+        }
+    }
     Invoke-Avr @('-D','-A','-U','flash:w:restore-application.bin:r','-U','eeprom:w:before-eeprom.bin:r')
     Invoke-Avr @('-n','-D','-A','-U','flash:v:before-flash.bin:r','-U','eeprom:v:before-eeprom.bin:r')
     [Console]::WriteLine('Original Flash and EEPROM restored and verified from the saved backup.')
@@ -256,10 +364,8 @@ if ($restoreOnly) {
 }
 
 # Verify that this is still the saved board before allowing any write.
-Invoke-Avr @('-n','-D','-A','-U','flash:v:before-flash.bin:r','-U','eeprom:v:before-eeprom.bin:r',
-    '-U','signature:v:before-signature.bin:r','-U','lfuse:v:before-lfuse.bin:r','-U','hfuse:v:before-hfuse.bin:r',
-    '-U','efuse:v:before-efuse.bin:r','-U','lock:v:before-lock.bin:r')
-Add-Check 'Initial full Flash, EEPROM, signature, fuse and lock verification'
+Invoke-Avr (@('-n','-D','-A','-U','flash:v:before-flash.bin:r','-U','eeprom:v:before-eeprom.bin:r') + (Identity-VerifyArgs))
+Add-Check $(if($middle){'Initial serial Flash/EEPROM/signature verification matches verified ISP installation and configuration'}else{'Initial full Flash, EEPROM, signature, fuse and lock verification'})
 $failure=$null
 $restorePassed=$false
 $coldStartPassed=$false
@@ -267,7 +373,10 @@ $watchdogMaxMs=0
 $watchdogCompleted=0
 $dtrCompleted=0
 $coldQueryReason=$null
+$coldStartProof=$null
+$runtimeConfigurationVerified=$false
 try {
+    if(-not $ColdStartOnly){
     # Only application Flash is written; the protected boot section is excluded.
     Invoke-Avr @('-D','-A','-U','flash:w:test-application.bin:r','-U','eeprom:w:test-eeprom.bin:r')
     Add-Check 'AVRDUDE write and automatic verify of all 32256 application bytes'
@@ -276,28 +385,27 @@ try {
     Open-Serial
     $capture=Capture-Output 7200
     [IO.File]::WriteAllText((Join-Path $taskDir 'runtime-diagnostics.txt'),$capture)
-    $frames=[regex]::Matches($capture,'BOOT_ACCESS_DIAGNOSTICS_V1\r?\n(.*?)END_BOOT_ACCESS_DIAGNOSTICS',[Text.RegularExpressions.RegexOptions]::Singleline)
-    if($frames.Count-lt 3){throw 'Fewer than three runtime diagnostic frames received.'}
-    $zeroCrc=Crc16 ([byte[]]::new(512))
-    foreach($frame in $frames){
-        $fields=@{}; foreach($line in ($frame.Groups[1].Value -split '\r?\n')){if($line.Contains('=')){$pair=$line.Split('=',2);$fields[$pair[0]]=$pair[1]}}
-        foreach($entry in @(@('signature','1E9516'),@('lfuse','FF'),@('hfuse','DE'),@('efuse','FD'),@('lock_raw','CF'),
-            @('lock_implemented','0F'),@('repeated_reads','STABLE'),@('boot_size_hex','0200'),@('boot_start_hex','7E00'),
-            @('reset_target','BOOT'),@('app_lpm_boot','BLOCKED_BY_LOCK_BITS'),@('boot_spm_boot','BLOCKED_BY_LOCK_BITS'),
-            @('boot_lpm_app','ALLOWED_BY_LOCK_BITS'),@('boot_spm_app','ALLOWED_BY_LOCK_BITS'),@('app_read_boot_crc16',$zeroCrc))){
-            if($fields[$entry[0]]-ne $entry[1]){throw ('Runtime diagnostic mismatch: '+$entry[0])}
-        }
-    }
+    Assert-DiagnosticFrames $capture
     Add-Check 'Application starts after AVRDUDE LEAVE_PROGMODE and prints at 115200 baud'
     Add-Check 'Three stable direct application reads of signature, fuses and lock bits'
     Add-Check 'Application boot reads blocked; boot write protection decoded as enabled'
 
     Enter-Boot
-    Send-Expect ([byte[]]@(0x31,0x20)) ([byte[]](@(0x14)+[Text.Encoding]::ASCII.GetBytes('AVR STK')+@(0x10))) 'GET_SIGN_ON'
+    if ($middle) { Send-Expect ([byte[]]@(0x31,0x20)) ([byte[]]@(0x14,0x10)) 'GET_SIGN_ON compatibility ACK without a sign-on string' }
+    else { Send-Expect ([byte[]]@(0x31,0x20)) ([byte[]](@(0x14)+[Text.Encoding]::ASCII.GetBytes('AVR STK')+@(0x10))) 'GET_SIGN_ON' }
     Send-Expect ([byte[]]@(0x41,0x81,0x20)) ([byte[]]@(0x14,8,0x10)) 'Version major'
     Send-Expect ([byte[]]@(0x41,0x82,0x20)) ([byte[]]@(0x14,3,0x10)) 'Version minor'
     Send-Expect ([byte[]]@(0x75,0x20)) ([byte[]]@(0x14,0x1E,0x95,0x16,0x10)) 'Signature'
-    Add-Check 'Raw STK500v1 sync, sign-on, version and ATmega328PB signature'
+    if ($middle) {
+        $signatureBytes = [byte[]]@(0x1E,0x95,0x16)
+        for ($index=0; $index-lt 3; $index++) {
+            Send-Expect ([byte[]]@(0x56,0x30,0,$index,0,0x20)) ([byte[]]@(0x14,$signatureBytes[$index],0x10)) 'UNIVERSAL signature byte'
+        }
+        foreach ($packet in @([byte[]]@(0x56,0x50,0,0,0,0x20),[byte[]]@(0x56,0x58,0,0,0,0x20))) {
+            Send-Expect $packet ([byte[]]@(0x14,0,0x10)) 'UNIVERSAL fuse/lock operation is unsupported'
+        }
+    }
+    Add-Check $(if($middle){'Raw STK500v1 sync, ACK-only sign-on, version, READ_SIGN and UNIVERSAL signature'}else{'Raw STK500v1 sync, sign-on, version and ATmega328PB signature'})
     Read-Memory 0 256 0x46 ([byte[]]$testApp[0..255])
     Read-Memory 0 256 0x46 ([byte[]]$testApp[0..255]) -LegacyZero
     Read-Memory 0x7D80 256 0x46 ([byte[]]$testFlash[0x7D80..0x7E7F])
@@ -370,9 +478,36 @@ try {
     Close-Serial
 
     [IO.File]::WriteAllBytes((Join-Path $taskDir 'test-eeprom-after-raw.bin'),$testEeprom)
-    Invoke-Avr @('-n','-D','-A','-U','flash:v:test-full-flash.bin:r','-U','eeprom:v:test-eeprom-after-raw.bin:r',
-        '-U','lfuse:v:before-lfuse.bin:r','-U','hfuse:v:before-hfuse.bin:r','-U','efuse:v:before-efuse.bin:r','-U','lock:v:before-lock.bin:r')
-    Add-Check 'Full Flash and EEPROM still correct after all raw protocol cases; fuses and locks unchanged'
+    Invoke-Avr (@('-n','-D','-A','-U','flash:v:test-full-flash.bin:r','-U','eeprom:v:test-eeprom-after-raw.bin:r') + (Identity-VerifyArgs))
+    Add-Check $(if($middle){'Full Flash, EEPROM and signature still correct after all raw protocol cases'}else{'Full Flash and EEPROM still correct after all raw protocol cases; fuses and locks unchanged'})
+
+    if ($middle) {
+        $spmProbe=[IO.File]::ReadAllBytes((Join-Path $taskDir 'app_spm_probe.bin'))
+        if($spmProbe.Length-le 0-or $spmProbe.Length-gt 0x7D80){throw 'Unexpected application SPM probe size.'}
+        $spmProbeImage=[byte[]]::new([int]([Math]::Ceiling($spmProbe.Length/128.0)*128))
+        for($i=0;$i-lt $spmProbeImage.Length;$i++){$spmProbeImage[$i]=0xFF}
+        [Array]::Copy($spmProbe,0,$spmProbeImage,0,$spmProbe.Length)
+        [IO.File]::WriteAllBytes((Join-Path $taskDir 'app-spm-probe-pages.bin'),$spmProbeImage)
+        $spmExpectedFlash=[byte[]]$testFlash.Clone()
+        [Array]::Copy($spmProbeImage,0,$spmExpectedFlash,0,$spmProbeImage.Length)
+        [IO.File]::WriteAllBytes((Join-Path $taskDir 'app-spm-expected-flash.bin'),$spmExpectedFlash)
+        Invoke-Avr @('-D','-A','-U','flash:w:app-spm-probe-pages.bin:r')
+        Open-Serial
+        Enter-Boot
+        Send-Expect ([byte[]]@(0x51,0x20)) ([byte[]]@(0x14,0x10)) 'Start application SPM probe'
+        $spmCapture=Capture-Output 2500
+        [IO.File]::WriteAllText((Join-Path $taskDir 'app-spm-observation.txt'),$spmCapture)
+        if(-not $spmCapture.Contains('APP_SPM_RESULT erase=PASS write=PASS restore=PASS r1=00 boot_calls=RETURNED')){
+            throw 'Application SPM service did not complete the scratch-page and protected-Boot call checks.'
+        }
+        Close-Serial
+        Invoke-Avr (@('-n','-D','-A','-U','flash:v:app-spm-expected-flash.bin:r',
+                       '-U','eeprom:v:test-eeprom-after-raw.bin:r') + (Identity-VerifyArgs))
+        Add-Check 'Middle application SPM erases, writes and restores the scratch page with r1 zero'
+        Add-Check 'Protected Boot-address calls return; full Flash and EEPROM remain as expected'
+    }
+
+    }
 
     $probe=[IO.File]::ReadAllBytes((Join-Path $taskDir 'watchdog_probe.bin'))
     if($probe.Length-le 0-or $probe.Length-gt 0x7D80){throw 'Unexpected watchdog probe size.'}
@@ -384,7 +519,9 @@ try {
     Open-Serial
     $script:serialPort.Write('I')
     $ready=Probe-Ready;Assert-Probe $ready 8
-    Add-Check 'Boot handoff clears r1 and MCUSR before the C runtime and disables the watchdog'
+    $ready | ConvertTo-Json -Depth 3 | Set-Content -LiteralPath 'application-handoff-observation.json' -Encoding utf8
+    Add-Check $(if($middle){'Boot handoff clears r1, preserves Optiboot MCUSR parity and disables the watchdog'}else{'Boot handoff clears r1 and MCUSR before the C runtime and disables the watchdog'})
+    if(-not $ColdStartOnly){
     $script:serialPort.DiscardInBuffer();$script:serialPort.Write('P')
     $pong=Capture-Output 100
     if(-not $pong.Contains('PONG')){throw 'Application UART receive/echo failed.'}
@@ -392,6 +529,7 @@ try {
     for($cycle=0;$cycle-lt 50;$cycle++){
         $script:serialPort.DiscardInBuffer();$script:serialPort.Write('W')
         $ready=Probe-Ready -AfterArmed;Assert-Probe $ready 8
+        if($cycle-eq 0){$ready | ConvertTo-Json -Depth 3 | Set-Content -LiteralPath 'first-watchdog-observation.json' -Encoding utf8}
         if($ready.elapsed_ms-ge 750){throw 'Watchdog reset unexpectedly waited in the bootloader.'}
         $watchdogMaxMs=[Math]::Max($watchdogMaxMs,$ready.elapsed_ms)
         $watchdogCompleted++
@@ -412,9 +550,10 @@ try {
     Add-Check 'UART BREAK/framing-error input recovers through the watchdog'
     Close-Serial
     for($session=0;$session-lt 3;$session++){
-        Invoke-Avr @('-n','-D','-A','-U','signature:v:before-signature.bin:r','-U','hfuse:v:before-hfuse.bin:r','-U','lock:v:before-lock.bin:r')
+        Invoke-Avr (@('-n','-D','-A') + (Identity-VerifyArgs))
     }
     Add-Check 'Three consecutive real AVRDUDE sessions reconnect and verify the device'
+    } else { Close-Serial }
     if($ColdStart){
         Open-Serial
         Enter-Boot
@@ -437,14 +576,26 @@ try {
         $ready=Probe-Ready;Assert-Probe $ready 0x0F
         $coldQueryReason=$ready.reason
         $record=$ready.entry
-        [ordered]@{query_reset_reason=$ready.reason;first_application_entry=[Convert]::ToHexString($record);autonomous_uptime_ticks=$ready.ticks;tick_ms=500} |
-            ConvertTo-Json | Set-Content -LiteralPath 'cold-start-observation.json' -Encoding utf8
-        Assert-Bytes ([byte[]]$record[0..3]) ([Text.Encoding]::ASCII.GetBytes('STAR')) 'Autonomous-start evidence tag'
-        if($ready.ticks-lt 3-or ($record[4]-band 0x0F)-eq 0-or $record[5]-ne 0-or $record[6]-ne 0-or ($record[7]-band 0x48)-ne 0){
-            throw 'Application startup before the host connection was not confirmed, or its handoff state was invalid.'
+        try {
+            $coldStartProof=Get-ColdStartProof $record $ready.ticks $Edition
+        } finally {
+            [ordered]@{query_reset_reason=$ready.reason;first_application_entry=[Convert]::ToHexString($record);autonomous_uptime_ticks=$ready.ticks;tick_ms=500;proof_kind=$coldStartProof} |
+                ConvertTo-Json | Set-Content -LiteralPath 'cold-start-observation.json' -Encoding utf8
         }
         $coldStartPassed=$true
-        Add-Check 'Physical power-off/on runs the application autonomously before the host opens the port'
+        Add-Check $(if($middle){'Physical power cycle confirms autonomous application startup and execution'}else{'Physical power-off/on runs the application autonomously before the host opens the port'})
+        Close-Serial
+    }
+    if($middle){
+        # Middle cannot read fuses through UNIVERSAL. Recheck the actual silicon
+        # configuration from the read-only application after all protocol/reset tests.
+        Invoke-Avr @('-D','-A','-U','flash:w:diagnostics.bin:r')
+        Open-Serial
+        $capture=Capture-Output 7200
+        [IO.File]::WriteAllText((Join-Path $taskDir 'final-runtime-diagnostics.txt'),$capture)
+        Assert-DiagnosticFrames $capture
+        $runtimeConfigurationVerified=$true
+        Add-Check 'Actual signature, fuses and locks unchanged after Middle protocol/reset tests'
         Close-Serial
     }
 } catch {
@@ -455,18 +606,18 @@ try {
     [Console]::WriteLine('Restoring the original complete application and EEPROM.')
     try {
         Invoke-Avr @('-D','-A','-U','flash:w:restore-application.bin:r','-U','eeprom:w:before-eeprom.bin:r')
-        Invoke-Avr @('-n','-D','-A','-U','flash:r:restored-flash.bin:r','-U','eeprom:r:restored-eeprom.bin:r',
-            '-U','signature:v:before-signature.bin:r','-U','lfuse:v:before-lfuse.bin:r','-U','hfuse:v:before-hfuse.bin:r',
-            '-U','efuse:v:before-efuse.bin:r','-U','lock:v:before-lock.bin:r')
+        Invoke-Avr (@('-n','-D','-A','-U','flash:r:restored-flash.bin:r','-U','eeprom:r:restored-eeprom.bin:r') + (Identity-VerifyArgs))
         Assert-Files 'restored-flash.bin' 'before-flash.bin'
         Assert-Files 'restored-eeprom.bin' 'before-eeprom.bin'
         $restorePassed=$true
-        Add-Check 'Original complete Flash, EEPROM, signature, fuses and lock bits restored and verified'
+        Add-Check $(if($middle){'Original complete Flash/EEPROM and signature restored and verified'}else{'Original complete Flash, EEPROM, signature, fuses and lock bits restored and verified'})
     } finally {
-        [ordered]@{port=$Port;baud=$Baud;mcu='ATmega328PB';boot_bytes=512;boot_sha256=$bootHash;
+        [ordered]@{port=$Port;baud=$Baud;edition=$Edition;firmware_source_commit=$firmwareSourceCommit;mcu='ATmega328PB';boot_bytes=512;boot_sha256=$bootHash;
             checks=$script:checks;failure=$failure;original_state_restored=$restorePassed;
             cold_start_requested=[bool]$ColdStart;cold_start_passed=$coldStartPassed;cold_start_query_reason=$coldQueryReason;
+            cold_start_only=[bool]$ColdStartOnly;cold_start_proof=$coldStartProof;
             watchdog_cycles=$watchdogCompleted;dtr_cycles=$dtrCompleted;max_watchdog_restart_host_ms=$watchdogMaxMs;
+            middle_runtime_configuration_verified=$runtimeConfigurationVerified;
             lfuse='FF';hfuse='DE';efuse='FD';lock='CF'} |
             ConvertTo-Json -Depth 6 | Set-Content -LiteralPath 'usb-test-result.json' -Encoding utf8
     }

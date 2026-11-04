@@ -5,11 +5,18 @@ This is a repeatable bench test for **Optiboot Mini on an ATmega328PB Nano,
 It uses real AVRDUDE transfers and a serial protocol client. It does not
 simulate a chip or qualify the other device profiles.
 
-The pinned boot BIN SHA-256 is
-`149ebc0347815b42daaa20defce83342462306e9ddd3f15c63eeb59baafd70d1`.
-The runner checks this against a fresh read of the installed boot section,
-along with signature `1E9516`, fuses `FF / DE / FD`, and lock byte `CF`.
-It refuses a different configuration before writing test data.
+The runner has two explicit, pinned editions:
+
+| Parameter | Firmware | Boot BIN SHA-256 |
+|---|---|---|
+| `-Edition basic` (default) | Original Basic image qualified on 2026-10-30 | `149ebc0347815b42daaa20defce83342462306e9ddd3f15c63eeb59baafd70d1` |
+| `-Edition middle` | Current 512-byte Middle image, 510 bytes of code/footer | `156d3701c01e5a9f5008b371c08e4753b7d7200e1535b1c776755040723a99c1` |
+
+Each edition is checked against a fresh read of the installed Boot section,
+signature `1E9516`, fuses `FF / DE / FD`, and lock byte `CF`. Middle requires
+verified ISP readouts because its `UNIVERSAL` handler returns zero for fuse/lock
+queries. Actual configuration is also read directly by the diagnostic application.
+The older Basic hardware results do not qualify Middle automatically.
 
 ## Requirements
 
@@ -19,7 +26,7 @@ It refuses a different configuration before writing test data.
 - A Nano connected by its own USB cable, with the correct serial driver.
   Close other applications using its COM port.
 
-Both standalone C probes use the ATmega328P register definitions shared by
+The standalone C probes use the ATmega328P register definitions shared by
 this ATmega328PB configuration. The diagnostics obtain the actual device
 signature from silicon. No Arduino core, Python package or GUI is required.
 
@@ -43,6 +50,45 @@ $testArgs = @{
 .\scripts\hardware\nano_usb\test_nano_usb.ps1 @testArgs -Run -ColdStart
 ```
 
+For Middle, first install the exact image using ISP and verify the complete
+readback. Preserve that private installation directory, then run:
+
+```powershell
+.\scripts\hardware\nano_usb\test_nano_usb.ps1 @testArgs -Edition middle `
+    -IspBackupDirectory 'C:\path\to\verified-isp-installation' -Run
+```
+
+To repeat only the physical cold-start phase after a completed bench run, use
+the same arguments with `-ColdStartOnly -Run` and a new output directory. This
+implies `-ColdStart`; it cannot be combined with `-RestoreFromDirectory`. The
+focused mode retains the verified ISP/serial preflight, watchdog-probe upload
+and handoff check, power-cycle evidence, final direct diagnostics, and complete
+application/EEPROM restoration. It skips the full memory/raw protocol/appSPM
+phases and the 50 watchdog, 20 DTR, BREAK and reconnect stress cases.
+
+The ISP directory must contain `after-flash.bin` (32768 bytes),
+`after-eeprom.bin` (1024 bytes), and the actual `after-signature.bin`,
+`after-lfuse.bin`, `after-hfuse.bin`, `after-efuse.bin`, `after-lock.bin` readouts.
+Its `isp-result.json` must record `isp_programming`, `complete_flash_readback`
+and `eeprom_readback` as `PASS`, and `boot_sha256` as the pinned Middle hash.
+Before test writes, the serial Flash/EEPROM/signature backups must match those
+ISP readouts exactly. Both copies must remain private. An existing test backup
+directory is never overwritten.
+
+Middle checks `GET_SIGN_ON` as an ACK-only compatibility operation, plus all
+three signature bytes through `UNIVERSAL 30 00 index 00`. It does not interpret
+unsupported fuse/lock queries as real fuse values. The final diagnostic application
+rechecks actual signature/fuses/locks after protocol and reset tests, before the
+original application and EEPROM are restored.
+
+Middle also runs `app_spm_probe.c`, which invokes the matching Boot application
+SPM ABI to erase, write and restore the scratch page at `0x7D80`. Only the
+reviewed erase/fill/write operations are used. Protected Boot-address calls must
+return; the host verifies complete Flash and EEPROM afterward, including the
+restored scratch page and unchanged Boot bytes. With lock byte `CF`, this checks
+the protected configuration and does not isolate software protection from
+hardware lock protection.
+
 The runner finds `../etc/avrdude.conf` beside the executable when available.
 Use `-AvrdudeConfig <absolute-path>` to override it. Omit
 `-UseWslToolchain` when the AVR build tools are on the Windows PATH.
@@ -63,22 +109,34 @@ them in the running application. The serial handle stays open until physical
 USB removal, so closing it cannot reset the armed application first.
 The next application invocation records its handoff state and advances a
 500 ms counter. Later invocations preserve that evidence.
-After USB returns, the host waits four seconds before opening the port and
-requires at least three saved ticks, zero initial `r1`/`MCUSR`, and a disabled
-watchdog. This confirms autonomous application startup before the host
-connection, even if opening the serial driver resets the AVR again.
+After USB returns, the host waits four seconds before opening the port. Both
+editions accept at least three saved ticks as an autonomous-uptime proof.
+Middle additionally accepts at least one tick when the first recorded reset
+cause contains PORF and contains neither EXTRF nor WDRF. That alternative
+establishes power-on application entry and at least 500 ms of first-invocation
+execution; it does not establish 1.5 seconds or four uninterrupted seconds.
+All paths require the cleared-and-rearmed `STAR` record, zero initial `r1`,
+the edition's expected MCUSR state, and a disabled watchdog. Basic expects
+MCUSR zero. Middle preserves the reset cause, clearing WDRF only when the
+recorded cause contains EXTRF. The observation JSON records the proof kind.
+This confirms autonomous application startup before the host connection even
+if a subsequent reset preserves the first-entry record. The cause and timing
+of any subsequent reset are not measured by this evidence.
 The complete original EEPROM is restored afterward.
 
-Do not require PORF in the application: the bootloader clears MCUSR and can
-wait in UART mode after an external-reset indication, then start the
-application through its watchdog. The observed handoff can therefore contain
-WDRF after a physical power cycle.
+The general three-tick path does not require PORF: a bootloader can wait in UART
+mode after an external-reset indication, then enter the application through its
+watchdog. The lower-tick Middle alternative specifically requires PORF.
 A 120-second timeout applies to each port transition.
 
 For an unattended run, omit `-ColdStart`. The JSON result explicitly records
 that physical cold start was not requested. That run does not cover power-on
 behavior. Creating `cancel-cold-start.txt` in the output directory cancels a
 pending power-cycle step and enters restoration.
+
+Run `test_cold_evidence.ps1` to check evidence acceptance/rejection without any
+hardware. It extracts only the pure helper through the PowerShell AST and does
+not execute the hardware runner.
 
 ## Coverage
 
@@ -101,7 +159,7 @@ pending power-cycle step and enters restoration.
   not bypass the firmware guard to destructively probe hardware lock bits.
 - Check the unsupported UNIVERSAL zero response and the existing no-op
   Chip Erase acknowledgement.
-- Observe initial `r1`, `MCUSR`, reset reason in `r2`, and disabled watchdog
+- Observe initial `r1`, edition-specific `MCUSR`, reset reason in `r2`, and disabled watchdog
   before the application deliberately enables it. The watchdog probe does
   **not** disable the watchdog on startup.
 - Perform **50 application-triggered 15 ms watchdog resets**,
@@ -112,7 +170,10 @@ pending power-cycle step and enters restoration.
   signature, fuses and lock bits against the initial backup.
 
 `usb-test-result.json` records individual results, restoration status and
-cold-start coverage. The watchdog restart time is observed by the host and
+cold-start coverage, edition and firmware source revision. The first application
+handoff and first watchdog restart retain their raw observations in separate
+JSON files. Ordinary watchdog cycles can retain a sticky external-reset flag;
+they do not establish behavior for a pure WDRF-only reset cause. The watchdog restart time is observed by the host and
 includes USB and host scheduling delays; it is not an oscillator measurement.
 
 ## Restoration and interruption recovery
@@ -129,6 +190,11 @@ To restore from that original directory after reconnecting the same board:
 .\scripts\hardware\nano_usb\test_nano_usb.ps1 @testArgs `
     -RestoreFromDirectory 'C:\path\to\the\saved\output' -Run
 ```
+
+Include `-Edition middle` when recovering a Middle test. The saved output records
+the original ISP evidence directory; keep it available, or pass the same
+`-IspBackupDirectory` explicitly. Recovery checks the currently installed Middle
+Boot hash before restoring application bytes.
 
 This checks the device configuration, restores the saved application and
 EEPROM, and verifies the complete memories. It preserves the `before-*`
