@@ -10,6 +10,7 @@ from collections import Counter, deque
 import hashlib
 import json
 from pathlib import Path
+import re
 import subprocess
 import sys
 import time
@@ -73,7 +74,6 @@ def audit(chip, mode, folder, info, args):
         spm_calls.append(cpu.z())
         original_spm()
     cpu.spm = observe_spm
-    before = bytes(cpu.flash)
     case = args.output / chip / mode
     case.mkdir(parents=True, exist_ok=True)
     image = case/'upload.hex'
@@ -81,19 +81,35 @@ def audit(chip, mode, folder, info, args):
         image.write_text(build_mini.make_hex(boot, cpu.boot_start))
         app = None
     else:
-        length = page+2 if mode == 'short_even' else page+1
+        length = (cpu.boot_start if mode in ('full_application', 'verify_application')
+                  else page+2 if mode == 'short_even' else page+1)
         app = bytes((i*37+11) & 255 for i in range(length))
         text = build_mini.make_hex(app, 0)
         if mode == 'padded_odd':
-            text, _, highest = prepare(text, chip)
-            app += b'\xff'*(highest+1-len(app))
+            if getattr(args, 'experimental_328pb_512', False):
+                app = app.ljust((len(app)+page-1)//page*page, b'\xff')
+                text = build_mini.make_hex(app, 0)
+            else:
+                text, _, highest = prepare(text, chip)
+                app += b'\xff'*(highest+1-len(app))
         image.write_text(text)
+    if mode == 'verify_application':
+        # Match the physical Mini runner's application-prefix preflight exactly:
+        # raw input, -n -D -A, no attempted Boot or EEPROM read.
+        image = case/'application.bin'
+        image.write_bytes(app)
+        cpu.flash[:cpu.boot_start] = app
+    before = bytes(cpu.flash)
     windows = args.avrdude.suffix.lower() == '.exe'
     with Target(cpu) as target:
         command = [str(args.avrdude), '-C'+native_path(args.config, windows),
                    '-v', '-p'+chip, '-c', 'arduino',
                    '-P', f'net:127.0.0.1:{target.port}', '-b', str(info['baud']),
-                   '-D', '-Uflash:w:'+native_path(image, windows)+':i']
+                   '-D']
+        if mode == 'verify_application':
+            command += ['-n', '-A', '-Uflash:v:'+native_path(image, windows)+':r']
+        else:
+            command += ['-Uflash:w:'+native_path(image, windows)+':i']
         if windows and sys.platform != 'win32':
             time.sleep(0.5)  # Allow WSL to advertise the new localhost listener.
         for attempt in range(5):
@@ -115,6 +131,8 @@ def audit(chip, mode, folder, info, args):
     (case/'host_requests.bin').write_bytes(raw)
     packets, trailing = decode_requests(raw)
     accepted = returncode == 0 and not timed_out
+    firmware_version = re.search(r'FW Version\s*:\s*(\d+\.\d+)', log)
+    firmware_version = firmware_version[1] if firmware_version else None
     assert bytes(cpu.flash[cpu.boot_start:]) == boot, 'Boot contents changed'
     if accepted:
         assert mode != 'boot', 'Host overwrote the Boot image'
@@ -123,6 +141,19 @@ def audit(chip, mode, folder, info, args):
         assert bytes(cpu.flash[:span]) == app.ljust(span, b'\xff'), 'Application/padding differs'
         assert bytes(cpu.flash[span:]) == before[span:], 'Data beyond the application changed'
         assert any(packet[0] == 0x74 for packet in packets), 'No readback verification'
+        if getattr(args, 'experimental_328pb_512', False):
+            assert firmware_version == '3.3', 'AVRDUDE did not receive Mini parameter value 3'
+        address = 0
+        for packet in packets:
+            if packet[0] == 0x55:
+                address = int.from_bytes(packet[1:3], 'little')*2
+            elif packet[0] in (0x64, 0x74):
+                length = int.from_bytes(packet[1:3], 'big')
+                assert packet[3] == 0x46, 'Host accessed unsupported memory'
+                assert address+length <= cpu.boot_start, 'Host accessed protected Boot bytes'
+        if mode == 'verify_application':
+            assert bytes(cpu.flash) == before and not spm_calls
+            assert not any(packet[0] == 0x64 for packet in packets), 'Read-only verify programmed Flash'
     else:
         assert cpu.pc == cpu.error_pc, 'Failure did not come from the firmware guard'
         assert str(target.error) == 'Firmware rejected the host packet'
@@ -143,6 +174,8 @@ def audit(chip, mode, folder, info, args):
                 unopened_transport_retries=attempt,
                 request_counts=dict(sorted(counts.items())), write_packet_lengths=lengths,
                 get_parameter_ids=selectors, trailing_request_bytes=trailing,
+                host_reported_firmware_version=firmware_version,
+                application_bytes=len(app) if app is not None else 0,
                 sha256=info['sha256'], baud=info['baud'], software_only=True)
 
 
@@ -150,19 +183,36 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--avrdude', type=Path, required=True)
     parser.add_argument('--config', type=Path, required=True)
-    parser.add_argument('--mcu', choices=build_flashread.TARGETS)
+    parser.add_argument('--mcu', choices=build_flashread.TARGETS+('atmega328pb',))
+    parser.add_argument('--experimental-328pb-512', action='store_true',
+                        help='Opt into the separate 512-byte 328PB Mini experiment')
     parser.add_argument('--output', type=Path, default=ROOT/'output/arduino-audit')
     parser.add_argument('--timeout', type=int, default=12)
     parser.add_argument('--baud', default='auto')
     args = parser.parse_args()
+    if args.experimental_328pb_512:
+        if args.mcu not in (None, 'atmega328pb'):
+            parser.error('--experimental-328pb-512 requires --mcu atmega328pb')
+        args.mcu = 'atmega328pb'
+    elif args.mcu == 'atmega328pb':
+        parser.error('atmega328pb requires --experimental-328pb-512')
     args.avrdude = args.avrdude.resolve()
     args.output.mkdir(parents=True, exist_ok=True)
     rows, failed = [], []
     for chip in (args.mcu,) if args.mcu else build_flashread.TARGETS:
-        info = generate_firmware.build_one(chip, 'mini', 16000000, baud=args.baud,
-                                           out=args.output/'images')
-        folder = Path(info['files']['bin']).parent
-        for mode in ('short_even', 'short_odd', 'padded_odd', 'boot'):
+        if args.experimental_328pb_512:
+            folder = args.output/'images'/'mini-experimental-512'/chip
+            result = build_flashread.one(chip, folder, baud=(115200 if args.baud == 'auto'
+                                          else int(args.baud)), experimental_512=True)
+            info = dict(result, sha256=result['code_sha256'])
+        else:
+            info = generate_firmware.build_one(chip, 'mini', 16000000, baud=args.baud,
+                                               out=args.output/'images')
+            folder = Path(info['files']['bin']).parent
+        modes = ('short_even', 'short_odd', 'padded_odd', 'boot')
+        if args.experimental_328pb_512:
+            modes += ('full_application', 'verify_application')
+        for mode in modes:
             try:
                 row = audit(chip, mode, folder, info, args)
                 rows.append(row)
@@ -172,7 +222,8 @@ def main():
                 failed.append(dict(mcu=chip, mode=mode, error=str(error)))
                 print(f'FAIL {chip}/{mode}: {error}', flush=True)
     summary = dict(cases=rows, failed=failed, software_only=True,
-                   programmer='arduino', verification_enabled=True, baud_source='firmware_manifest')
+                   programmer='arduino', verification_enabled=True, baud_source='firmware_manifest',
+                   experimental_328pb_512=args.experimental_328pb_512)
     (args.output/'summary.json').write_text(json.dumps(summary, indent=2)+'\n')
     print(f'RESULT: {len(rows)} cases checked; {len(failed)} failures; no physical hardware accessed.')
     return bool(failed)

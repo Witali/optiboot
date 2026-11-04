@@ -2,11 +2,20 @@
  * Full aligned physical-page writes, reads of 1..PAGE bytes, no Boot access.
  * GPL-2.0-or-later; see the repository LICENSE.
  */
+#ifndef MINI_FLASHREAD_EXPERIMENTAL_328PB_512
+#define MINI_FLASHREAD_EXPERIMENTAL_328PB_512 0
+#endif
+#if MINI_FLASHREAD_EXPERIMENTAL_328PB_512
+#if !defined(__AVR_ATmega328PB__) || !MINI_FLASH256_READBACK || BOOT_BYTES != 512 || FLASH_SIZE != 32768 || FLASH_PAGE_BYTES != 128 || MINI_UART_STYLE != 0 || MINI_VIRTUAL_BOOT
+#error Experimental Mini512 requires exactly ATmega328PB, 32KiB Flash, 128-byte pages, USART0 and 512 Boot bytes
+#endif
+#else
 #if !MINI_FLASH256_READBACK || BOOT_BYTES != 256
 #error Only the 256-byte Flash read/write profile is supported; write-only was removed
 #endif
 #if MINI_VIRTUAL_BOOT || FLASH_SIZE > 16384 || (MINI_UART_STYLE != 0 && MINI_UART_STYLE != 1)
 #error FlashRead256 requires an approved classic 8/16-KiB hardware-Boot ATmega
+#endif
 #endif
 #if FLASH_PAGE_BYTES != 64 && FLASH_PAGE_BYTES != 128
 #error FlashRead256 requires 64/128-byte Flash pages
@@ -46,7 +55,7 @@ cmd_parameter:
     /* Keep a byte-address relocation: LLVM mis-encodes a folded section difference. */
     ldi r30,lo8(parameter_constant + BOOT_START)
 #if BOOT_BYTES != 256
-    ldi r31,hi8(BOOT_START + parameter_constant - _start)
+    ldi r31,hi8(parameter_constant + BOOT_START)
     rjmp read_common
 #else
     rjmp internal_read
