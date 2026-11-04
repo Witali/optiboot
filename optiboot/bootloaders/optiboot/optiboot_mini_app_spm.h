@@ -22,9 +22,13 @@
  * entry does NOT mask interrupts and does NOT poll EEPE before SPM: the
  * application must disable unsafe interrupts, ensure EEPROM writes are
  * finished, and restore its own SREG after the complete page operation.
- * The service rejects addresses in the configured Boot section, including
- * RWW / lock commands; pass address 0 for address-independent commands.
- * For example, Middle ATmega328P rejects byte addresses >= 0x7E00.
+ * Both services reject page fill/erase/write addresses in the configured
+ * Boot section. The compact service applies this address guard to every
+ * command; Middle ATmega328P therefore rejects addresses >= 0x7E00.
+ * The Full service accepts RWW re-enable (0x11) and lock-bit programming
+ * (0x09) independently of the address. Pass address 0 for these commands.
+ * Lock-bit programming can tighten protection and is not a read operation;
+ * the hardware test probes never invoke it.
  */
 #ifndef OPTIBOOT_MINI_APP_SPM_H
 #define OPTIBOOT_MINI_APP_SPM_H

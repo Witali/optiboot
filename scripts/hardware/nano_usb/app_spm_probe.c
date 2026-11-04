@@ -1,4 +1,4 @@
-/* GPL-2.0-or-later. Exercise the installed Middle512 application SPM ABI.
+/* GPL-2.0-or-later. Exercise the installed Middle512 or Full1024 application SPM ABI.
  * Only PGERS/SPMEN, page-buffer fill and PGWRT/SPMEN are used. No lock command.
  * The final application page is restored before reporting; the host independently
  * verifies the whole Flash, including Boot, and finally restores the user's app.
@@ -10,16 +10,22 @@
 #include <avr/wdt.h>
 #include <stdint.h>
 
+#ifndef OPTIBOOT_MINI_BOOT_BYTES
 #define OPTIBOOT_MINI_BOOT_BYTES 512
+#endif
+#if OPTIBOOT_MINI_BOOT_BYTES == 512
 #define OPTIBOOT_MINI_SPM512 1
+#elif OPTIBOOT_MINI_BOOT_BYTES != 1024
+#error Select the installed 512-byte Middle or 1024-byte Full Boot section.
+#endif
 #include "optiboot_mini_app_spm.h"
 
 #if FLASHEND != 0x7FFF || SPM_PAGESIZE != 128 || F_CPU != 16000000UL
 #error This physical probe is restricted to the 16 MHz ATmega328P/328PB layout.
 #endif
 
-#define SCRATCH_ADDRESS 0x7D80
-#define BOOT_ADDRESS 0x7E00
+#define BOOT_ADDRESS ((uint16_t)((uint32_t)FLASHEND + 1UL - OPTIBOOT_MINI_BOOT_BYTES))
+#define SCRATCH_ADDRESS (BOOT_ADDRESS - SPM_PAGESIZE)
 
 static uint8_t original_page[128];
 static uint8_t erased_ok, written_ok, restored_ok, observed_r1;
