@@ -13,6 +13,7 @@ param(
     [string]$RestoreFromDirectory = '',
     [switch]$ColdStart,
     [switch]$ColdStartOnly,
+    [switch]$DiagnosticsOnly,
     [switch]$Run
 )
 
@@ -51,6 +52,9 @@ $applicationBytes = $editionSettings.ApplicationBytes
 $scratchAddress = $editionSettings.ScratchAddress
 $expectedHighFuse = $editionSettings.HighFuse
 $restoreOnly = -not [string]::IsNullOrWhiteSpace($RestoreFromDirectory)
+if ($DiagnosticsOnly -and ($restoreOnly -or $ColdStart -or $ColdStartOnly -or $Edition-eq 'basic')) {
+    throw '-DiagnosticsOnly requires Middle or Full and cannot be combined with cold-start or restoration modes.'
+}
 if ($ColdStartOnly -and $restoreOnly) { throw '-ColdStartOnly cannot be combined with -RestoreFromDirectory.' }
 if ($ColdStartOnly) { $ColdStart = $true }
 if ($restoreOnly) { $taskDir = [IO.Path]::GetFullPath($RestoreFromDirectory) }
@@ -81,6 +85,7 @@ Set-Location -LiteralPath $taskDir
 if (-not ('AvrProcessRunner' -as [type])) { Add-Type -LiteralPath (Join-Path $sourceDir 'AvrProcessRunner.cs') }
 $script:checks = [Collections.Generic.List[object]]::new()
 $script:serialPort = $null
+$script:lastCaptureMetrics = $null
 
 function Add-Check([string]$Name) {
     $script:checks.Add([ordered]@{name=$Name; result='PASS'})
@@ -148,6 +153,7 @@ function Open-Serial {
     $script:serialPort.ReadTimeout = 1500
     $script:serialPort.WriteTimeout = 1500
     $script:serialPort.Open()
+    $script:serialPort.DiscardInBuffer()
 }
 function Close-Serial {
     if ($null -ne $script:serialPort) { $script:serialPort.Dispose(); $script:serialPort=$null }
@@ -192,12 +198,33 @@ function Write-Memory([int]$Address,[byte]$Type,[byte[]]$Payload) {
     $packet=[byte[]](@(0x64,(($Payload.Length-shr 8)-band 0xFF),($Payload.Length-band 0xFF),$Type)+$Payload+@(0x20))
     Send-Expect $packet ([byte[]]@(0x14,0x10)) 'PROG_PAGE'
 }
-function Capture-Output([int]$Milliseconds) {
+function Read-AvailableText($Connection,$ReadCalls = $null) {
+    # ReadCalls is an optional PowerShell [ref] counter; only returned bytes decode.
+    $available = [int]$Connection.BytesToRead
+    if ($available-le 0) { return [string]::Empty }
+    $requested = [Math]::Min($available,4096)
+    $buffer = [byte[]]::new($requested)
+    if ($null-ne $ReadCalls) { $ReadCalls.Value = [int]$ReadCalls.Value + 1 }
+    $actual = [int]$Connection.Read($buffer,0,$requested)
+    if ($actual-lt 0 -or $actual-gt $requested) { throw 'Serial reader returned an invalid byte count.' }
+    return [Text.Encoding]::ASCII.GetString($buffer,0,$actual)
+}
+function Capture-Output([int]$Milliseconds,[string]$EvidenceName = '') {
     $text=[Text.StringBuilder]::new()
     $timer=[Diagnostics.Stopwatch]::StartNew()
-    while ($timer.ElapsedMilliseconds -lt $Milliseconds) {
-        [void]$text.Append($script:serialPort.ReadExisting())
-        Start-Sleep -Milliseconds 20
+    $readCalls=0
+    try {
+        while ($timer.ElapsedMilliseconds -lt $Milliseconds) {
+            [void]$text.Append((Read-AvailableText $script:serialPort ([ref]$readCalls)))
+            Start-Sleep -Milliseconds 20
+        }
+    } finally {
+        $script:lastCaptureMetrics=[ordered]@{requested_ms=$Milliseconds;elapsed_ms=$timer.Elapsed.TotalMilliseconds;
+            bytes_read=$text.Length;read_calls=$readCalls;maximum_read_bytes=4096;encoding='ASCII';
+            observed_bytes_per_second=($text.Length*1000.0/[Math]::Max(1.0,$timer.Elapsed.TotalMilliseconds))}
+        if(-not [string]::IsNullOrWhiteSpace($EvidenceName)) {
+            $script:lastCaptureMetrics | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $taskDir ($EvidenceName+'.capture.json')) -Encoding utf8
+        }
     }
     return $text.ToString()
 }
@@ -226,8 +253,9 @@ function Crc16([byte[]]$Data) {
 }
 function Probe-Ready([int]$TimeoutMs=1500,[switch]$AfterArmed) {
     $text=[Text.StringBuilder]::new();$timer=[Diagnostics.Stopwatch]::StartNew()
+    $readCalls=0
     while($timer.ElapsedMilliseconds-lt $TimeoutMs){
-        [void]$text.Append($script:serialPort.ReadExisting())
+        [void]$text.Append((Read-AvailableText $script:serialPort ([ref]$readCalls)))
         $received=$text.ToString()
         if($AfterArmed){
             $armed=$received.IndexOf('WDT_ARMED')
@@ -239,7 +267,8 @@ function Probe-Ready([int]$TimeoutMs=1500,[switch]$AfterArmed) {
             return [pscustomobject]@{reason=[Convert]::ToInt32($match.Groups[1].Value,16);
                 r1=[Convert]::ToInt32($match.Groups[2].Value,16);mcusr=[Convert]::ToInt32($match.Groups[3].Value,16);
                 wdt=[Convert]::ToInt32($match.Groups[4].Value,16);entry=[Convert]::FromHexString($match.Groups[5].Value);
-                ticks=[Convert]::ToInt32($match.Groups[6].Value,16);elapsed_ms=$timer.ElapsedMilliseconds}
+                ticks=[Convert]::ToInt32($match.Groups[6].Value,16);elapsed_ms=$timer.ElapsedMilliseconds;
+                bytes_read=$text.Length;read_calls=$readCalls}
         }
         Start-Sleep -Milliseconds 5
     }
@@ -269,11 +298,17 @@ function Get-ColdStartProof([byte[]]$Record,[int]$Ticks,[ValidateSet('basic','mi
     throw 'Application execution before the host connection was not confirmed.'
 }
 function Assert-DiagnosticFrames([string]$Capture) {
+    if($Capture.Contains([char]0)){throw 'Runtime diagnostic capture contains NUL bytes.'}
     $frames=[regex]::Matches($Capture,'BOOT_ACCESS_DIAGNOSTICS_V1\r?\n(.*?)END_BOOT_ACCESS_DIAGNOSTICS',[Text.RegularExpressions.RegexOptions]::Singleline)
     if($frames.Count-lt 3){throw 'Fewer than three runtime diagnostic frames received.'}
     $zeroCrc=Crc16 ([byte[]]::new($bootBytes))
     foreach($frame in $frames){
-        $fields=@{}; foreach($line in ($frame.Groups[1].Value -split '\r?\n')){if($line.Contains('=')){$pair=$line.Split('=',2);$fields[$pair[0]]=$pair[1]}}
+        if($frame.Groups[1].Value.Contains('BOOT_ACCESS_DIAGNOSTICS_V1')){throw 'Runtime diagnostic capture contains nested frames.'}
+        $fields=@{}; foreach($line in ($frame.Groups[1].Value -split '\r?\n')){if($line.Contains('=')){
+            $pair=$line.Split('=',2)
+            if($fields.ContainsKey($pair[0])){throw 'Runtime diagnostic frame contains a duplicate field.'}
+            $fields[$pair[0]]=$pair[1]
+        }}
         foreach($entry in @(@('signature','1E9516'),@('lfuse','FF'),@('hfuse',$expectedHighFuse),@('efuse','FD'),@('lock_raw','CF'),
             @('lock_implemented','0F'),@('repeated_reads','STABLE'),@('boot_size_hex',$bootBytes.ToString('X4')),@('boot_start_hex',$bootStart.ToString('X4')),
             @('reset_target','BOOT'),@('app_lpm_boot','BLOCKED_BY_LOCK_BITS'),@('boot_spm_boot','BLOCKED_BY_LOCK_BITS'),
@@ -307,7 +342,8 @@ function Invoke-BuildTool([string]$Name,[string[]]$ToolArgs) {
 }
 if ($editionSettings.RequiresIsp) { Assert-IspEvidence }
 if (-not $restoreOnly) {
-    foreach ($probe in @('diagnostics','watchdog_probe')) {
+    $probeNames = if($DiagnosticsOnly){@('diagnostics')}else{@('diagnostics','watchdog_probe')}
+    foreach ($probe in $probeNames) {
         $source = Tool-Path (Join-Path $sourceDir ($probe+'.c'))
         $elf = Tool-Path (Join-Path $taskDir ($probe+'.elf'))
         $bin = Tool-Path (Join-Path $taskDir ($probe+'.bin'))
@@ -319,7 +355,7 @@ if (-not $restoreOnly) {
             throw 'A diagnostic probe contains an SPM instruction.'
         }
     }
-    if ($editionSettings.HasAppSpm -and -not $ColdStartOnly) {
+    if ($editionSettings.HasAppSpm -and -not $ColdStartOnly -and -not $DiagnosticsOnly) {
         $source = Tool-Path (Join-Path $sourceDir 'app_spm_probe.c')
         $include = Tool-Path (Join-Path $repoRoot 'optiboot/bootloaders/optiboot')
         $elf = Tool-Path (Join-Path $taskDir 'app_spm_probe.elf')
@@ -367,7 +403,7 @@ $testFlash=[byte[]]$beforeFlash.Clone();[Array]::Copy($testApp,0,$testFlash,0,$t
 $testEeprom=[byte[]]::new(1024)
 for($i=0;$i-lt 1024;$i++){$testEeprom[$i]=(($i*37)-bxor($i-shr 8)-bxor 0x5A)-band 0xFF}
 [IO.File]::WriteAllBytes((Join-Path $taskDir 'test-eeprom.bin'),$testEeprom)
-[ordered]@{port=$Port;baud=$Baud;edition=$Edition;signature='1E9516';boot_sha256=$bootHash;boot_bytes=$bootBytes;boot_start=('0x'+$bootStart.ToString('X4'));application_test_bytes=$(if($ColdStartOnly){0}else{$applicationBytes});eeprom_test_bytes=$(if($ColdStartOnly){0}else{1024});diagnostic_bytes=$diagnostic.Length;restore_in_finally=$true;private_output=$taskDir;restore_only=$restoreOnly;cold_start_only=[bool]$ColdStartOnly}|ConvertTo-Json|Write-Output
+[ordered]@{port=$Port;baud=$Baud;edition=$Edition;signature='1E9516';boot_sha256=$bootHash;boot_bytes=$bootBytes;boot_start=('0x'+$bootStart.ToString('X4'));application_test_bytes=$(if($ColdStartOnly-or $DiagnosticsOnly){0}else{$applicationBytes});eeprom_test_bytes=$(if($ColdStartOnly-or $DiagnosticsOnly){0}else{1024});diagnostic_bytes=$diagnostic.Length;restore_in_finally=$true;private_output=$taskDir;restore_only=$restoreOnly;cold_start_only=[bool]$ColdStartOnly;diagnostics_only=[bool]$DiagnosticsOnly}|ConvertTo-Json|Write-Output
 if(-not $Run){return}
 if ($restoreOnly) {
     Invoke-Avr (@('-n','-D','-A') + (Identity-VerifyArgs))
@@ -400,6 +436,7 @@ $coldQueryReason=$null
 $coldStartProof=$null
 $runtimeConfigurationVerified=$false
 try {
+    if(-not $DiagnosticsOnly){
     if(-not $ColdStartOnly){
     # Only application Flash is written; the protected boot section is excluded.
     Invoke-Avr @('-D','-A','-U','flash:w:test-application.bin:r','-U','eeprom:w:test-eeprom.bin:r')
@@ -407,7 +444,7 @@ try {
     Add-Check 'AVRDUDE write and automatic verify of all 1024 EEPROM bytes'
 
     Open-Serial
-    $capture=Capture-Output 7200
+    $capture=Capture-Output 7200 'runtime-diagnostics'
     [IO.File]::WriteAllText((Join-Path $taskDir 'runtime-diagnostics.txt'),$capture)
     Assert-DiagnosticFrames $capture
     Add-Check 'Application starts after AVRDUDE LEAVE_PROGMODE and prints at 115200 baud'
@@ -626,16 +663,17 @@ try {
         Add-Check $(if($editionSettings.PreservesResetFlags){'Physical power cycle confirms autonomous application startup and execution'}else{'Physical power-off/on runs the application autonomously before the host opens the port'})
         Close-Serial
     }
+    }
     if($editionSettings.RequiresIsp){
         # Independently recheck actual silicon configuration from the read-only
         # application after all protocol/reset tests, also for Middle without fuse queries.
         Invoke-Avr @('-D','-A','-U','flash:w:diagnostics.bin:r')
         Open-Serial
-        $capture=Capture-Output 7200
+        $capture=Capture-Output 7200 'final-runtime-diagnostics'
         [IO.File]::WriteAllText((Join-Path $taskDir 'final-runtime-diagnostics.txt'),$capture)
         Assert-DiagnosticFrames $capture
         $runtimeConfigurationVerified=$true
-        Add-Check ('Actual signature, fuses and locks unchanged after '+$Edition+' protocol/reset tests')
+        Add-Check $(if($DiagnosticsOnly){'Focused diagnostics: three stable direct signature, fuse, lock and Boot-access reports'}else{'Actual signature, fuses and locks unchanged after '+$Edition+' protocol/reset tests'})
         Close-Serial
     }
 } catch {
@@ -656,6 +694,7 @@ try {
             checks=$script:checks;failure=$failure;original_state_restored=$restorePassed;
             cold_start_requested=[bool]$ColdStart;cold_start_passed=$coldStartPassed;cold_start_query_reason=$coldQueryReason;
             cold_start_only=[bool]$ColdStartOnly;cold_start_proof=$coldStartProof;
+            diagnostics_only=[bool]$DiagnosticsOnly;test_mode=$(if($DiagnosticsOnly){'diagnostics_only'}elseif($ColdStartOnly){'cold_start_only'}else{'full'});
             watchdog_cycles=$watchdogCompleted;dtr_cycles=$dtrCompleted;max_watchdog_restart_host_ms=$watchdogMaxMs;
             middle_runtime_configuration_verified=($middle -and $runtimeConfigurationVerified);runtime_configuration_verified=$runtimeConfigurationVerified;
             lfuse='FF';hfuse=$expectedHighFuse;efuse='FD';lock='CF'} |

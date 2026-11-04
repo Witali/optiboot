@@ -78,6 +78,15 @@ and handoff check, power-cycle evidence, final direct diagnostics, and complete
 application/EEPROM restoration. It skips the full memory/raw protocol/appSPM
 phases and the 50 watchdog, 20 DTR, BREAK and reconnect stress cases.
 
+For a focused direct-configuration retry, use `-DiagnosticsOnly -Run` with
+`-Edition middle` or `-Edition full` and that installation's ISP evidence.
+This mode takes and verifies fresh serial backups, uploads only the read-only
+diagnostic application, requires at least three complete valid reports, and
+restores/verifies the complete original application and EEPROM in `finally`.
+It skips memory patterns, raw protocol, appSPM, watchdog, DTR, BREAK, reconnect
+and cold-start tests. It rejects Basic, restoration mode, and either cold-start
+flag. A new output directory is required, and the result records `diagnostics_only`.
+
 The ISP directory must contain `after-flash.bin` (32768 bytes),
 `after-eeprom.bin` (1024 bytes), and the actual `after-signature.bin`,
 `after-lfuse.bin`, `after-hfuse.bin`, `after-efuse.bin`, `after-lock.bin` readouts.
@@ -116,6 +125,15 @@ physical probe never calls lock-bit programming (`0x09`) or RWW-only (`0x11`).
 The runner finds `../etc/avrdude.conf` beside the executable when available.
 Use `-AvrdudeConfig <absolute-path>` to override it. Omit
 `-UseWslToolchain` when the AVR build tools are on the Windows PATH.
+
+Text capture uses byte reads of at most 4096 bytes and decodes only the count
+actually returned by each read. Opening a serial connection discards pending
+input before the controlled test/query. Each diagnostic capture saves a private
+`*.capture.json` with actual bytes, elapsed time, read calls and observed byte rate;
+115200 baud with 8N1 permits 11520 wire bytes per second. The corresponding raw
+text remains available for inspection. NULs, nested banners, duplicate fields,
+incorrect configuration or fewer than three valid reports fail validation;
+the runner does not discard malformed reports to obtain a pass.
 
 Each invocation creates a **new** output directory under the checkout's
 ignored `.worktree/` directory. `-OutputDirectory` can select a new directory
@@ -161,6 +179,8 @@ pending power-cycle step and enters restoration.
 Run `test_cold_evidence.ps1` to check edition geometry/configuration and cold-start
 evidence acceptance/rejection without any hardware. It extracts only the pure helpers through the PowerShell AST and does
 not execute the hardware runner.
+Run `test_serial_capture.ps1` for hardware-free partial-read, zero/no-data,
+4096-byte chunk, capture-accounting and strict diagnostic-frame checks.
 
 Run `test_process_runner.ps1` for hardware-free child-process checks, including
 merged-output pipelines, complete stream capture, console writes on the calling
