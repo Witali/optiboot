@@ -91,6 +91,11 @@ Middle hash, including a focused cold-start retry. The separate
 on another ATmega328PB Nano with the exact 1024-byte image, including a final
 diagnostic retry. Other configurations retain their software-only qualification.
 
+The separate [Mini512 experiment](MINI512_ATMEGA328PB_EXPERIMENT_2026-11-04.md)
+tests the Mini Flash protocol on ATmega328PB with 255 useful bytes in its
+512-byte hardware Boot reservation. Its 55 USB checks and final ISP verification
+do not qualify a real 256-byte Boot section or expand the canonical Mini target list.
+
 The new editions remain experimental. Software models do not establish silicon
 errata, real SPM/EEPROM latency, oscillator tolerance, electrical UART timing or
 power-loss recovery. ATtiny Virtual Boot has no hardware Boot-region protection

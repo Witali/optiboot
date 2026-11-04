@@ -24,6 +24,11 @@ code and three signature bytes occupy 249..255 bytes on all 14 supported
 parts; the remaining bytes are `0xFF` padding. ATmega328P/PB have a physical
 512-byte minimum and cannot use this edition.
 
+An explicit [Mini512 ATmega328PB experiment](../../../docs/mini/MINI512_ATMEGA328PB_EXPERIMENT_2026-11-04.md)
+uses the chip's physical 512-byte reservation with 255 useful bytes. Build it
+through `build_flashread.py --mcu atmega328pb --experimental-328pb-512`;
+the normal generator's canonical edition list remains unchanged.
+
 See the [feature comparison](../../../docs/mini/FEATURES.md),
 [software validation report](../../../docs/mini/UART_VALIDATION_2026-11-01.md)
 and [ATtiny workflow](../../../docs/mini/VIRTUAL_BOOT.md). The older

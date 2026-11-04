@@ -1,5 +1,10 @@
 # ATmega328PB Nano USB hardware tests
 
+The separate [Mini512 experiment](../../../docs/mini/MINI512_ATMEGA328PB_EXPERIMENT_2026-11-04.md)
+uses its own `test_nano_mini512.ps1` runner and mandatory final ISP EEPROM
+restoration/Boot verification. The runner documented below is for Basic,
+Middle and Full.
+
 This is a repeatable bench test for **Optiboot Mini on an ATmega328PB Nano,
 16 MHz, USART0 at 115200 baud**, with the edition-specific Boot layout below.
 It uses real AVRDUDE transfers and a serial protocol client. It does not
