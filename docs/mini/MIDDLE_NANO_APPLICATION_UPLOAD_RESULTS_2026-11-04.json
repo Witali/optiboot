@@ -1,0 +1,53 @@
+{
+  "date": "2026-11-04",
+  "result": "PASS",
+  "board": "Nano",
+  "mcu": "ATmega328PB",
+  "signature": "1E9516",
+  "edition": "middle",
+  "boot_start": "0x7E00",
+  "boot_bytes": 512,
+  "boot_sha256": "156d3701c01e5a9f5008b371c08e4753b7d7200e1535b1c776755040723a99c1",
+  "application_capacity_bytes": 32256,
+  "tools": {
+    "avrdude": "8.0-arduino.1",
+    "powershell": "7.6.5"
+  },
+  "preceding_isp_read_only_check": {
+    "programmer": "USBasp",
+    "signature": "1E9516",
+    "middle_boot_fingerprint_matched": true,
+    "lfuse": "FF",
+    "hfuse": "DE",
+    "efuse": "FD",
+    "lock": "CF",
+    "writes_performed": false,
+    "physical_identity_with_usb_board_established": false
+  },
+  "usb_upload": {
+    "protocol": "arduino",
+    "baud": 115200,
+    "application_filename": "lpx-nano-dialogue-quality.hex",
+    "application_hex_file_sha256": "444c05056d384394692269723415795a91385ceebbb942f01cb28aeb7aa2c2f6",
+    "intel_hex_validated": true,
+    "overlapping_data_records": false,
+    "application_data_bytes": 10486,
+    "application_first_address": "0x0000",
+    "application_last_address": "0x28F5",
+    "application_data_contiguous": true,
+    "before_flash_backup_bytes": 32768,
+    "before_eeprom_backup_bytes": 1024,
+    "avrdude_write_and_automatic_verification_passed": true,
+    "independent_application_readback_bytes_matched": 10486,
+    "after_flash_readback_bytes": 32768,
+    "boot_bytes_unchanged": 512,
+    "eeprom_bytes_unchanged": 1024,
+    "application_left_installed": true,
+    "previous_application_restored": false,
+    "bootloader_or_fuse_writes_requested": false
+  },
+  "application_behavior_tested": false,
+  "arduino_ide_upload_tested": false,
+  "full_protocol_suite_repeated": false,
+  "raw_captures_and_application_hex_published": false
+}

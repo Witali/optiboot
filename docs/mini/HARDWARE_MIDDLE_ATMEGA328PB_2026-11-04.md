@@ -110,3 +110,7 @@ as part of this bench run.
 This report qualifies one board with this exact image and configuration. Other
 devices, editions, clocks, voltage/temperature margins and erase/write power-loss
 behavior retain their separate validation requirements.
+
+A subsequent [application upload check](MIDDLE_NANO_APPLICATION_UPLOAD_2026-11-04.md)
+identified Middle on a USB-connected ATmega328PB Nano and verified the supplied
+10486-byte application, unchanged Boot and unchanged EEPROM.
