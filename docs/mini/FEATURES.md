@@ -84,7 +84,10 @@ The [2026-10-30 hardware report](HARDWARE_ATMEGA328PB_2026-10-30.md) records
 42 physical checks on one ATmega328PB Nano running the older Basic image with
 SHA-256 `149ebc0347815b42daaa20defce83342462306e9ddd3f15c63eeb59baafd70d1`.
 Those results do not qualify the new Middle, Full or Mini binaries.
-No boards were accessed in the current software-only test round.
+The separate [2026-11-04 Middle report](HARDWARE_MIDDLE_ATMEGA328PB_2026-11-04.md)
+records 45 physical checks on one ATmega328PB Nano with the exact 512-byte
+Middle hash, including a focused cold-start retry. Other profiles retain their
+software-only qualification.
 
 The new editions remain experimental. Software models do not establish silicon
 errata, real SPM/EEPROM latency, oscillator tolerance, electrical UART timing or

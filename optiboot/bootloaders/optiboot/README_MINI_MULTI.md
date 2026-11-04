@@ -30,6 +30,11 @@ and [ATtiny workflow](../../../docs/mini/VIRTUAL_BOOT.md). The older
 [ATmega328PB hardware report](../../../docs/mini/HARDWARE_ATMEGA328PB_2026-10-30.md)
 applies to its recorded SHA-256 only, not these new editions.
 
+The [2026-11-04 Middle hardware report](../../../docs/mini/HARDWARE_MIDDLE_ATMEGA328PB_2026-11-04.md)
+qualifies the pinned 512-byte ATmega328PB image on one Nano. It includes full
+memory transfers, protocol checks, application SPM, reset stress, a focused
+cold-start retry and verified application/EEPROM restoration.
+
 The [ATmega168PB addendum](../../../docs/mini/ATMEGA168PB_2026-11-01.md)
 extends the earlier 38-device results with the 39th device and its three editions.
 

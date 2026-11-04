@@ -28,7 +28,10 @@ The [ATmega168PB addendum](docs/mini/ATMEGA168PB_2026-11-01.md) records the
 new profile's device map, all three editions and additional software checks.
 The [earlier Nano hardware results](docs/mini/HARDWARE_ATMEGA328PB_2026-10-30.md)
 apply only to the recorded older Basic image. The new editions have software
-evidence only. The existing C implementation and board targets remain available.
+evidence for their complete profile matrix. A separate
+[Middle ATmega328PB hardware report](docs/mini/HARDWARE_MIDDLE_ATMEGA328PB_2026-11-04.md)
+records physical validation of the exact 512-byte image on one Nano. The
+existing C implementation and board targets remain available.
 
 ## Optiboot_X
 As of 2019, Atmel was acquired by Microchip Inc, and released several "new" architectures with the AVR CPU.  These are known as the Mega-0, Tiny-0, and Tiny-1 Series.  While the basic CPU operation is about the same as older AVRs, the peripherals, including Flash self-programming, are significantly different.  This justified a new version of Optiboot with separate source code and Makefiles, which we're calling "optiboot_x" (the new AVR chips closely resemble the "AVR XMega" chips.)
