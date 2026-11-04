@@ -162,6 +162,12 @@ Run `test_cold_evidence.ps1` to check edition geometry/configuration and cold-st
 evidence acceptance/rejection without any hardware. It extracts only the pure helpers through the PowerShell AST and does
 not execute the hardware runner.
 
+Run `test_process_runner.ps1` for hardware-free child-process checks, including
+merged-output pipelines, complete stream capture, console writes on the calling
+thread, exit-code propagation and prompt cancellation after a transport error.
+The process helper queues asynchronous output and forwards it from the calling
+thread; its 180-second timeout remains active.
+
 ## Coverage
 
 - Read and independently verify complete Flash, EEPROM, signature, fuses
