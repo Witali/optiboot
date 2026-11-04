@@ -51,7 +51,7 @@ optional C build configurations can differ.
 |---|---|---|
 | Smallest verified upload profile | Flash write plus readback in 256 bytes on 14 eligible parts | Size/layout checks and executed instructions for each part; no physical validation yet |
 | EEPROM support | Included in Middle/Full, rather than a default-disabled EEPROM option | Every EEPROM byte transferred in each supported profile's memory test |
-| Real fuse/lock inspection | Full returns actual bytes for four read-only UNIVERSAL operations | Instruction-model tests; older Basic PB build also has separate physical evidence |
+| Real fuse/lock inspection | Full returns actual bytes for four read-only UNIVERSAL operations | Instruction-model tests plus [physical Full ATmega328PB reads](HARDWARE_FULL_ATMEGA328PB_2026-11-04.md) |
 | Defensive protocol checks | Explicit packet, memory-type, length, alignment, overflow and Boot-region checks | Negative-case regressions; no power-loss atomicity guarantee |
 | Large AVR addressing | Extended Flash support through 256 KiB, independent EEPROM addressing | Actual AVRDUDE tested against instruction models, including upper-bank Flash followed by EEPROM |
 | Configuration and build output | Validated edition/device/clock combinations, BIN/HEX agreement and SHA-256 metadata | Earlier 423 clock/edition builds plus 18 ATmega168PB builds and self-contained generator tests |
@@ -86,8 +86,10 @@ SHA-256 `149ebc0347815b42daaa20defce83342462306e9ddd3f15c63eeb59baafd70d1`.
 Those results do not qualify the new Middle, Full or Mini binaries.
 The separate [2026-11-04 Middle report](HARDWARE_MIDDLE_ATMEGA328PB_2026-11-04.md)
 records 45 physical checks on one ATmega328PB Nano with the exact 512-byte
-Middle hash, including a focused cold-start retry. Other profiles retain their
-software-only qualification.
+Middle hash, including a focused cold-start retry. The separate
+[Full report](HARDWARE_FULL_ATMEGA328PB_2026-11-04.md) records 49 distinct checks
+on another ATmega328PB Nano with the exact 1024-byte image, including a final
+diagnostic retry. Other configurations retain their software-only qualification.
 
 The new editions remain experimental. Software models do not establish silicon
 errata, real SPM/EEPROM latency, oscillator tolerance, electrical UART timing or
