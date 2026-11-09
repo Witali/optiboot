@@ -34,6 +34,20 @@ for features, protocol limits, build/test
 commands, and the complete research history. Validation uses a limited software
 AVR model; testing on a physical ATmega328P has not yet been performed.
 
+## Experimental multi-device Mini / Middle / Full
+
+The November 2026 [multi-device assembly module](optiboot/bootloaders/optiboot_mini/README.md)
+adds the unified generator, 38 AVR device profiles, and 63 active Middle/Full
+builds. ATtiny Middle uses the smallest complete Flash erase-group reservation
+that fits: 576 bytes for ATtiny84/85 and 512 bytes for ATtiny841/1634. Full stays
+at 1024 bytes. Matching ISP seed and application-vector patches are required.
+
+The existing experimental ATmega328P implementation and upstream C build
+targets retain their own sources and protocol contracts. The imported module
+includes source, English documentation, original release BIN/HEX images, and
+software compatibility tests. Physical AVR and actual serial AVRDUDE validation
+remain pending. See its build instructions and validation record before use.
+
 ## Notes on IDE Version compatibility
 Optiboot is "compatible", in a loose sense, with all versions of the Arduino IDE.  It was originally written at about the same time as v1.0, and has some "quirks" that date back to that timeframe.  Most significantly, the directory structure of the git repository is "weird."
 

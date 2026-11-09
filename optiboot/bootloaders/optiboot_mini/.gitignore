@@ -1,0 +1,7 @@
+/output/
+/generated/
+__pycache__/
+*.pyc
+/optiboot_mini328.bin
+/optiboot_mini328.hex
+/optiboot_mini328.o
