@@ -1,0 +1,958 @@
+{
+  "archive": "Optiboot_VirtualBoot_PageAligned_512_576_2026-11-08.zip",
+  "archive_sha256": "9e7a209c8b760f7e004d7169b931269719b6b509c9b279a877d22019a7037dc9",
+  "downloaded_on": "2026-11-09",
+  "repository_base": "cc260444d54aaff41e36837d7ce3c772a2dbfbc0",
+  "notes": [
+    "Active multi-device source is imported separately from the existing hardened ATmega328P implementation.",
+    "Russian documentation is translated to English; historical findings remain historical.",
+    "Original assembly, device/UART includes, and release BIN/HEX bytes are retained.",
+    "Host builders are adapted for LLVM local relocations and GNU assembler numeric defines.",
+    "The archive Makefile.custom, transient exp directory, historical patch files and object files are not installed.",
+    "The original ZIP is retained in the local import staging directory, outside the tracked tree.",
+    "Tests use the current reservation policy; missing historical snapshot comparisons are explicitly skipped.",
+    "The default ATmega328P baseline pin is corrected to the value already recorded by its original multidevice regression.",
+    "HEX preparation supports explicit 512-byte FlashRead512 reservations while preserving the 256-byte default."
+  ],
+  "entries": [
+    {
+      "archive_path": "source/AGENT_BRIEF_EN.md",
+      "original_sha256": "a7c2127a101f7ca47a4036b82786a7543fddf6c3331edf29a440239163c004a5",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/AGENT_BRIEF.md",
+      "imported_sha256": "26762d0e25e4205cdba3f21e186a1c225a76d8e6ae6aab1afef259be5e47c0e3",
+      "adapted": true
+    },
+    {
+      "archive_path": "source/COPYING",
+      "original_sha256": "edaef632cbb643e4e7a221717a6c441a4c1a7c918e6e4d56debc3d8739b233f6",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/COPYING",
+      "imported_sha256": "edaef632cbb643e4e7a221717a6c441a4c1a7c918e6e4d56debc3d8739b233f6",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/FEATURE_PARITY_UPSTREAM.md",
+      "original_sha256": "f0d2a47520f9c2cb6ff653a7577b6578bb7b89e19f7fda3328e338d8aa24b68a",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/FEATURE_PARITY_UPSTREAM.md",
+      "imported_sha256": "8c3a47705e6fa27aec00bf5736129b2e316a1725cb25ae0cf35da2272fc7199e",
+      "adapted": true
+    },
+    {
+      "archive_path": "source/FLASHREAD512_DIFF.patch",
+      "original_sha256": "a7798cc357c14a8b0c7414c289fd301c9f748d1f8ac6057215d53da5e15ff56b",
+      "repository_path": null,
+      "imported_sha256": null,
+      "adapted": null
+    },
+    {
+      "archive_path": "source/FLASHREAD512_SIZE_MATRIX.csv",
+      "original_sha256": "01e8952a0b3a5d347103cd231725d91b072d548cfdd4c4c1b570611745c3d350",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/FLASHREAD512_SIZE_MATRIX.csv",
+      "imported_sha256": "8f99d3c6db4fd17d8d2aa4307ea559b3f6b1475ee97008c88e221410e35429c3",
+      "adapted": true
+    },
+    {
+      "archive_path": "source/GENERATOR_TEST_REPORT_RU.md",
+      "original_sha256": "8d05561aaee208fe16843b5eba96988058794d869ed97a331350b4edc2a24271",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/GENERATOR_TEST_REPORT.md",
+      "imported_sha256": "993f5af410d907409674497c617a00873072bf7341a34a8c06d587f5fa73b86d",
+      "adapted": true
+    },
+    {
+      "archive_path": "source/Makefile.custom",
+      "original_sha256": "c88805a81354a3c4f3870f6f8855fd6f48719713460c8745b244c010d780a9a9",
+      "repository_path": null,
+      "imported_sha256": null,
+      "adapted": null
+    },
+    {
+      "archive_path": "source/Makefile.dual",
+      "original_sha256": "ad94227f9ffdc7387ad5896e078129f797e0a8de48dafe99cef6f58d97304ece",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/Makefile.dual",
+      "imported_sha256": "ad94227f9ffdc7387ad5896e078129f797e0a8de48dafe99cef6f58d97304ece",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/Makefile.mini.inc",
+      "original_sha256": "71927791b875304b8e253da908c932f651d92d2630ac43542960265ba1a56043",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/Makefile.mini.inc",
+      "imported_sha256": "7bb498cd280a071b20a8c74ed566bdea441267070a73e5cb9a3fe2734caa2038",
+      "adapted": true
+    },
+    {
+      "archive_path": "source/Makefile.mini328.inc",
+      "original_sha256": "a8b2e309afe217e37a14c973c57825abd37c702c51615523faa5785fccfddbaa",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/Makefile.mini328.inc",
+      "imported_sha256": "a8b2e309afe217e37a14c973c57825abd37c702c51615523faa5785fccfddbaa",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/R11_TEST_REPORT_RU.md",
+      "original_sha256": "e37f8d58f5f3fb65710780a49fd6c0ad6b0c0f33fdebd55555d521d9e27560c0",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/R11_TEST_REPORT.md",
+      "imported_sha256": "c97da0243b44ddcec3950cc22768959736e98024e00879d01a59e8bb09bfab84",
+      "adapted": true
+    },
+    {
+      "archive_path": "source/README_DUAL_EDITIONS_RU.md",
+      "original_sha256": "1d9f4465c536d3f991b81823542d00e4add3d59facd411ae3a0b910f6860c146",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/README_DUAL_EDITIONS.md",
+      "imported_sha256": "698c84375e046b5d0b874a931305457c57bae619361c651fdee17a991a506b55",
+      "adapted": true
+    },
+    {
+      "archive_path": "source/README_FLASH256_AVRDUDE_RU.md",
+      "original_sha256": "117a951d4d1ef61f5c92676f1be7db9f3ccbbf0f1d2c683d2eb3f2298a4724c9",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/README_FLASH256_AVRDUDE.md",
+      "imported_sha256": "9a599196362746b8f9737ae4da2760449d86c5acaa16d2b9e4363566443deeff",
+      "adapted": true
+    },
+    {
+      "archive_path": "source/README_FLASHREAD_512_RU.md",
+      "original_sha256": "7b3a1a12c549027aeef7db5b78a09401efca9181b929977aa702b8b36aad2763",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/README_FLASHREAD_512.md",
+      "imported_sha256": "ed5b0ee8ec317e1085d542223a0f45ab3636520c54659efae1de90cfb8a24a42",
+      "adapted": true
+    },
+    {
+      "archive_path": "source/README_GENERATOR_RU.md",
+      "original_sha256": "5ade25913f30957ffab5dfc717a5516bd375a711d65c44a0e409a3b77186d3e1",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/README_GENERATOR.md",
+      "imported_sha256": "91f3ff098c3d9212f5d0a67826efa67c22b84962f07565da4ebda99e040dd5ea",
+      "adapted": true
+    },
+    {
+      "archive_path": "source/README_MINI_MULTI.md",
+      "original_sha256": "c5c50f6ad2fdbd9e7d95c9b5cc32b49bbbce28a4a56eaa088f8b5ff043781366",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/README_MINI_MULTI.md",
+      "imported_sha256": "9a8e84a75afd4a8deac9aeb8b04e654775be46aa06f70515f3dab7dab70e7858",
+      "adapted": true
+    },
+    {
+      "archive_path": "source/README_PAGE_ALIGNED_UPDATE.md",
+      "original_sha256": "e713dd18316dc3a4f987a328e507fb7960c617a8b40d0ac422246a6c36e29572",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/README_PAGE_ALIGNED_UPDATE.md",
+      "imported_sha256": "7a6a544925a3624415e1755824cf8765c5409fb96a3a48d3bf8b7a123852050b",
+      "adapted": true
+    },
+    {
+      "archive_path": "source/README_UNIFIED_SOURCE_RU.md",
+      "original_sha256": "b6bd7d8b4b342f6103d0444caf528a68e85bbc6fb6ba422a3a27ddb848fde294",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/README_UNIFIED_SOURCE.md",
+      "imported_sha256": "38e1d1193bde8b9c62dcc56e85aedaa18984147bc3f87790ac55d11bf340c713",
+      "adapted": true
+    },
+    {
+      "archive_path": "source/README_VIRTUAL_BOOT_SIZING_RU.md",
+      "original_sha256": "88a9799a77c216a72f7f22b253e4e52fb3d18ed579f2a474170b7d7cfdd90841",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/README_VIRTUAL_BOOT_SIZING.md",
+      "imported_sha256": "632ab3aa5734444a68a3df1096f3e72230a225f6c9141634b8334ad045d727a7",
+      "adapted": true
+    },
+    {
+      "archive_path": "source/START_HERE_RU.md",
+      "original_sha256": "737808f53f99014bbf937eb5daf8f87b49576a738655180d4b27036095172380",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/START_HERE.md",
+      "imported_sha256": "14b312751eddde9cfb8c139d6e38debedcf3b5d111a15f149030da6809f8fcaa",
+      "adapted": true
+    },
+    {
+      "archive_path": "source/build_dual.py",
+      "original_sha256": "c3853b824b0bb6ea4ba6dc9cb350d3d80364520a2b6c2213b78ca04cb92bab1c",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/build_dual.py",
+      "imported_sha256": "c3853b824b0bb6ea4ba6dc9cb350d3d80364520a2b6c2213b78ca04cb92bab1c",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/build_flash256.py",
+      "original_sha256": "52be177c47ca68058f76a4ce971db90ade6e81625f41ca803f956d03ea0f4672",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/build_flash256.py",
+      "imported_sha256": "d07a9bc50650040243f228e3a8b9257d45012d908e3ae19c821f6c6d78dfa6c7",
+      "adapted": true
+    },
+    {
+      "archive_path": "source/build_flash256_readback.py",
+      "original_sha256": "1a46ac962bd465054a4c92267e27ae9b4d9503a8e2f95baa8d73ae38e8743825",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/build_flash256_readback.py",
+      "imported_sha256": "6067f2a7a07c50c3e7647810387873b77fe03e4998f51272b37c1cdfe8f314e1",
+      "adapted": true
+    },
+    {
+      "archive_path": "source/build_mini.py",
+      "original_sha256": "5d8327a6e2d0b566963f2558c54a691577a5289eb7f0349e708ae4b31838163c",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/build_mini.py",
+      "imported_sha256": "8e907f6cd735cd536713053b2d966b463f3119d87d1c880191ff6757f8892f64",
+      "adapted": true
+    },
+    {
+      "archive_path": "source/build_mini328.py",
+      "original_sha256": "1fa79167916f6c1c252da84e8d4ebd198c3cd428ced8527f528fd461c5034d06",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/build_mini328.py",
+      "imported_sha256": "1fa79167916f6c1c252da84e8d4ebd198c3cd428ced8527f528fd461c5034d06",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/build_mini_clone511.py",
+      "original_sha256": "3d2fc0b86578b08af60a1bd7b195530eaac1529250353442105d8b2858554670",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/build_mini_clone511.py",
+      "imported_sha256": "3d2fc0b86578b08af60a1bd7b195530eaac1529250353442105d8b2858554670",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/build_mini_compat.py",
+      "original_sha256": "c0cd41d24e84726cac7ef45a8d03f53cf1384c5bb8a800def498b443251c1175",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/build_mini_compat.py",
+      "imported_sha256": "c0cd41d24e84726cac7ef45a8d03f53cf1384c5bb8a800def498b443251c1175",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/devices/atmega1280.inc",
+      "original_sha256": "3ad58a65de8b884fa72635004ea26e6ec8b7abecb95ba7b603e35513a084cf06",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/devices/atmega1280.inc",
+      "imported_sha256": "3ad58a65de8b884fa72635004ea26e6ec8b7abecb95ba7b603e35513a084cf06",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/devices/atmega1281.inc",
+      "original_sha256": "0899fa6296c526b4781278bf34d9400a2cee08dc314966893ba2249568143be4",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/devices/atmega1281.inc",
+      "imported_sha256": "0899fa6296c526b4781278bf34d9400a2cee08dc314966893ba2249568143be4",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/devices/atmega1284.inc",
+      "original_sha256": "01323d64a47d4b8a7078ee029d44eaf5f3f9356b372f114e4c2acdec9d3ba99d",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/devices/atmega1284.inc",
+      "imported_sha256": "01323d64a47d4b8a7078ee029d44eaf5f3f9356b372f114e4c2acdec9d3ba99d",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/devices/atmega1284p.inc",
+      "original_sha256": "c8f0922695a417b91cbd806b6f8f1d1151f3b4692ab4c62b43f36aa2d88546d1",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/devices/atmega1284p.inc",
+      "imported_sha256": "c8f0922695a417b91cbd806b6f8f1d1151f3b4692ab4c62b43f36aa2d88546d1",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/devices/atmega128a.inc",
+      "original_sha256": "99772a5c13cf24910a951b43dfd3cf0e8e03e9130cc4d894b1cd4a5e0abfaecf",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/devices/atmega128a.inc",
+      "imported_sha256": "99772a5c13cf24910a951b43dfd3cf0e8e03e9130cc4d894b1cd4a5e0abfaecf",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/devices/atmega16.inc",
+      "original_sha256": "2fd76141d3eb1520bb9a3d2f6123c30550029af37162cb4abd013ff762a003d2",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/devices/atmega16.inc",
+      "imported_sha256": "2fd76141d3eb1520bb9a3d2f6123c30550029af37162cb4abd013ff762a003d2",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/devices/atmega162.inc",
+      "original_sha256": "ec7b22790010eb1f76f929db04e65d609833ae311d0de32627996b0e43f18cfc",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/devices/atmega162.inc",
+      "imported_sha256": "ec7b22790010eb1f76f929db04e65d609833ae311d0de32627996b0e43f18cfc",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/devices/atmega164a.inc",
+      "original_sha256": "463d0e0bb1707698bac0a694f470c6007079959da219a9f62afefcd3c68be896",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/devices/atmega164a.inc",
+      "imported_sha256": "463d0e0bb1707698bac0a694f470c6007079959da219a9f62afefcd3c68be896",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/devices/atmega164p.inc",
+      "original_sha256": "66685b2dfe3a98b4280d0ba25b534c5dc01875ff09a1a21aff531fb9adcfe9ad",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/devices/atmega164p.inc",
+      "imported_sha256": "66685b2dfe3a98b4280d0ba25b534c5dc01875ff09a1a21aff531fb9adcfe9ad",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/devices/atmega164pa.inc",
+      "original_sha256": "ea60cd95b6358e2986e3d5f4bb7ccd5a006c2b9738438524d3b7abc22b8a6e3c",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/devices/atmega164pa.inc",
+      "imported_sha256": "ea60cd95b6358e2986e3d5f4bb7ccd5a006c2b9738438524d3b7abc22b8a6e3c",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/devices/atmega168.inc",
+      "original_sha256": "a3309cb45f93a3a4792ffab40d04a798ad81f6253b0a7166feecb8510ea62e27",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/devices/atmega168.inc",
+      "imported_sha256": "a3309cb45f93a3a4792ffab40d04a798ad81f6253b0a7166feecb8510ea62e27",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/devices/atmega168p.inc",
+      "original_sha256": "00da31804588dba4bbad3c0c986729e6c42528c348e7094d6331c287e1fd93c8",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/devices/atmega168p.inc",
+      "imported_sha256": "00da31804588dba4bbad3c0c986729e6c42528c348e7094d6331c287e1fd93c8",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/devices/atmega2560.inc",
+      "original_sha256": "3512c086a94236d7e38f5bc1b93fc29947bf56d58383ce41f9f19edef41d5c84",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/devices/atmega2560.inc",
+      "imported_sha256": "3512c086a94236d7e38f5bc1b93fc29947bf56d58383ce41f9f19edef41d5c84",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/devices/atmega2561.inc",
+      "original_sha256": "9689d7e5beece1796383de77c0a2a3b2e5cf05a4293a37955f4c923b9844ae58",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/devices/atmega2561.inc",
+      "imported_sha256": "9689d7e5beece1796383de77c0a2a3b2e5cf05a4293a37955f4c923b9844ae58",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/devices/atmega324a.inc",
+      "original_sha256": "91780c5782e26056e8d9a68e3f7eaf0410c1d3dc6893ea97b9ef73c13a600b29",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/devices/atmega324a.inc",
+      "imported_sha256": "91780c5782e26056e8d9a68e3f7eaf0410c1d3dc6893ea97b9ef73c13a600b29",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/devices/atmega324p.inc",
+      "original_sha256": "95434453b1d5bf7f9e28e5224422d00010aa7c6c00a022e90bf98e6d756644d8",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/devices/atmega324p.inc",
+      "imported_sha256": "95434453b1d5bf7f9e28e5224422d00010aa7c6c00a022e90bf98e6d756644d8",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/devices/atmega324pa.inc",
+      "original_sha256": "f22b51cbfa695e93479246a8bca56d0312a972666e1a34bdf2cfb8c306681e0a",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/devices/atmega324pa.inc",
+      "imported_sha256": "f22b51cbfa695e93479246a8bca56d0312a972666e1a34bdf2cfb8c306681e0a",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/devices/atmega324pb.inc",
+      "original_sha256": "c8dfb16dca747c3a9aa2552ef47eea3ee3347890ef8de50faaba79c5fd2724d1",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/devices/atmega324pb.inc",
+      "imported_sha256": "c8dfb16dca747c3a9aa2552ef47eea3ee3347890ef8de50faaba79c5fd2724d1",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/devices/atmega328.inc",
+      "original_sha256": "9e3aa1e12613a59f891decdc695e23a842ccf7d234fe6aa2dcecb5035e93b5f8",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/devices/atmega328.inc",
+      "imported_sha256": "9e3aa1e12613a59f891decdc695e23a842ccf7d234fe6aa2dcecb5035e93b5f8",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/devices/atmega328p.inc",
+      "original_sha256": "064b4c3de8d7582b21d04aa6cee0efbe8fcec543af08779e143145478bd7784a",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/devices/atmega328p.inc",
+      "imported_sha256": "064b4c3de8d7582b21d04aa6cee0efbe8fcec543af08779e143145478bd7784a",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/devices/atmega328pb.inc",
+      "original_sha256": "04c2140d62a3f0c9c4138591a053247b25c8bc576842e2776020392b8c4c7f5a",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/devices/atmega328pb.inc",
+      "imported_sha256": "04c2140d62a3f0c9c4138591a053247b25c8bc576842e2776020392b8c4c7f5a",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/devices/atmega32a.inc",
+      "original_sha256": "924c9f12858a8016cf5cbe6fb731880bbb2f891eaea7693dbe18ead36988047d",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/devices/atmega32a.inc",
+      "imported_sha256": "924c9f12858a8016cf5cbe6fb731880bbb2f891eaea7693dbe18ead36988047d",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/devices/atmega640.inc",
+      "original_sha256": "7f210d54f354d7a58f513566ecb42db1c6f5ee0ecc46c9d2dafffa33b6ee6f29",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/devices/atmega640.inc",
+      "imported_sha256": "7f210d54f354d7a58f513566ecb42db1c6f5ee0ecc46c9d2dafffa33b6ee6f29",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/devices/atmega644.inc",
+      "original_sha256": "bdf26f1b244a4d1e123680792d3b0f187af186f33c812bccb3436fd1045da8ae",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/devices/atmega644.inc",
+      "imported_sha256": "bdf26f1b244a4d1e123680792d3b0f187af186f33c812bccb3436fd1045da8ae",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/devices/atmega644a.inc",
+      "original_sha256": "8a83c9c63c289d2b32aa1c637ceb8cc96bd607b0eef9be54ddad46f8fbfde0af",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/devices/atmega644a.inc",
+      "imported_sha256": "8a83c9c63c289d2b32aa1c637ceb8cc96bd607b0eef9be54ddad46f8fbfde0af",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/devices/atmega644p.inc",
+      "original_sha256": "a82392b8cd8386dcd6b8e4a33771f0a9c4e4614f16ec6816ef714ab6f881db94",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/devices/atmega644p.inc",
+      "imported_sha256": "a82392b8cd8386dcd6b8e4a33771f0a9c4e4614f16ec6816ef714ab6f881db94",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/devices/atmega644pa.inc",
+      "original_sha256": "698de9fab8f913fcb8e062d8e096d96959a1c42e21412732d8ccbc90d5346242",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/devices/atmega644pa.inc",
+      "imported_sha256": "698de9fab8f913fcb8e062d8e096d96959a1c42e21412732d8ccbc90d5346242",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/devices/atmega64a.inc",
+      "original_sha256": "5b757b230de12a953b77eab5819f072cbafb3851392202ebd42e85f2fce0738f",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/devices/atmega64a.inc",
+      "imported_sha256": "5b757b230de12a953b77eab5819f072cbafb3851392202ebd42e85f2fce0738f",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/devices/atmega8.inc",
+      "original_sha256": "1cdf4e32468cefd5a269d678c8395ce23e28267b3568bf84ce54013edcfad0fe",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/devices/atmega8.inc",
+      "imported_sha256": "1cdf4e32468cefd5a269d678c8395ce23e28267b3568bf84ce54013edcfad0fe",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/devices/atmega8515.inc",
+      "original_sha256": "97cf2437b867e2ff5e7df323e86830753dfe8d8777c66e467e341c64d3ff3b10",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/devices/atmega8515.inc",
+      "imported_sha256": "97cf2437b867e2ff5e7df323e86830753dfe8d8777c66e467e341c64d3ff3b10",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/devices/atmega8535.inc",
+      "original_sha256": "cfb80a571d1dd9c7a42d9defcc26abf0f09b9a0c938afff38f8bfbc6331d2a53",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/devices/atmega8535.inc",
+      "imported_sha256": "cfb80a571d1dd9c7a42d9defcc26abf0f09b9a0c938afff38f8bfbc6331d2a53",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/devices/atmega88.inc",
+      "original_sha256": "0a6d5104475aa3ba2016e9697fde25e926126207523c9e91aaf9de452775688f",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/devices/atmega88.inc",
+      "imported_sha256": "0a6d5104475aa3ba2016e9697fde25e926126207523c9e91aaf9de452775688f",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/devices/atmega88p.inc",
+      "original_sha256": "db9c41f784af3b3453a6772754ea550f3369ff0b3988b34103a0f63bb0292b6c",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/devices/atmega88p.inc",
+      "imported_sha256": "db9c41f784af3b3453a6772754ea550f3369ff0b3988b34103a0f63bb0292b6c",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/devices/atmega8a.inc",
+      "original_sha256": "e56e8588875e698843d777013f0c67d02bf2e529a584d8073873df5a2c4d1193",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/devices/atmega8a.inc",
+      "imported_sha256": "e56e8588875e698843d777013f0c67d02bf2e529a584d8073873df5a2c4d1193",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/devices/attiny1634.inc",
+      "original_sha256": "06adc6288df67cf9d0ae57454eea90274b2a935e3efc19feb7429b959c58b072",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/devices/attiny1634.inc",
+      "imported_sha256": "06adc6288df67cf9d0ae57454eea90274b2a935e3efc19feb7429b959c58b072",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/devices/attiny84.inc",
+      "original_sha256": "66d09e1119f54e9310d9ace13e90f1940599fa6811b9e3d50d5a8479fb98f706",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/devices/attiny84.inc",
+      "imported_sha256": "66d09e1119f54e9310d9ace13e90f1940599fa6811b9e3d50d5a8479fb98f706",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/devices/attiny841.inc",
+      "original_sha256": "57108ce41e857253fff8554af3a6bc9194a22c0620f1726c2bf6037e04c26329",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/devices/attiny841.inc",
+      "imported_sha256": "57108ce41e857253fff8554af3a6bc9194a22c0620f1726c2bf6037e04c26329",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/devices/attiny85.inc",
+      "original_sha256": "23bbf620978f2791fba03bd2b5cd5aac338069228084661838dcc5c0eac97aa6",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/devices/attiny85.inc",
+      "imported_sha256": "23bbf620978f2791fba03bd2b5cd5aac338069228084661838dcc5c0eac97aa6",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/devices/select.inc",
+      "original_sha256": "e01cb9ff57e4a0f5ddc841d816b2341f212bac3eff3ddd7c75a96a025413b705",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/devices/select.inc",
+      "imported_sha256": "e01cb9ff57e4a0f5ddc841d816b2341f212bac3eff3ddd7c75a96a025413b705",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/devices.json",
+      "original_sha256": "739ae8ab13b5350424c113de2c2a1fed06ccf8ed6e0a65d1c8b7a3fafc26d8d7",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/devices.json",
+      "imported_sha256": "739ae8ab13b5350424c113de2c2a1fed06ccf8ed6e0a65d1c8b7a3fafc26d8d7",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/exp/atmega8/atmega8/atmega8.bin",
+      "original_sha256": "ee2ddb8999c1f83b0113ea030b7fc357dd88c1257a6a02f2383664b307266248",
+      "repository_path": null,
+      "imported_sha256": null,
+      "adapted": null
+    },
+    {
+      "archive_path": "source/exp/atmega8/atmega8/atmega8.hex",
+      "original_sha256": "c26642e73d8f309baacdc6763cc4cb94f579b2a4fef2bec8f3188a48aeba4997",
+      "repository_path": null,
+      "imported_sha256": null,
+      "adapted": null
+    },
+    {
+      "archive_path": "source/exp/atmega8/atmega8/atmega8.json",
+      "original_sha256": "ba871c2073117bb09d77be221af1ccacf1ce20ed2f85f302e3626893d9748d05",
+      "repository_path": null,
+      "imported_sha256": null,
+      "adapted": null
+    },
+    {
+      "archive_path": "source/flash256/flash256.inc",
+      "original_sha256": "7329c0af0a79f517fc49eb6b85e5773c431f68bf288edbea4dcc2696f62befb8",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/flash256/flash256.inc",
+      "imported_sha256": "7329c0af0a79f517fc49eb6b85e5773c431f68bf288edbea4dcc2696f62befb8",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/flash256/prepare_avrdude_hex.py",
+      "original_sha256": "6bc34da242edde2229647a309df98cca65ddaef48efa0d04d3bc422bf6dc0ecf",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/flash256/prepare_avrdude_hex.py",
+      "imported_sha256": "d4c5406f946237425aa59206c11b028ac1db25988243a1c9349470589e00dfab",
+      "adapted": true
+    },
+    {
+      "archive_path": "source/flash256/upload_flash256.py",
+      "original_sha256": "2eefe5b6afc82ed9ca161e8d230e337534b6ad2324396d554fc5487887d7cb97",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/flash256/upload_flash256.py",
+      "imported_sha256": "2eefe5b6afc82ed9ca161e8d230e337534b6ad2324396d554fc5487887d7cb97",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/generate_firmware.cmd",
+      "original_sha256": "c0ef9f93d6570bef09752f7870cf7b9b695c18012a0d8d8cfc546e627d0e80eb",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/generate_firmware.cmd",
+      "imported_sha256": "c0ef9f93d6570bef09752f7870cf7b9b695c18012a0d8d8cfc546e627d0e80eb",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/generate_firmware.py",
+      "original_sha256": "9870e413eceb840d73e7c0533d0ea097996d4bca313cff19c551f1cb4c70597b",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/generate_firmware.py",
+      "imported_sha256": "9870e413eceb840d73e7c0533d0ea097996d4bca313cff19c551f1cb4c70597b",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/generator_tests/test_generate_firmware.py",
+      "original_sha256": "f80b320deaefd1a3f52f02af5d31dc324a9ff3665f8f27310eb7d03f36da9f71",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/generator_tests/test_generate_firmware.py",
+      "imported_sha256": "f80b320deaefd1a3f52f02af5d31dc324a9ff3665f8f27310eb7d03f36da9f71",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/mini_tests/avr_base_sim.py",
+      "original_sha256": "045948138299d13240dc2dde018029dc4a47ad913b07ba35f3688250c65a8716",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/mini_tests/avr_base_sim.py",
+      "imported_sha256": "045948138299d13240dc2dde018029dc4a47ad913b07ba35f3688250c65a8716",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/mini_tests/fixtures/README.txt",
+      "original_sha256": "192d883b10305d92d4349ebc037a1bd493323117b99ecb2b8986eb7523d8d48e",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/mini_tests/fixtures/README.txt",
+      "imported_sha256": "192d883b10305d92d4349ebc037a1bd493323117b99ecb2b8986eb7523d8d48e",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/mini_tests/fixtures/optiboot_8_3_atmega328_official_474.hex",
+      "original_sha256": "7530696c3a53019fcaa96bc320b41995601b1ef40967a8c6d69ca0b7eb89866e",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/mini_tests/fixtures/optiboot_8_3_atmega328_official_474.hex",
+      "imported_sha256": "7530696c3a53019fcaa96bc320b41995601b1ef40967a8c6d69ca0b7eb89866e",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/mini_tests/fixtures/r10_compact_auto_sha256.json",
+      "original_sha256": "527f9119148b1186cd2b40d0de82863e64656f31c178bc84f1abe8d3ccd051f9",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/mini_tests/fixtures/r10_compact_auto_sha256.json",
+      "imported_sha256": "527f9119148b1186cd2b40d0de82863e64656f31c178bc84f1abe8d3ccd051f9",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/mini_tests/fixtures/r8_reference/atmega328p.json",
+      "original_sha256": "a53f9bcc57721283b682b4ec5529304e9ea41fba30707679a577a99cb50adc37",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/mini_tests/fixtures/r8_reference/atmega328p.json",
+      "imported_sha256": "a53f9bcc57721283b682b4ec5529304e9ea41fba30707679a577a99cb50adc37",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/mini_tests/fixtures/r8_reference/atmega644p.json",
+      "original_sha256": "6b2d53b7cb3f558aeaee161ddcce7a36a1e736a3d744826288bd35295855a792",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/mini_tests/fixtures/r8_reference/atmega644p.json",
+      "imported_sha256": "6b2d53b7cb3f558aeaee161ddcce7a36a1e736a3d744826288bd35295855a792",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/mini_tests/fixtures/r8_reference/atmega64a.json",
+      "original_sha256": "c242dcf9eaf945fca5a2ae2e5f5f79ee3e1fd5bfa018b43ab2b0b6e0c959d063",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/mini_tests/fixtures/r8_reference/atmega64a.json",
+      "imported_sha256": "c242dcf9eaf945fca5a2ae2e5f5f79ee3e1fd5bfa018b43ab2b0b6e0c959d063",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/mini_tests/test_128k.py",
+      "original_sha256": "006c71c539ba495b7f1ea6a82ff1f03af05036489114a2f352ac1c2b36dd9400",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/mini_tests/test_128k.py",
+      "imported_sha256": "006c71c539ba495b7f1ea6a82ff1f03af05036489114a2f352ac1c2b36dd9400",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/mini_tests/test_all_mcusr_spm_parity.py",
+      "original_sha256": "a3cd622c2569ec9e6df5b885e345959613340ec9178d02b09cb3d06ed09347a3",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/mini_tests/test_all_mcusr_spm_parity.py",
+      "imported_sha256": "1c105f42a2febf6a6bb34ce12acef9b6771ded3df78cb776f81860a4b8e46935",
+      "adapted": true
+    },
+    {
+      "archive_path": "source/mini_tests/test_app_spm.py",
+      "original_sha256": "c29c39fd1d60796eb7f44b4717bbb9a3798bcba25bf9e9f51ef99c5e0c1da308",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/mini_tests/test_app_spm.py",
+      "imported_sha256": "c29c39fd1d60796eb7f44b4717bbb9a3798bcba25bf9e9f51ef99c5e0c1da308",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/mini_tests/test_avrdude_compat_audit.py",
+      "original_sha256": "83e9abf569b397dfca0de2bddfe4c0c4a32e5723dc9fb282191a22db5dce8105",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/mini_tests/test_avrdude_compat_audit.py",
+      "imported_sha256": "5e8a56c9a014db17efe297b3b21a65f0ab636737b8ce368e3e394699c0e13367",
+      "adapted": true
+    },
+    {
+      "archive_path": "source/mini_tests/test_bootsize_audit.py",
+      "original_sha256": "39e72a15bdfd9348dd920e1844155f5078b0685615fed156cf9f536a70a69906",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/mini_tests/test_bootsize_audit.py",
+      "imported_sha256": "020c86dadcba2f94514d95471ba8b817692ea14052c8d81e4b800df406090ef6",
+      "adapted": true
+    },
+    {
+      "archive_path": "source/mini_tests/test_clone_spm511.py",
+      "original_sha256": "51f9d86fef1a060274ed7ac99c5387a34d2a55c17fa5f6c4a5f2f971386571f8",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/mini_tests/test_clone_spm511.py",
+      "imported_sha256": "51fdec4b658e4c421d240ff9d0888371bc8ea8a341ec813caece58afa8aa67bf",
+      "adapted": true
+    },
+    {
+      "archive_path": "source/mini_tests/test_compact_644.py",
+      "original_sha256": "fc757783a4fd7c064acc93f8e6e2baa6258e0aa1e2846d03f93a6dd71a8012c0",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/mini_tests/test_compact_644.py",
+      "imported_sha256": "5e84a396c45f528eba145c0c707e3d3cf65c03c5c303347c1b82374dea9417f4",
+      "adapted": true
+    },
+    {
+      "archive_path": "source/mini_tests/test_compact_64k_fuse.py",
+      "original_sha256": "f090e071a93d3a26707e26caf133acc576c4f76b30674423ab03e95616ba0f93",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/mini_tests/test_compact_64k_fuse.py",
+      "imported_sha256": "f090e071a93d3a26707e26caf133acc576c4f76b30674423ab03e95616ba0f93",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/mini_tests/test_compact_new_families.py",
+      "original_sha256": "975e583999ecd880d2a8653ae5e79cbd5cef7c5e7d51113f0db5ef92dc0949d0",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/mini_tests/test_compact_new_families.py",
+      "imported_sha256": "9fbc16c055eb2cc18929a79d387b3a1a59c5f498e1c679c5e5b3d885c4f68a37",
+      "adapted": true
+    },
+    {
+      "archive_path": "source/mini_tests/test_compact_signature_512.py",
+      "original_sha256": "9c41af8b4eb4387a6029167cd4d197ae938088f530d45922197637b67f5abf9f",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/mini_tests/test_compact_signature_512.py",
+      "imported_sha256": "9c41af8b4eb4387a6029167cd4d197ae938088f530d45922197637b67f5abf9f",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/mini_tests/test_dual_editions.py",
+      "original_sha256": "83a6de1b54f9eb2a885c86a8c1d474c0076bc150dc336f8ee89a742fdcb533be",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/mini_tests/test_dual_editions.py",
+      "imported_sha256": "24509ac11357363c6a02e331464ae3b388c11d6e6ccc594ebe33503f69ed4a40",
+      "adapted": true
+    },
+    {
+      "archive_path": "source/mini_tests/test_expanded_ports.py",
+      "original_sha256": "f0591337ec1f0332c2066b7403b23081a7a6a0c7111c3c2c68e8245e7f6b5aea",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/mini_tests/test_expanded_ports.py",
+      "imported_sha256": "f0591337ec1f0332c2066b7403b23081a7a6a0c7111c3c2c68e8245e7f6b5aea",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/mini_tests/test_feature_gap_guard.py",
+      "original_sha256": "441ee8ce960478a2ec485ada73f3c18af757e3abee112a58dd9f7fff517d76d7",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/mini_tests/test_feature_gap_guard.py",
+      "imported_sha256": "441ee8ce960478a2ec485ada73f3c18af757e3abee112a58dd9f7fff517d76d7",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/mini_tests/test_flash256.py",
+      "original_sha256": "ed7a8540b1a097e47090ede8492eb60a475b91c1a2c6050ddc833cfd6f31df42",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/mini_tests/test_flash256.py",
+      "imported_sha256": "ed7a8540b1a097e47090ede8492eb60a475b91c1a2c6050ddc833cfd6f31df42",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/mini_tests/test_flash256_avrdude.py",
+      "original_sha256": "36816210f7f59d5a2efb78900759ab78ae750c51a5b0443a2cfef6cdea9d4e90",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/mini_tests/test_flash256_avrdude.py",
+      "imported_sha256": "36816210f7f59d5a2efb78900759ab78ae750c51a5b0443a2cfef6cdea9d4e90",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/mini_tests/test_flash256_readback.py",
+      "original_sha256": "fa83465ed2e18bcc9b5c44fcff03a9431faf9c03373494f0c0db7d9110ca7adb",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/mini_tests/test_flash256_readback.py",
+      "imported_sha256": "fa83465ed2e18bcc9b5c44fcff03a9431faf9c03373494f0c0db7d9110ca7adb",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/mini_tests/test_legacy_uart.py",
+      "original_sha256": "d61cbe5cc88527d36f58acbf604a4ea0758487cbcf2792a1fb2c7f4dae88075c",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/mini_tests/test_legacy_uart.py",
+      "imported_sha256": "8ab3bb9019de02179fd08dbe7a31e04de7fe00279be5148260f404fb2ada1a9c",
+      "adapted": true
+    },
+    {
+      "archive_path": "source/mini_tests/test_mcusr_474_parity.py",
+      "original_sha256": "eda423297d76540d301db4a29a091056bac585070a10d3cc3bbaca15f9f183ce",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/mini_tests/test_mcusr_474_parity.py",
+      "imported_sha256": "e7dac8a9e86d89b1fb2653279c0b319ef6e5a9d5d721356f5537363deb425e24",
+      "adapted": true
+    },
+    {
+      "archive_path": "source/mini_tests/test_mega64_audit.py",
+      "original_sha256": "2c60b8d8c14287ddbb03bc9adf2895db30b85000198513c2c1eaf1386230d3c0",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/mini_tests/test_mega64_audit.py",
+      "imported_sha256": "2c60b8d8c14287ddbb03bc9adf2895db30b85000198513c2c1eaf1386230d3c0",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/mini_tests/test_modern_audit.py",
+      "original_sha256": "e07b2168063341d4c5bf73febac48430d2c7c05cd82db7c8c6bbd7935afad6af",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/mini_tests/test_modern_audit.py",
+      "imported_sha256": "e07b2168063341d4c5bf73febac48430d2c7c05cd82db7c8c6bbd7935afad6af",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/mini_tests/test_multidevice.py",
+      "original_sha256": "7398a7c94c61c6e8d8e6fa8cfdcebf27b6ab04278512601b1daedb13e7fad4cf",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/mini_tests/test_multidevice.py",
+      "imported_sha256": "7398a7c94c61c6e8d8e6fa8cfdcebf27b6ab04278512601b1daedb13e7fad4cf",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/mini_tests/test_r10_sigrow.py",
+      "original_sha256": "f17242667fc6da27fd0f643e040d52b3d0d9a64d7936888f3aa1a8567cc442c8",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/mini_tests/test_r10_sigrow.py",
+      "imported_sha256": "f17242667fc6da27fd0f643e040d52b3d0d9a64d7936888f3aa1a8567cc442c8",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/mini_tests/test_r3_cross_arch.py",
+      "original_sha256": "e1eef5c3d44129072df466a9ce974ddb4e397db99bebea9e9e220b746780f173",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/mini_tests/test_r3_cross_arch.py",
+      "imported_sha256": "bae2f697270f214938f9350d7eb2789c393cfd7708dfc1d2c8b5d7f34fdd91ff",
+      "adapted": true
+    },
+    {
+      "archive_path": "source/mini_tests/test_r4_common_core.py",
+      "original_sha256": "f6fa9debb123fdc5a28bc9eb4998e57b057946c52dec73d5f1a54cf0180d1395",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/mini_tests/test_r4_common_core.py",
+      "imported_sha256": "97ba3ae04d3aa23f308f01010b55993ec0b5bb63fda6ac44e5b9d0937feaf44e",
+      "adapted": true
+    },
+    {
+      "archive_path": "source/mini_tests/test_r5_signon_1024.py",
+      "original_sha256": "c188604320c7e8682d6435f9e1d50db6f8281153cc01020445dd1316212b07bb",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/mini_tests/test_r5_signon_1024.py",
+      "imported_sha256": "fbc1dba114c04cf263c716a79d39031d1360c19c78796fbbb52218256ed19203",
+      "adapted": true
+    },
+    {
+      "archive_path": "source/mini_tests/test_r6_signon_signature_offset.py",
+      "original_sha256": "979e4101fa8bfef094de8fdb1dca1973e8330b3e7418e0902e89ba8403618bb6",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/mini_tests/test_r6_signon_signature_offset.py",
+      "imported_sha256": "89eca268be0e37ab32cbfaffc6c66c947933b1131b714b46f09506ef5c8c3dc7",
+      "adapted": true
+    },
+    {
+      "archive_path": "source/mini_tests/test_r7_shared_tail_differential.py",
+      "original_sha256": "211126ba8d544d84d6a0d0188695274042a9799d9f62034df5c0d123b896e73c",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/mini_tests/test_r7_shared_tail_differential.py",
+      "imported_sha256": "f4082dbf6f5158f7512e40864986adcc38917d1b241ac2b330d69f978f5b5b0b",
+      "adapted": true
+    },
+    {
+      "archive_path": "source/mini_tests/test_r8_shared_spm.py",
+      "original_sha256": "cc97907b0ed54f213e105eaec97f576cc7c2461b7958c529752903a34deb7112",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/mini_tests/test_r8_shared_spm.py",
+      "imported_sha256": "9d6941489228d15136077d60999fe7f94d881f53ee9dec7b6fe422614d88a1cd",
+      "adapted": true
+    },
+    {
+      "archive_path": "source/mini_tests/test_r8_signon_1024.py",
+      "original_sha256": "babd15693130a4103b8c92e42695cbd845d10b3a6defa9e2a1f741d4cd4697bd",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/mini_tests/test_r8_signon_1024.py",
+      "imported_sha256": "e1d59bb0cd737d8a162b563150acefed3021a47d274305bf6624a549cb7535ce",
+      "adapted": true
+    },
+    {
+      "archive_path": "source/mini_tests/test_single_source_architecture.py",
+      "original_sha256": "866b2b897532be5acb3de43e2788583ecc64b5721a1fe7d3e0fb285a38a7a5f5",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/mini_tests/test_single_source_architecture.py",
+      "imported_sha256": "22f8e275870cd0acb9716a5cdf30e912ec68b71fa478c820ea5e9f04ddb74a96",
+      "adapted": true
+    },
+    {
+      "archive_path": "source/mini_tests/test_small_512_ports.py",
+      "original_sha256": "b53c01e656e311beb2bc7e1cc02b3ee3a28529fdee31c4fee8a5bf2278c8f84f",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/mini_tests/test_small_512_ports.py",
+      "imported_sha256": "960d7654909a1bb85d5337b3a7bd0b4a2dde5987cd834d438684b8237aab07cd",
+      "adapted": true
+    },
+    {
+      "archive_path": "source/mini_tests/test_soft_uart.py",
+      "original_sha256": "31215ea48447906755716449d2b2520ecdecf39ec452cd1dc0c809ed73cf51db",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/mini_tests/test_soft_uart.py",
+      "imported_sha256": "31215ea48447906755716449d2b2520ecdecf39ec452cd1dc0c809ed73cf51db",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/mini_tests/test_spm_512.py",
+      "original_sha256": "dc22a836208d6fcd7698bad1fcbcd57e76bc21632fc9daa23513b38020ce02b7",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/mini_tests/test_spm_512.py",
+      "imported_sha256": "dc22a836208d6fcd7698bad1fcbcd57e76bc21632fc9daa23513b38020ce02b7",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/mini_tests/test_tiny_host.py",
+      "original_sha256": "ebf8cf8888fd80fea2bdc02f2051f1ae66e0a93b609b8e93c37dd2be46dbf83e",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/mini_tests/test_tiny_host.py",
+      "imported_sha256": "ebf8cf8888fd80fea2bdc02f2051f1ae66e0a93b609b8e93c37dd2be46dbf83e",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/mini_tests/test_tiny_vector_patch.py",
+      "original_sha256": "5002ffb189acb8f98d793d70a75ad02587cbd2ae0c8aede5fb21713c5942ff32",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/mini_tests/test_tiny_vector_patch.py",
+      "imported_sha256": "5002ffb189acb8f98d793d70a75ad02587cbd2ae0c8aede5fb21713c5942ff32",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/mini_tests/test_tiny_virtual.py",
+      "original_sha256": "22e721a5acfd86e815725f9e87d496c95fdb57d848080c90f0378ac2ed29b22b",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/mini_tests/test_tiny_virtual.py",
+      "imported_sha256": "22e721a5acfd86e815725f9e87d496c95fdb57d848080c90f0378ac2ed29b22b",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/mini_tests/test_universal_signature_ide2.py",
+      "original_sha256": "cd30efd95ec79f736273b6b3de7dcdd8b8999e61d76736652867c6a9d95683ac",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/mini_tests/test_universal_signature_ide2.py",
+      "imported_sha256": "cd30efd95ec79f736273b6b3de7dcdd8b8999e61d76736652867c6a9d95683ac",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/mini_tests/test_virtual_boot_page_sizes.py",
+      "original_sha256": "20821f1f0cc721bd138226f2b83e1d12b71a29b5ed80ad7357ce0c7d35c14aed",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/mini_tests/test_virtual_boot_page_sizes.py",
+      "imported_sha256": "20821f1f0cc721bd138226f2b83e1d12b71a29b5ed80ad7357ce0c7d35c14aed",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/optiboot_mini.S",
+      "original_sha256": "a5ac7265950436dc136fc3b56722a13735138995ce0e28fc398840c4f23ebde4",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/optiboot_mini.S",
+      "imported_sha256": "a5ac7265950436dc136fc3b56722a13735138995ce0e28fc398840c4f23ebde4",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/optiboot_mini_app_spm.h",
+      "original_sha256": "0b7cbe6e86dc9cfb43d4d89642c1b2a5dabe95d75a7779a488a704a848a0fe96",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/optiboot_mini_app_spm.h",
+      "imported_sha256": "0b7cbe6e86dc9cfb43d4d89642c1b2a5dabe95d75a7779a488a704a848a0fe96",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/profile_inventory.csv",
+      "original_sha256": "68766b27b6b3cfcaf7c04cde63d22fc6637f8ed26605837da467bcc01884d753",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/profile_inventory.csv",
+      "imported_sha256": "37cb191cee5e329f9a18ecb72696ebaa0dccf34f07ca46d369a4adf18d453912",
+      "adapted": true
+    },
+    {
+      "archive_path": "source/tiny/flash_tiny.py",
+      "original_sha256": "0eab95dee1139beb921f15ae187f40e8414109694384f4f2905fc6137827a3d8",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/tiny/flash_tiny.py",
+      "imported_sha256": "0eab95dee1139beb921f15ae187f40e8414109694384f4f2905fc6137827a3d8",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/tiny/make_seed.py",
+      "original_sha256": "e67dcf43c24df0581a27306b7a91aec92350961c85a7e6c88e4117cb19313313",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/tiny/make_seed.py",
+      "imported_sha256": "e67dcf43c24df0581a27306b7a91aec92350961c85a7e6c88e4117cb19313313",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/tiny/patch_vectors.py",
+      "original_sha256": "7c83589674a8cff59da7b48065a6dcb515c9cd627a23fd8e27510b8c173cb0a1",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/tiny/patch_vectors.py",
+      "imported_sha256": "7c83589674a8cff59da7b48065a6dcb515c9cd627a23fd8e27510b8c173cb0a1",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/uart/legacy.inc",
+      "original_sha256": "8ce80310b187c0f2a2b406a5ebe3eabc02a20262c6b4cea738b5c5784b3a58d3",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/uart/legacy.inc",
+      "imported_sha256": "8ce80310b187c0f2a2b406a5ebe3eabc02a20262c6b4cea738b5c5784b3a58d3",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/uart/mega64.inc",
+      "original_sha256": "b3d4243f4d9bb58841109c2baffa368008aeb9920aa3a2e6c9947506d98a1162",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/uart/mega64.inc",
+      "imported_sha256": "b3d4243f4d9bb58841109c2baffa368008aeb9920aa3a2e6c9947506d98a1162",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/uart/modern.inc",
+      "original_sha256": "9f8e25a6a119c1acf49e8ac5840640c4ff219ea091f6c439d2cde8734b9323be",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/uart/modern.inc",
+      "imported_sha256": "9f8e25a6a119c1acf49e8ac5840640c4ff219ea091f6c439d2cde8734b9323be",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/uart/select.inc",
+      "original_sha256": "74b44c6ef17e755f19fe6bde7a71e05661d72a8f8726756f484cd8698d626551",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/uart/select.inc",
+      "imported_sha256": "74b44c6ef17e755f19fe6bde7a71e05661d72a8f8726756f484cd8698d626551",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/uart/soft.inc",
+      "original_sha256": "b452a290f52eaefa25c670d115c647278e66c2ff1c382f830d96bf12fa3aba3a",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/uart/soft.inc",
+      "imported_sha256": "b452a290f52eaefa25c670d115c647278e66c2ff1c382f830d96bf12fa3aba3a",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/uart/tiny1634.inc",
+      "original_sha256": "3ef2fba4ed0617fe35759525a839a65ffa51b2333025b4138842ddf2495fb46a",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/uart/tiny1634.inc",
+      "imported_sha256": "3ef2fba4ed0617fe35759525a839a65ffa51b2333025b4138842ddf2495fb46a",
+      "adapted": false
+    },
+    {
+      "archive_path": "source/uart/tiny841.inc",
+      "original_sha256": "dc4d23f21298719db6289ecda77f4f89395051128dedb0d85f508395ffaf760b",
+      "repository_path": "optiboot/bootloaders/optiboot_mini/uart/tiny841.inc",
+      "imported_sha256": "dc4d23f21298719db6289ecda77f4f89395051128dedb0d85f508395ffaf760b",
+      "adapted": false
+    }
+  ],
+  "source": "User-authorized ChatGPT update dated 2026-11-08; private conversation link omitted."
+}
