@@ -1,5 +1,9 @@
 # UART editions: software validation, 2026-11-01
 
+Historical snapshot: device counts and reservations below describe November 1.
+See the [current integration record](INTEGRATION_2026-11-10.md) for 39-device
+validation and the updated ATtiny Middle reservations.
+
 Edition naming update (2026-11-02): `FlashRead256` / `flashread256` is now
 `Mini` / `mini`; `Compact` / `compact` is now `Middle` / `middle`.
 This dated report retains its original names and evidence. The old CLI

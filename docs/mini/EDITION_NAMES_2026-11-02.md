@@ -1,5 +1,9 @@
 # Edition naming update
 
+Historical snapshot: the reservation sizes below describe the November 2 rename.
+ATtiny Middle subsequently changed to 512/576 bytes; see the
+[current integration record](INTEGRATION_2026-11-10.md) and [Virtual Boot guide](VIRTUAL_BOOT.md).
+
 Date: 2026-11-02. Public edition names are now `mini`, `middle` and `full`.
 This is a naming change from source revision
 `91c85c2a6bb4e94223218381bdce45da5a6811ef`; firmware features, Boot geometry,

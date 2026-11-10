@@ -40,4 +40,5 @@ all receive matching `--boot-bytes`; their legacy default remains 1024.
 The hardware reports qualify their exact ATmega328PB images/configurations.
 ATtiny Virtual Boot remains software-validated only. Original C build targets
 remain available; `optiboot/bootloaders/optiboot_mini/` preserves the older import
-as a reference snapshot. See the November 10 integration record for current checks.
+as a reference snapshot. See the [November 10 integration record](INTEGRATION_2026-11-10.md)
+for current checks.
