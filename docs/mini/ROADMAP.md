@@ -11,7 +11,7 @@ editions are Mini (`mini`), Middle (`middle`) and Full (`full`).
 | 3 | Fuse and lock configuration plans | Match the selected Boot area and protection to the exact MCU | Datasheet-backed masks, signature checks, current-value inspection and a reviewable plan that preserves unrelated bits | Planned |
 | 4 | Arduino IDE board profiles | Select the correct edition, upload speed and application size | Board definitions match the generated HEX, Boot geometry and upload protocol; representative IDE/CLI uploads pass | Planned |
 | 5 | Interrupted-upload and recovery testing | Establish behavior after truncated packets, delays, reconnects and resets | Reproducible fault sequences exercise every packet boundary and relevant erase/write phase; documented recovery limits | Planned |
-| 6 | Hardware qualification of current editions | Validate effects that instruction models cannot establish | Exact image hashes tested on representative boards for cold start, DTR reset, watchdog, UART, Flash/EEPROM timing and power interruption | Planned; software-only work remains the current scope |
+| 6 | Hardware qualification of current editions | Validate effects that instruction models cannot establish | Exact image hashes tested on representative boards for cold start, DTR reset, watchdog, UART, Flash/EEPROM timing and power interruption | Separate Middle and [Full](HARDWARE_FULL_ATMEGA328PB_2026-11-04.md) ATmega328PB Nano configurations validated on 2026-11-04; other profiles and power-loss behavior remain planned |
 
 ## Optional Full-edition feature
 
@@ -33,10 +33,10 @@ layout and C targets, and preserve the Mini/Middle/Full feature contracts.
 Do not add features to the 256-byte edition without measuring every affected
 image's size and behavior.
 
-The new editions currently have software evidence. The older Nano hardware
-results apply only to the image identified in their report. Hardware work
-requires an available board and the user's authorization; this plan does not
-start a hardware session.
+The complete edition matrix has software evidence. The older Basic Nano results
+and newer Middle/Full Nano results each apply only to the image and configuration
+identified in their report. Further hardware work requires an available board
+and the user's authorization.
 
 See the [feature comparison](FEATURES.md),
 [edition naming update](EDITION_NAMES_2026-11-02.md) and

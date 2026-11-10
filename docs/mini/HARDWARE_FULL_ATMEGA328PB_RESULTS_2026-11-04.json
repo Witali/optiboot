@@ -1,0 +1,367 @@
+{
+  "date": "2026-11-04",
+  "board": "Nano",
+  "mcu": "ATmega328PB",
+  "signature": "1E9516",
+  "board_relation_to_middle_run": "Different physical Nano, confirmed by the user.",
+  "edition": "full",
+  "firmware_source_commit": "89628571b118638c653533469f54830aa8cf1d61",
+  "firmware_sha256": "6a16bbe0776d704e4c9ab7651961bd35b02efe68809a7492090232014d5d82ef",
+  "configured_clock_hz": 16000000,
+  "clock_source": "external_crystal",
+  "uart": "USART0",
+  "baud": 115200,
+  "boot_start": "0x7C00",
+  "boot_bytes": 1024,
+  "code_bytes": 626,
+  "footer_bytes": 9,
+  "padding_bytes": 389,
+  "application_bytes": 31744,
+  "eeprom_bytes": 1024,
+  "configuration": {
+    "lfuse": "FF",
+    "hfuse": "DC",
+    "efuse": "FD",
+    "lock": "CF"
+  },
+  "fuse_change": {
+    "memory": "hfuse",
+    "before": "DE",
+    "after": "DC",
+    "changed_bits": "BOOTSZ0"
+  },
+  "tools": {
+    "avrdude": "8.0-arduino.1",
+    "powershell": "7.6.5",
+    "avr_gcc": "7.3.0"
+  },
+  "test_tools_source_commit": "ba3b98ae4e8521f747ce790fc1479ff54b8cd5d0",
+  "isp": {
+    "independent_initial_memory_reads_match": true,
+    "complete_installed_readback_matches": true,
+    "additional_boot_reservation_was_erased": true,
+    "original_application_and_eeprom_preserved": true
+  },
+  "coverage": {
+    "unique_passed_checks": 49,
+    "application_bytes_roundtripped": 31744,
+    "eeprom_bytes_roundtripped": 1024,
+    "watchdog_cycles": 50,
+    "dtr_cycles": 20,
+    "application_spm_scratch_page": "0x7B80",
+    "boot_unchanged": true
+  },
+  "checks": [
+    {
+      "name": "Initial serial memory/signature verification matches the fresh ISP installation and configuration",
+      "result": "PASS"
+    },
+    {
+      "name": "AVRDUDE write and automatic verify of all 31744 application bytes",
+      "result": "PASS"
+    },
+    {
+      "name": "AVRDUDE write and automatic verify of all 1024 EEPROM bytes",
+      "result": "PASS"
+    },
+    {
+      "name": "Application starts after AVRDUDE LEAVE_PROGMODE and prints at 115200 baud",
+      "result": "PASS"
+    },
+    {
+      "name": "Three stable direct application reads of signature, fuses and lock bits",
+      "result": "PASS"
+    },
+    {
+      "name": "Application boot reads blocked; boot write protection decoded as enabled",
+      "result": "PASS"
+    },
+    {
+      "name": "Full UNIVERSAL returns all four actual fuse/lock bytes",
+      "result": "PASS"
+    },
+    {
+      "name": "Raw STK500v1 sync, sign-on, version and ATmega328PB signature",
+      "result": "PASS"
+    },
+    {
+      "name": "SET_PARAMETER invalid EOP rejected",
+      "result": "PASS"
+    },
+    {
+      "name": "Incomplete SET_PARAMETER recovers through watchdog",
+      "result": "PASS"
+    },
+    {
+      "name": "Full SET_PARAMETER consumes two bytes, keeps fixed parameters and rejects malformed packets",
+      "result": "PASS"
+    },
+    {
+      "name": "256-byte Flash and EEPROM reads, legacy zero length and app/boot boundary",
+      "result": "PASS"
+    },
+    {
+      "name": "Unknown memory types return FAILED and keep protocol synchronized",
+      "result": "PASS"
+    },
+    {
+      "name": "EEPROM blocks of every size 1 through 16 at the upper boundary",
+      "result": "PASS"
+    },
+    {
+      "name": "Two-byte Flash write erases unspecified bytes; full last application page restored",
+      "result": "PASS"
+    },
+    {
+      "name": "Invalid Flash EOP rejected before page erase",
+      "result": "PASS"
+    },
+    {
+      "name": "Invalid EEPROM EOP rejected before commit",
+      "result": "PASS"
+    },
+    {
+      "name": "Boot-section write rejected; watchdog returns to application",
+      "result": "PASS"
+    },
+    {
+      "name": "Flash read beyond physical end rejected",
+      "result": "PASS"
+    },
+    {
+      "name": "EEPROM read beyond physical end rejected",
+      "result": "PASS"
+    },
+    {
+      "name": "Read length 257 rejected",
+      "result": "PASS"
+    },
+    {
+      "name": "Overflowing word address rejected",
+      "result": "PASS"
+    },
+    {
+      "name": "Invalid SYNC EOP triggers watchdog recovery",
+      "result": "PASS"
+    },
+    {
+      "name": "One-second bootloader idle watchdog starts the application",
+      "result": "PASS"
+    },
+    {
+      "name": "Invalid Flash write length 0 rejected before erase",
+      "result": "PASS"
+    },
+    {
+      "name": "Invalid Flash write length 1 rejected before erase",
+      "result": "PASS"
+    },
+    {
+      "name": "Invalid Flash write length 3 rejected before erase",
+      "result": "PASS"
+    },
+    {
+      "name": "Invalid Flash write length 129 rejected before erase",
+      "result": "PASS"
+    },
+    {
+      "name": "Invalid Flash write length 130 rejected before erase",
+      "result": "PASS"
+    },
+    {
+      "name": "Invalid Flash write length 256 rejected before erase",
+      "result": "PASS"
+    },
+    {
+      "name": "Unaligned Flash write rejected",
+      "result": "PASS"
+    },
+    {
+      "name": "EEPROM write length 17 rejected",
+      "result": "PASS"
+    },
+    {
+      "name": "EEPROM write beyond physical end rejected",
+      "result": "PASS"
+    },
+    {
+      "name": "Incomplete Flash packet leaves the old page intact",
+      "result": "PASS"
+    },
+    {
+      "name": "Incomplete EEPROM packet leaves the old bytes intact",
+      "result": "PASS"
+    },
+    {
+      "name": "Unsupported UNIVERSAL operation returns zero without programming fuses",
+      "result": "PASS"
+    },
+    {
+      "name": "Legacy chip erase acknowledgement preserves application Flash",
+      "result": "PASS"
+    },
+    {
+      "name": "Full Flash and EEPROM still correct after all raw protocol cases; fuses and locks unchanged",
+      "result": "PASS"
+    },
+    {
+      "name": "full application SPM erases, writes and restores the scratch page with r1 zero",
+      "result": "PASS"
+    },
+    {
+      "name": "Protected Boot-address calls return; full Flash and EEPROM remain as expected",
+      "result": "PASS"
+    },
+    {
+      "name": "Boot handoff clears r1, preserves Optiboot MCUSR parity and disables the watchdog",
+      "result": "PASS"
+    },
+    {
+      "name": "Application UART transmit and receive at 115200 baud",
+      "result": "PASS"
+    },
+    {
+      "name": "50 application-triggered 15ms watchdog resets restart the application without a reset loop",
+      "result": "PASS"
+    },
+    {
+      "name": "20 consecutive DTR reset, sync, signature and LEAVE_PROGMODE cycles",
+      "result": "PASS"
+    },
+    {
+      "name": "UART BREAK/framing-error input recovers through the watchdog",
+      "result": "PASS"
+    },
+    {
+      "name": "Three consecutive real AVRDUDE sessions reconnect and verify the device",
+      "result": "PASS"
+    },
+    {
+      "name": "Physical power cycle confirms autonomous application startup and execution",
+      "result": "PASS"
+    },
+    {
+      "name": "Original complete Flash, EEPROM, signature, fuses and lock bits restored and verified",
+      "result": "PASS"
+    },
+    {
+      "name": "Focused diagnostics: three stable direct signature, fuse, lock and Boot-access reports",
+      "result": "PASS"
+    }
+  ],
+  "cold_start_observation": {
+    "query_reset_reason": 15,
+    "first_application_entry": "5354415205000500",
+    "autonomous_uptime_ticks": 1,
+    "tick_ms": 500,
+    "proof_kind": "power_on_entry_and_at_least_500ms_execution"
+  },
+  "handoff": {
+    "reason": 10,
+    "r1": 0,
+    "mcusr": 2,
+    "wdt": 0
+  },
+  "first_watchdog_reset": {
+    "reason": 10,
+    "r1": 0,
+    "mcusr": 2,
+    "wdt": 0
+  },
+  "max_watchdog_restart_host_ms": 124,
+  "final_state": {
+    "full_remains_installed": true,
+    "original_application_restored": true,
+    "original_eeprom_restored": true,
+    "complete_flash_verified": true,
+    "configuration_unchanged_during_usb_tests": true
+  },
+  "hardware_free_configuration_and_cold_evidence_cases": 61,
+  "hardware_free_process_runner_scenarios": 3,
+  "hardware_free_serial_capture_cases": 38,
+  "diagnostic_capture_metrics": {
+    "runtime-diagnostics": {
+      "requested_ms": 7200,
+      "elapsed_ms": 7220.7457,
+      "bytes_read": 2007,
+      "read_calls": 8,
+      "maximum_read_bytes": 4096,
+      "encoding": "ASCII",
+      "observed_bytes_per_second": 277.84143535294294
+    },
+    "final-runtime-diagnostics": {
+      "requested_ms": 7200,
+      "elapsed_ms": 7200.1368,
+      "bytes_read": 2007,
+      "read_calls": 9,
+      "maximum_read_bytes": 4096,
+      "encoding": "ASCII",
+      "observed_bytes_per_second": 278.6769208480204
+    }
+  },
+  "final_diagnostic_startup_drain": {
+    "requested_ms": 250,
+    "elapsed_ms": 270.1486,
+    "discarded_bytes": 4079,
+    "read_calls": 1,
+    "maximum_read_bytes": 4096
+  },
+  "preflight_observation": {
+    "initial_read_only_attempt_timed_out_before_test_writes": true,
+    "direct_signature_and_unredirected_repeat_passed": true,
+    "repeat_memory_reads_match_isp": true,
+    "initial_timeout_cause_established": false
+  },
+  "first_full_run": {
+    "checks_reported_passed": 48,
+    "test_tools_source_commit": "b4046371d941f2f627e8c22653d4484de87e332c",
+    "failure": "Final runtime diagnostics capture did not contain three valid frames.",
+    "original_state_restored": true,
+    "cold_start_observation": {
+      "query_reset_reason": 15,
+      "first_application_entry": "5354415205000500",
+      "autonomous_uptime_ticks": 1,
+      "tick_ms": 500,
+      "proof_kind": "power_on_entry_and_at_least_500ms_execution"
+    },
+    "final_capture_characters": 232159,
+    "final_capture_ends_with_two_valid_configuration_frames": true,
+    "text_capture_observations_retested_in_second_full_run": true,
+    "app_spm_upload_first_sync_attempt_reported_response": "42",
+    "normal_avrdude_retry_completed_with_verified_upload": true
+  },
+  "second_full_run": {
+    "checks_reported_passed": 48,
+    "failure": "Final diagnostic capture rejected startup bytes before three clean frames.",
+    "original_state_restored": true,
+    "final_capture_characters": 6107,
+    "startup_prefix_characters": 4100,
+    "final_capture_ends_with_three_valid_configuration_frames": true,
+    "test_tools_source_commit": "aa1b74343683faaea1fd94bbf09b27e7873ed43c"
+  },
+  "focused_final_diagnostics": {
+    "checks_passed": 3,
+    "runtime_configuration_verified": true,
+    "original_state_restored": true,
+    "test_tools_source_commit": "ba3b98ae4e8521f747ce790fc1479ff54b8cd5d0"
+  },
+  "test_source_sha256_lf_normalized": {
+    "test_nano_usb.ps1": "cd4a02afb84bf33810bd176b18c9816f6278ef46f40482e38ea572f9febe8194",
+    "test_cold_evidence.ps1": "216d5bfa694dd4d1bb5f3aef0ed700c25cca4b32e65a73b6f9943ce8d45add56",
+    "AvrProcessRunner.cs": "cc6306e40472dfdf0b3d8dea7dd030b8a258b43615cff6705e9dff10c948dafd",
+    "test_process_runner.ps1": "e4b610356257fb815bcd47a508c1cfb10448b32adab3948552919bd03cd82215",
+    "test_serial_capture.ps1": "20f40232741698b706abf13ecbbbfa85e01519670e6364846e28d5994e2bba03",
+    "diagnostics.c": "3fb94849029d5f7bcf278bb8fa424af72fa0b0d36d37dba4d92e80298726ad6c",
+    "watchdog_probe.c": "b102edb483859714fe9a6ba040baa11a36c0d41f4f6c7ec38e571371b524fb4d",
+    "app_spm_probe.c": "9351fc141c148bc31ffec0909e1f3f7487efbfad2f8ce28e1c9d67b417558fbe"
+  },
+  "qualification_limits": [
+    "One separate board, this exact image, configured 16 MHz and 115200 baud only.",
+    "Cold evidence does not establish uninterrupted execution throughout the host wait or directly timestamp entry relative to host opening.",
+    "Pure watchdog-only reset cause 08 without EXTRF was not qualified.",
+    "Unchanged Boot under CF establishes combined software/hardware protection.",
+    "Full SREG preservation and opcode rejection have instruction-model coverage; physical probes invoke only 01/03/05.",
+    "Arduino IDE and MiniCore package overrides have not been run on this host.",
+    "Voltage, temperature, endurance and power loss during erase/write were not qualified."
+  ]
+}

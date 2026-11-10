@@ -1,0 +1,3 @@
+# MiniCore 3.1.3: the installed Optiboot Middle uses a 512-byte Boot section.
+328.menu.bootloader.uart0.upload.maximum_size=32256
+328.menu.bootloader.uart0.upload.protocol=arduino
