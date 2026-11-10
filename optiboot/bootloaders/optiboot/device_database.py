@@ -105,6 +105,24 @@ def application_vector(dev):
     return {'tiny841': 14, 'tiny1634': 26, 'soft85': 6, 'soft84': 14}[profile]
 
 
+def virtual_boot_sizes(dev):
+    """Whole-erase-group Middle reservations, tried from 512 through 1024 bytes."""
+    page, group, flash = (dev[k] for k in ('page', 'flash_erase_group_bytes', 'flash'))
+    if not dev['virtual_boot'] or group < page or group % page or flash % group:
+        raise ValueError('Invalid Virtual Boot Flash erase-group geometry')
+    return tuple(range(((512 + group - 1) // group) * group, 1025, group))
+
+
+def validate_virtual_boot_size(dev, value):
+    if type(value) not in (int, str):
+        raise ValueError('Virtual Boot reservation must be an integer')
+    size = int(value)
+    choices = virtual_boot_sizes(dev)
+    if size not in choices:
+        raise ValueError(f'Invalid Virtual Boot reservation {size}; whole-erase-group sizes: {choices}')
+    return size
+
+
 def linker_architecture(dev):
     if dev['profile'] in ('soft84', 'soft85', 'tiny841'):
         return 'avr25'

@@ -163,8 +163,8 @@
 #ifndef MINI_TINY_COMPACT
 #define MINI_TINY_COMPACT 0
 #endif
-#if MINI_TINY_COMPACT && (!MINI_VIRTUAL_BOOT || MINI_APP_SPM || MINI_APP_SPM_512 || BOOT_BYTES != 1024)
-#error MINI_TINY_COMPACT requires a 1024-byte Virtual Boot without APP_SPM
+#if MINI_TINY_COMPACT && (!MINI_VIRTUAL_BOOT || MINI_APP_SPM || MINI_APP_SPM_512 || BOOT_BYTES < 512 || BOOT_BYTES > 1024 || (BOOT_BYTES % FLASH_PAGE_BYTES) || (BOOT_BYTES % MINI_FLASH_ERASE_GROUP_BYTES))
+#error MINI_TINY_COMPACT requires 512..1024 erase-group-aligned Virtual Boot bytes without APP_SPM
 #endif
 #if MINI_TINY_COMPACT
 #undef MINI_WIDE_BRANCHES
@@ -1003,9 +1003,20 @@ flash_write:
     breq .Ltiny_align_ok
     rjmp protocol_error
 .Ltiny_align_ok:
+#if (BOOT_START & 0xFF) != 0
+    ; A partial 256-byte window can still contain valid application groups.
+    cpi r23,(BOOT_START >> 8)
+    brlo .Ltiny_boot_safe
+    brne .Ltiny_boot_reject
+    cpi r22,(BOOT_START & 0xFF)
+    brlo .Ltiny_boot_safe
+.Ltiny_boot_reject:
+    rjmp protocol_error
+#else
     cpi r23,(BOOT_START >> 8)
     brlo .Ltiny_boot_safe
     rjmp protocol_error
+#endif
 .Ltiny_boot_safe:
     ldi r19,(4 * FLASH_PAGE_BYTES)
 .Ltiny_receive_group:
@@ -1146,6 +1157,17 @@ hardware_fill_loop:
     rjmp protocol_error
 .Lboot_target_safe:
 #else
+#if MINI_VIRTUAL_BOOT && (BOOT_START & 0xFF) != 0
+    ; Check both bytes for non-256-byte-aligned Virtual Boot reservations.
+    cpi r23, (BOOT_START >> 8)
+    brlo .Lvirtual_write_safe
+    brne .Lvirtual_write_reject
+    cpi r22, (BOOT_START & 0xFF)
+    brlo .Lvirtual_write_safe
+.Lvirtual_write_reject:
+    rjmp protocol_error
+.Lvirtual_write_safe:
+#else
     cpi  r23, (BOOT_START >> 8) ; reject addresses within boot section
 #if MINI_WIDE_BRANCHES
     brlo .Lme64_error_skip_13
@@ -1153,6 +1175,7 @@ hardware_fill_loop:
 .Lme64_error_skip_13:
 #else
     brsh protocol_error
+#endif
 #endif
 #endif
 

@@ -1,5 +1,16 @@
 ## Optiboot Bootloader for Arduino and Atmel AVR ##
 
+**Our Mini / Middle / Full firmware:** [documentation](docs/mini/README.md) ·
+[Python generator](generate_firmware.py) · [supported AVR](docs/mini/DEVICES.md).
+From the repository root with Python and AVR tools installed:
+
+```sh
+python3 generate_firmware.py --list
+python3 generate_firmware.py atmega328pb middle 16MHz
+python3 generate_firmware.py atmega328pb full 16MHz
+python3 generate_firmware.py attiny85 middle 8MHz
+```
+
 ![docs/optiboot.png](docs/optiboot.png)
 
 Optiboot is an easy to install upgrade to the Arduino bootloader within Arduino boards. It provides the following features:
@@ -50,19 +61,14 @@ and regression tools remain in their original directories. See the
 [cleanup record](docs/mini/CLEANUP_2026-11-02.md). Current Mini, Middle and Full
 builds use the 39-device workflow described above.
 
-## Experimental multi-device Mini / Middle / Full
+## Imported reference snapshot
 
-The November 2026 [multi-device assembly module](optiboot/bootloaders/optiboot_mini/README.md)
-adds the unified generator, 38 AVR device profiles, and 63 active Middle/Full
-builds. ATtiny Middle uses the smallest complete Flash erase-group reservation
-that fits: 576 bytes for ATtiny84/85 and 512 bytes for ATtiny841/1634. Full stays
-at 1024 bytes. Matching ISP seed and application-vector patches are required.
-
-The existing experimental ATmega328P implementation and upstream C build
-targets retain their own sources and protocol contracts. The imported module
-includes source, English documentation, original release BIN/HEX images, and
-software compatibility tests. Physical AVR and actual serial AVRDUDE validation
-remain pending. See its build instructions and validation record before use.
+The November 8 [reference module](optiboot/bootloaders/optiboot_mini/README.md)
+preserves its original source and release images. Its Virtual Boot sizing is now
+integrated into the canonical 39-device builder above: Middle uses 576 bytes on
+ATtiny84/85 and 512 on ATtiny841/1634; Full remains 1024. Use the
+[current Virtual Boot guide](docs/mini/VIRTUAL_BOOT.md) for matching ISP seed,
+application-vector patches and uploader settings.
 
 ## Notes on IDE Version compatibility
 Optiboot is "compatible", in a loose sense, with all versions of the Arduino IDE.  It was originally written at about the same time as v1.0, and has some "quirks" that date back to that timeframe.  Most significantly, the directory structure of the git repository is "weird."

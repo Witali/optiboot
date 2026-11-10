@@ -3,11 +3,11 @@
 
 Use on the APPLICATION HEX before sending it with the serial Optiboot Mini.
 This does not install the bootloader: an ISP programmer is required to install
-bootloader code in the top 1 KiB, plus the reset-vector RJMP at address 0.
+bootloader code in the selected reserved region, plus reset RJMP at address 0.
 
 Application requirements: 16-bit RJMP from reset to application start, a free
 EEPROM-ready interrupt vector (overwritten explicitly), and no application
-bytes in the reserved 1-KiB boot region.
+bytes in that reserved region. Its size must match the installed bootloader.
 
 NOT hardware tested; preserve an ISP recovery path. GPL-2.0-or-later.
 """
@@ -15,11 +15,20 @@ import argparse
 from pathlib import Path
 import sys
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from device_database import DEVICES, application_vector
+from device_database import (DEVICES, application_vector, virtual_boot_sizes,
+                             validate_virtual_boot_size)
 
 TARGETS = {name: {'flash': dev['flash'], 'boot': dev['default_boot'],
                   'vector': application_vector(dev)}
            for name, dev in DEVICES.items() if dev['virtual_boot']}
+
+
+def allowed_boot_sizes(mcu):
+    return virtual_boot_sizes(DEVICES[mcu])
+
+
+def validate_boot_size(mcu, value):
+    return validate_virtual_boot_size(DEVICES[mcu], value)
 
 
 def read_hex(path):
@@ -102,10 +111,11 @@ def decode_rjmp(from_word,opcode,total_words):
     return (from_word+1+d)%total_words
 
 
-def patch_application(memory,mcu,force_vector=False):
+def patch_application(memory,mcu,force_vector=False,boot_bytes=None):
     if mcu not in TARGETS:raise ValueError('Supported ATtiny targets: '+', '.join(TARGETS))
     target=TARGETS[mcu]
     flash,boot,index=target['flash'],target['boot'],target['vector']
+    boot=validate_boot_size(mcu,boot if boot_bytes is None else boot_bytes)
     stop=flash-boot
     if not memory:raise ValueError('Empty application image')
     if min(memory)<0 or max(memory)>=stop:
@@ -132,12 +142,14 @@ def patch_application(memory,mcu,force_vector=False):
                     'reserved_ee_ready_vector_word':hex(index),
                     'patched_reset_instruction':hex(new_reset),
                     'patched_ee_vector_instruction':hex(new_vector),
-                    'boot_start':hex(stop)}
+                    'boot_start':hex(stop),'boot_bytes':boot}
 
 
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--mcu',required=True,choices=sorted(TARGETS))
+    p.add_argument('--boot-bytes',type=int,default=1024,
+                   help='Match the installed bootloader/build_info.json; legacy default 1024')
     p.add_argument('input_hex',type=Path)
     p.add_argument('output_hex',type=Path)
     p.add_argument('--overwrite-ee-vector',action='store_true',
@@ -146,7 +158,7 @@ def main():
     if args.input_hex.resolve()==args.output_hex.resolve():
         p.error('Use separate input and output files; this tool never overwrites the source')
     mem=read_hex(args.input_hex)
-    patched,info=patch_application(mem,args.mcu,args.overwrite_ee_vector)
+    patched,info=patch_application(mem,args.mcu,args.overwrite_ee_vector,args.boot_bytes)
     args.output_hex.parent.mkdir(parents=True,exist_ok=True)
     args.output_hex.write_text(make_hex(patched),encoding='ascii')
     print('Experimental Virtual Boot vector patch:',info)

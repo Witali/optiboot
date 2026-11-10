@@ -1,5 +1,11 @@
 # Experimental multi-device Optiboot Mini
 
+Reference snapshot: the November 8 import remains here for reproduction. The
+active 39-device generator now includes this Virtual Boot policy in
+[`../optiboot/`](../optiboot/README_MINI_MULTI.md). Use the repository-root
+`generate_firmware.py` and [current firmware documentation](../../../docs/mini/README.md)
+for ongoing builds; historical counts and source hashes below describe this snapshot.
+
 Imported from the 2026-11-08 page-aligned Virtual Boot update. The active
 generator supports Mini (`flash256`), Middle (`compact`), Full, and the separate
 FlashRead512 research edition. All use this module's `optiboot_mini.S` and

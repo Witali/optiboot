@@ -63,6 +63,6 @@ class UnifiedFirmwareTests(unittest.TestCase):
                 self.assertIn(footer,(5,12))
                 self.assertEqual(data[-footer:-footer+3],bytes(build_mini.DEVICES[chip]['sig']))
                 self.assertEqual(meta['source_build_method'],'compile_target_profile')
-                self.assertEqual(meta['boot_bytes'],512 if compact else 1024)
+                self.assertEqual(meta['boot_bytes'],576 if chip=='attiny85' else 512 if compact else 1024)
 
 if __name__=='__main__':unittest.main()

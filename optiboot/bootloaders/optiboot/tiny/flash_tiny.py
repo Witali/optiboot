@@ -15,7 +15,7 @@ import argparse
 from pathlib import Path
 import sys
 
-from patch_vectors import TARGETS, read_hex, decode_rjmp
+from patch_vectors import TARGETS, read_hex, decode_rjmp, validate_boot_size
 from device_database import DEVICES
 
 SYNC=b'\x30\x20'
@@ -52,9 +52,10 @@ class Stk500Mini:
     def leave(self): self.transact(b'\x51\x20')
 
 
-def upload(link,image,mcu,verify=True):
+def upload(link,image,mcu,verify=True,boot_bytes=None):
     t=TARGETS[mcu]
-    boot=t['flash']-t['boot']
+    size=validate_boot_size(mcu,t['boot'] if boot_bytes is None else boot_bytes)
+    boot=t['flash']-size
     group=DEVICES[mcu]['flash_erase_group_bytes']
     if not image:raise ValueError('Empty Intel HEX')
     if max(image)>=boot or min(image)<0:
@@ -80,6 +81,8 @@ def upload(link,image,mcu,verify=True):
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--mcu',choices=TARGETS,required=True)
+    p.add_argument('--boot-bytes',type=int,default=1024,
+                   help='Match the ISP-installed bootloader; legacy default 1024')
     p.add_argument('--port',required=True)
     p.add_argument('--baud',type=int,help='Default: 19200 for software UART, 115200 for tiny841/1634')
     p.add_argument('--timeout',type=float,default=1.0)
@@ -103,7 +106,7 @@ def main():
         sig=link.signature()
         expected=bytes(DEVICES[args.mcu]['sig'])
         if sig!=expected:raise RuntimeError(f'Signature mismatch: read {sig.hex()}, expected {expected.hex()}')
-        count,step=upload(link,image,args.mcu,verify=not args.no_verify)
+        count,step=upload(link,image,args.mcu,verify=not args.no_verify,boot_bytes=args.boot_bytes)
         link.leave()
         print(f'EXPERIMENTAL upload finished: {count} x {step}-byte groups, '+('verified' if not args.no_verify else 'not verified'))
 

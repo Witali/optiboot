@@ -1,6 +1,8 @@
 # Experimental ATtiny Virtual Boot and software UART
 
-The four ATtiny profiles reserve 1024 bytes at the top of Flash. They require
+Middle reserves the smallest complete Flash erase groups that fit, from 512
+through 1024 bytes. ATtiny84/85 use 576 bytes; ATtiny841/1634 use 512 bytes.
+Full and the legacy Basic mode reserve 1024 bytes. These profiles require
 an ISP seed, permission for self-programming, and application vector relocation;
 they do not have the protected BOOTRST section used by ATmega. These ports have
 only been compiled and exercised in software models. Hardware validation and an
@@ -18,8 +20,20 @@ ISP recovery path are required before relying on them.
 ATtiny841/1634 erase four physical pages together. Their uploader stages and
 transfers a complete 64/128-byte group, then verifies it. Sending an isolated
 16/32-byte page can destroy neighboring data. ATtiny84/85 use 64-byte pages
-and leave 7168 bytes for the application. Both Middle and Full reserve
-1024 bytes on all four Virtual Boot parts.
+and leave 7616 application bytes with Middle, or 7168 with Full.
+
+| Middle target | Payload | Reserved bytes | Boot start | Application bytes |
+|---|---:|---:|---|---:|
+| ATtiny84/85 | 549 B | 576 B (9 pages) | `0x1DC0` | 7616 |
+| ATtiny841 | 505 B | 512 B (8 erase groups) | `0x1E00` | 7680 |
+| ATtiny1634 | 501 B | 512 B (4 erase groups) | `0x3E00` | 15872 |
+
+The builder tries increasing whole-group reservations, recompiling each because
+instruction layout can depend on Boot start. It accepts the first image that
+fits and fails beyond 1024 bytes without dropping features. Both address bytes
+are checked at non-256-byte-aligned boundaries such as `0x1DC0`, leaving the last
+three application pages writable. Full's size and all ATmega BOOTSZ rules stay
+unchanged. The shared database supplies geometry to the builder and host tools.
 
 Run the following commands from `optiboot/bootloaders/optiboot/`:
 
@@ -47,7 +61,7 @@ or calibrate OSCCAL. ATtiny1634 is rated to 12 MHz in these profiles; supply
    trampolines. For example:
 
    ```sh
-   python3 tiny/make_seed.py --mcu attiny85 BOOT_IMAGE.bin isp_seed.hex
+   python3 tiny/make_seed.py --mcu attiny85 --boot-bytes 576 BOOT_IMAGE.bin isp_seed.hex
    ```
 
    Replace `BOOT_IMAGE.bin` with the BIN path printed by the generator.
@@ -57,7 +71,7 @@ or calibrate OSCCAL. ATtiny1634 is rated to 12 MHz in these profiles; supply
    vector. Patch the application before uploading:
 
    ```sh
-   python3 tiny/patch_vectors.py --mcu attiny85 app.hex app_vboot.hex
+   python3 tiny/patch_vectors.py --mcu attiny85 --boot-bytes 576 app.hex app_vboot.hex
    ```
 
    The patcher redirects RESET to the bootloader and moves the application's
@@ -69,7 +83,7 @@ or calibrate OSCCAL. ATtiny1634 is rated to 12 MHz in these profiles; supply
 4. Install `pyserial` on the host and use the dedicated uploader:
 
    ```sh
-   python3 tiny/flash_tiny.py --mcu attiny85 --port /dev/ttyUSB0 --baud 19200 --reset-dtr --ack-experimental app_vboot.hex
+   python3 tiny/flash_tiny.py --mcu attiny85 --boot-bytes 576 --port /dev/ttyUSB0 --baud 19200 --reset-dtr --ack-experimental app_vboot.hex
    ```
 
    Change the MCU, port and baud to match the build. Hardware UART examples use
@@ -79,6 +93,12 @@ or calibrate OSCCAL. ATtiny1634 is rated to 12 MHz in these profiles; supply
    AVRDUDE compatibility with this Virtual Boot workflow has not been established.
 
 Sparse uploads fill omitted bytes within each transferred group with `0xFF`.
+Every tiny helper must use the exact `boot_bytes` from the build JSON. Their
+CLI/API default remains 1024 for existing installations. New Middle requires
+an explicit 576 or 512; an older 1024-byte default will reject the smaller BIN
+or differently patched application. Changing a reservation requires reinstalling
+the loader via ISP and regenerating both the seed and application vectors.
+
 Preserve a group's full contents in the application HEX if neighboring data
 must survive. Interrupted rewriting of the first page can corrupt RESET and
 prevent further UART recovery; restore the seed through ISP.
@@ -86,8 +106,8 @@ prevent further UART recovery; restore the seed through ISP.
 ## ATtiny84/85 software UART
 
 `uart/soft.inc` implements 8N1 with the least significant bit first, polling and
-compile-time delays, without timers or interrupts. Both editions reserve a
-1024-byte image. Register `r6` holds the shift byte,
+compile-time delays, without timers or interrupts. Middle reserves 576 bytes
+and Full 1024. Register `r6` holds the shift byte,
 `r18` the delay counter and `r16` the interface byte.
 
 Use TTL/CMOS logic compatible with target VCC, a common ground, adapter TX to

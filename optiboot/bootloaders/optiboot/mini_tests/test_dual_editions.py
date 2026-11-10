@@ -39,6 +39,7 @@ class DualEditionTests(unittest.TestCase):
                        capture_output=True, text=True, check=True)
         cls.entries = json.loads((DEST / 'matrix_dual.json').read_text())
         cls.original = json.loads((HERE / 'fixtures' / 'r10_compact_auto_sha256.json').read_text())
+        cls.virtual = json.loads((HERE / 'fixtures' / 'virtual_boot_2026-11-08_sha256.json').read_text())
 
     @classmethod
     def tearDownClass(cls):
@@ -97,14 +98,16 @@ class DualEditionTests(unittest.TestCase):
                     self.assertEqual(entry['get_sign_on'],edition=='full')
                     self.assertEqual(entry['universal_fuse_lock_read'],edition=='full')
                     self.assertEqual(entry['boot_bytes'],1024 if edition=='full'
-                        else (1024 if dev['virtual_boot'] else 512))
+                        else (576 if chip in ('attiny84','attiny85') else 512))
                     self.assertEqual(entry['app_spm_abi'],not dev['virtual_boot'])
 
     def test_no_regression_of_all_38_r10_compact_images(self):
         for chip, checksum in self.original.items():
             with self.subTest(chip=chip):
                 if 'middle' in build_dual.available_editions(chip):
-                    self.assertEqual(self.entries['firmware'][f'middle/{chip}']['sha256'],checksum)
+                    # Only ATtiny Middle deliberately changes origin and code.
+                    self.assertEqual(self.entries['firmware'][f'middle/{chip}']['sha256'],
+                                     self.virtual.get(chip,checksum))
                 else:
                     self.assertNotIn(f'middle/{chip}', self.entries['firmware'])
 

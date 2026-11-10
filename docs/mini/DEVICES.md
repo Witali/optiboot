@@ -52,5 +52,7 @@ See the [database maintenance guide](DEVICE_DATABASE.md) for schema and updates.
 39 devices; 79 edition/device profiles.
 
 Mini reserves 256 bytes. Middle reserves 512 bytes on eligible ATmega and
-1024 bytes on Virtual ATtiny. Full reserves 1024 bytes. SRAM end is an
+the smallest whole erase-group reservation that fits on Virtual ATtiny:
+576 bytes on ATtiny84/85 and 512 bytes on ATtiny841/1634. Full reserves
+1024 bytes. See [Virtual Boot](VIRTUAL_BOOT.md). SRAM end is an
 address, not a RAM capacity. Virtual Boot has no hardware BOOTSZ section.

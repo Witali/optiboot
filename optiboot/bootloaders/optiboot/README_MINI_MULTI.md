@@ -8,7 +8,7 @@ three editions from `optiboot_mini.S` and its device/UART includes.
 | Edition | Reserved Boot area | Profiles | Flash read/write | EEPROM read/write | Fuse/lock reads, sign-on | Application SPM ABI |
 |---|---:|---:|---|---|---|---|
 | `mini` | 256 B | 14 ATmega | Yes; aligned full-page writes | No | No | No |
-| `middle` | 512 B on 22 ATmega; 1024 B Virtual Boot on four ATtiny | 26 | Yes | Yes | No | Yes on ATmega |
+| `middle` | 512 B on 22 ATmega; 512/576 B Virtual Boot on four ATtiny | 26 | Yes | Yes | No | Yes on ATmega |
 | `full` | 1024 B | All 39 | Yes | Yes | Yes | Yes on 35 ATmega |
 
 The canonical edition names are `mini`, `middle` and `full`. The previous
@@ -44,6 +44,17 @@ The [ATmega168PB addendum](../../../docs/mini/ATMEGA168PB_2026-11-01.md)
 extends the earlier 38-device results with the 39th device and its three editions.
 
 ## Build and select an edition
+
+The root-level `generate_firmware.py` forwards to this canonical implementation.
+From the repository root, run `python3 generate_firmware.py --list` or
+`python3 generate_firmware.py atmega328pb middle 16MHz`. The sibling
+`optiboot_mini/` directory retains the November 8 import as a reference snapshot.
+
+Middle now automatically tries 512..1024-byte complete erase groups on ATtiny:
+84/85 use 549 payload bytes in 576 bytes at `0x1DC0`; 841 uses 505/512 at
+`0x1E00`; 1634 uses 501/512 at `0x3E00`. Full stays 1024 bytes. Match the
+`boot_bytes` in `build_info.json` when making the ISP seed, patching application
+vectors, and invoking the tiny uploader. See the [Virtual Boot guide](../../../docs/mini/VIRTUAL_BOOT.md).
 
 Run from `optiboot/bootloaders/optiboot/` with Python 3.10 or later,
 Clang/LLVM AVR support or AVR-GCC, `avr-objcopy`/`llvm-objcopy`, `readelf`,

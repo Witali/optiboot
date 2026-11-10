@@ -42,6 +42,11 @@ reuse the same Flash sizes, signatures, erase groups and vector definitions.
 The fixed historical `mini328` reference and independent test fixtures remain
 separate regression oracles.
 
+`virtual_boot_sizes()` and `validate_virtual_boot_size()` share the 512..1024-byte
+whole-erase-group policy between the canonical builder and tiny tools. The
+database's `default_boot=1024` remains the legacy/Full default; Middle's actual
+reservation is determined by successful compilation and recorded in build JSON.
+
 Before compilation, both assembly builders compare the selected device include
 and selector with the database-derived content. A stale or missing file stops
 the build with a regeneration command. Parallel builds only read these files;

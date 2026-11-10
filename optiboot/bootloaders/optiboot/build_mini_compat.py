@@ -31,7 +31,7 @@ def build_command(chip, args):
     banked=chip in build_mini.COMPACT_BANKED
     cmd=[sys.executable,str(ROOT/'build_mini.py'),'--mcu',chip,
          '--f-cpu',str(freq),'--clock-source',source,'--baud',str(args.baud),
-         '--boot-bytes','512' if compact else '1024', '--output-dir',str(dest)]
+         '--boot-bytes','auto' if dev['virtual_boot'] else '512' if compact else '1024', '--output-dir',str(dest)]
     if compact:
         cmd.append('--app-spm-512')
     elif compact64:

@@ -263,6 +263,7 @@ def build_one(mcu: str, edition: str, hz: int, *, baud: str='auto',
                 'CPU frequency and clock source must match device clock/fuse settings.']
     if device['virtual_boot']:
         warnings.append('Virtual Boot requires ISP seed and application vector patch; no hardware BOOTSZ protection.')
+        warnings.append(f'Pass --boot-bytes {check["boot"]} to all tiny tools; their legacy default remains 1024.')
     if edition == 'mini':
         warnings.append('PROG_PAGE requires full Flash pages; audited AVRDUDE 8.0-arduino.1 pads these automatically.')
         warnings.append('Use AVRDUDE -c arduino -D with verification enabled; other hosts may need the optional HEX preparation tool.')
@@ -276,6 +277,8 @@ def build_one(mcu: str, edition: str, hz: int, *, baud: str='auto',
         'boot_start': f'0x{check["start"]:X}', 'bootsz1_0_bits': meta.get('bootsz1_0_bits'),
         'payload_bytes': check['useful'], 'free_bytes': check['boot']-check['useful'],
         'flash_page_bytes': device['page'], 'flash_bytes': device['flash'],
+        'flash_erase_group_bytes': device['flash_erase_group_bytes'],
+        'virtual_boot_sizing_policy': meta.get('virtual_boot_sizing_policy'),
         'eeprom_bytes': device['eeprom'], 'features': features,
         'sha256': check['sha256'], 'on_silicon_tested': False, 'warnings': warnings,
         'files': {'hex': str(check['hex_path']), 'bin': str(check['bin_path']),

@@ -16,7 +16,9 @@ from patch_vectors import rjmp
 
 class TinyAVR(AVR128):
     def __init__(self,boot,dev,mcusr=2):
-        super().__init__(boot,False,mcusr)
+        # AVR128 initializes shared peripheral state with a fixed 1 KiB image.
+        # Tiny Flash is remapped below using the exact, unpadded reservation.
+        super().__init__(boot.ljust(1024,b'\xff'),False,mcusr)
         self.flash_size=dev['flash']
         self.boot_start=dev['flash']-len(boot)
         self.flash=bytearray(b'\xff'*self.boot_start+boot)

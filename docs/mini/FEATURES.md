@@ -17,7 +17,7 @@ The [shared device database](DEVICE_DATABASE.md) supplies the builders and
 
 | Capability | Mini | Middle | Full | Practical benefit / limit |
 |---|---|---|---|---|
-| Reserved Boot area | 256 B | 512 B ATmega; 1024 B Virtual ATtiny | 1024 B | Respect each chip's physical Boot minimum |
+| Reserved Boot area | 256 B | 512 B ATmega; 512/576 B Virtual ATtiny | 1024 B | Respect hardware Boot minima and complete erase groups |
 | Flash write and readback | Yes | Yes | Yes | Normal upload verification remains enabled |
 | EEPROM write/read | No | Yes | Yes | Serial configuration transfer and verification |
 | READ_SIGN | Yes | Yes | Yes | Exact part signature checking |

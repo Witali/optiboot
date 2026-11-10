@@ -123,6 +123,10 @@ def verify_manifest(chip: str, edition: str, meta: dict) -> dict:
         raise AssertionError(f'{chip}: MIDDLE overflow ({footprint}/512)')
     if footprint > meta['boot_bytes']:
         raise AssertionError(f'{chip}/{edition}: payload overflow')
+    if dev['virtual_boot']:
+        build_mini.device_database.validate_virtual_boot_size(dev, meta['boot_bytes'])
+        if not meta.get('virtual_boot_page_aligned') or not meta.get('virtual_boot_erase_group_aligned'):
+            raise AssertionError(f'{chip}: Virtual Boot alignment metadata is missing or false')
     if meta['signature_source'] == 'hardware' and not dev.get('sigrow_lpm_supported_by_datasheet'):
         raise AssertionError(f'{chip}: unaudited signature-row profile selected')
     if meta['virtual_boot_vector_patch_required'] != bool(dev['virtual_boot']):
@@ -133,6 +137,8 @@ def verify_manifest(chip: str, edition: str, meta: dict) -> dict:
         'edition': edition,
         'hardware_min_boot_bytes': dev.get('hardware_min_boot_bytes'),
         'boot_bytes': meta['boot_bytes'], 'code_bytes': meta['code_bytes'],
+        'flash_page_bytes': dev['page'],
+        'flash_erase_group_bytes': dev['flash_erase_group_bytes'],
         'footer_bytes': meta['footer_bytes'], 'payload_bytes': footprint,
         'payload_within_512': footprint <= 512,
         'hardware_boot': not dev['virtual_boot'],

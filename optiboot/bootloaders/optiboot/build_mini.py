@@ -190,9 +190,8 @@ def build(args):
             raise ValueError('--compact-tiny requires an ATtiny with a Virtual Boot protocol')
         if args.app_spm or args.app_spm_512 or args.compact_64k or args.compact_644 or args.compact_banked:
             raise ValueError('--compact-tiny must not be combined with hardware-Boot profiles')
-        if str(args.boot_bytes) not in ('auto','1024'):
-            raise ValueError('--compact-tiny is a 1024-byte Virtual Boot only')
-        args.boot_bytes='1024'
+        if str(args.boot_bytes) != 'auto':
+            device_database.validate_virtual_boot_size(dev, args.boot_bytes)
         args.universal_signature=True
         args.compact_signature=True
     if compactbanked:
@@ -225,7 +224,9 @@ def build(args):
     # substitute: it silently allowed non-existent 4/8KiB fuse selections.
     max_boot = 2048 if dev['flash'] <= 16384 else (4096 if dev['flash'] <= 32768 else 8192)
     hardware_boot_sizes = [max_boot//8, max_boot//4, max_boot//2, max_boot]
-    capacities = [dev['default_boot']] if virtual else [b for b in hardware_boot_sizes if b >= dev['default_boot']]
+    capacities = (list(device_database.virtual_boot_sizes(dev)) if compacttiny else
+                  [dev['default_boot']] if virtual else
+                  [b for b in hardware_boot_sizes if b >= dev['default_boot']])
     if args.app_spm and not args.app_spm_512:
         capacities=[size for size in capacities if size >= 1024]
         if not capacities:
@@ -342,6 +343,11 @@ def build(args):
             'virtual_boot_vector_patch_required':virtual,
             'selfprgen_fuse_programmed_required':virtual,
             'virtual_boot_flash_transfer_bytes':dev['flash_erase_group_bytes'] if virtual else None,
+            'virtual_boot_erase_group_aligned':bool(virtual and boot_bytes % dev['flash_erase_group_bytes'] == 0),
+            'virtual_boot_page_aligned':bool(virtual and boot_bytes % dev['page'] == 0),
+            'virtual_boot_sizing_policy':('smallest_whole_erase_groups_at_least_512B' if compacttiny and args.boot_bytes == 'auto'
+                                          else 'explicit_whole_erase_groups' if compacttiny
+                                          else 'legacy_1024B' if virtual else None),
             'soft_uart':soft_serial, 'soft_uart_tx_pin':'PB0' if mcu=='attiny85' else 'PA1' if mcu=='attiny84' else None,
             'soft_uart_rx_pin':'PB1' if mcu=='attiny85' else 'PA2' if mcu=='attiny84' else None,
             'hardware_boot_fuse_supported':not virtual,
@@ -412,7 +418,7 @@ def main():
         help="Signature source: legacy footer, chip SIGRD+LPM, or audited chip-select auto")
     a.add_argument('--compact-sign-on',action='store_true',
         help='Exact AVR061 GET_SIGN_ON for compact images (requires additional code and 7 footer bytes)')
-    a.add_argument('--compact-tiny',action='store_true', help='1024-byte Virtual Boot with compact STK500 protocol and 5B signature footer; no APP SPM ABI')
+    a.add_argument('--compact-tiny',action='store_true', help='512..1024-byte erase-group-aligned Virtual Boot with compact STK500 protocol and 5B signature footer; no APP SPM ABI')
     a.add_argument('--compact-banked',action='store_true', help='Experimental compact SPM ABI and EEPROM core on 128/256KiB banked ATmega, 1024B physical boot')
     a.add_argument('--compact-644',action='store_true', help='Legacy alias: compact 64KiB family restricted to ATmega644/644A/644P/644PA')
     a.add_argument('--compact-64k',action='store_true', help='64KiB ATmega644/640/64A compact 512B payload in the physical 1024B Boot section')
